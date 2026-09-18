@@ -6,24 +6,38 @@ import {
   CalendarClock,
   Check,
   Download,
+  FileDown,
   FileText,
   Loader2,
   MessageSquare,
   RotateCcw,
   Send,
+  Star,
 } from "lucide-react";
 import {
   BotaoPrimario,
   BotaoSecundario,
+  Campo,
   Indicador,
   Painel,
   Pill,
   Progresso,
   TituloPagina,
   Vazio,
+  inputClasses,
 } from "@/components/kit";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, diasRestantes, fmtData, fmtDataLonga } from "@/lib/enzova";
-import { baixarDocumento, usePortalComentar, usePortalDecidirMarco, usePortalProjeto } from "@/lib/portal";
+import {
+  baixarDocumento,
+  usePortalComentar,
+  usePortalDecidirMarco,
+  usePortalProjeto,
+  usePortalResponderPesquisa,
+  usePortalResumo,
+  type PortalProjetoDetalhe,
+} from "@/lib/portal";
+import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+
 
 export const Route = createFileRoute("/portal/$projetoId")({
   head: () => ({
@@ -42,10 +56,12 @@ export const Route = createFileRoute("/portal/$projetoId")({
 function PortalProjeto() {
   const { projetoId } = Route.useParams();
   const { data, isLoading } = usePortalProjeto(projetoId);
+  const { data: resumo } = usePortalResumo();
   const comentar = usePortalComentar(projetoId);
   const decidir = usePortalDecidirMarco(projetoId);
   const [texto, setTexto] = useState("");
   const [baixando, setBaixando] = useState<string | null>(null);
+
 
   if (isLoading) {
     return (
@@ -120,7 +136,21 @@ function PortalProjeto() {
         }
         titulo={projeto.nome}
         descricao={projeto.descricao ?? undefined}
+        acoes={
+          <BotaoSecundario
+            onClick={() =>
+              gerarRelatorioProjeto(data as PortalProjetoDetalhe, {
+                empresa: resumo?.empresa?.nome,
+                cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
+                tema: resumo?.tema,
+              })
+            }
+          >
+            <FileDown className="size-4" /> Baixar relatório PDF
+          </BotaoSecundario>
+        }
       />
+
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Indicador titulo="Progresso" valor={`${projeto.progresso}%`} progresso={projeto.progresso} />
