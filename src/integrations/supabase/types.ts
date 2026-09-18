@@ -583,6 +583,86 @@ export type Database = {
           },
         ]
       }
+      custos_reais: {
+        Row: {
+          categoria: string
+          created_at: string
+          criado_por: string | null
+          data: string
+          deleted_at: string | null
+          descricao: string
+          documento: string | null
+          fase_id: string | null
+          fornecedor: string | null
+          id: string
+          observacao: string | null
+          projeto_id: string
+          tenant_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          deleted_at?: string | null
+          descricao: string
+          documento?: string | null
+          fase_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacao?: string | null
+          projeto_id: string
+          tenant_id: string
+          valor?: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          deleted_at?: string | null
+          descricao?: string
+          documento?: string | null
+          fase_id?: string | null
+          fornecedor?: string | null
+          id?: string
+          observacao?: string | null
+          projeto_id?: string
+          tenant_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custos_reais_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_reais_fase_id_fkey"
+            columns: ["fase_id"]
+            isOneToOne: false
+            referencedRelation: "projeto_fases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_reais_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_reais_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       despesas: {
         Row: {
           aprovado_em: string | null

@@ -50,6 +50,7 @@ import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenti
 import { DocumentosProjeto } from "@/components/documentos-projeto";
 import { RelatorioLinks } from "@/components/relatorio-links";
 import { ResumoExecutivoRelatorio } from "@/components/resumo-executivo";
+import { CustosReaisProjeto } from "@/components/custos-reais";
 import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
@@ -74,6 +75,7 @@ type Aba =
   | "entregas"
   | "documentos"
   | "orcamento"
+  | "custos"
   | "riscos"
   | "historico";
 
@@ -85,6 +87,7 @@ const ABAS: { id: Aba; label: string }[] = [
   { id: "entregas", label: "Entregas" },
   { id: "documentos", label: "Documentos" },
   { id: "orcamento", label: "Orçamento" },
+  { id: "custos", label: "Custos reais" },
   { id: "riscos", label: "Riscos" },
   { id: "historico", label: "Histórico" },
 ];
@@ -210,7 +213,7 @@ function DetalheProjeto() {
       </div>
 
       <div className="frost-soft mb-5 flex flex-wrap gap-1 rounded-xl p-1">
-        {ABAS.filter((a) => a.id !== "orcamento" || can("financeiro.ver")).map((a) => (
+        {ABAS.filter((a) => (a.id !== "orcamento" && a.id !== "custos") || can("financeiro.ver")).map((a) => (
           <button
             key={a.id}
             onClick={() => setAba(a.id)}
@@ -373,6 +376,7 @@ function DetalheProjeto() {
       ) : null}
       {aba === "entregas" ? <EntregasProjeto projetoId={projetoId} /> : null}
       {aba === "orcamento" && can("financeiro.ver") ? <OrcamentoProjeto projetoId={projetoId} /> : null}
+      {aba === "custos" && can("financeiro.ver") ? <CustosReaisProjeto projetoId={projetoId} /> : null}
 
       {aba === "riscos" ? <RiscosProjeto projetoId={projetoId} /> : null}
       {aba === "historico" ? <HistoricoProjeto projetoId={projetoId} /> : null}

@@ -55,3 +55,6 @@
 - [ ] Notificações por e-mail ao cliente (aguardando domínio de envio do cliente)
 - [x] Painel interno de Relatórios por projeto (progresso x prazo, pendências, entregas, tabela e exportação CSV)
 - [x] Resumo executivo por IA preenchido automaticamente no PDF (portal e link compartilhado)
+- [x] Custos reais por projeto (lançamento manual, custo real x orçamento por categoria, só interno)
+- [ ] Substituir projetos/clientes de demonstração pelos reais (aguardando dados da empresa)
+- [ ] Personalização real por cliente: logotipo, nome e cores (aguardando arquivos e cores)
