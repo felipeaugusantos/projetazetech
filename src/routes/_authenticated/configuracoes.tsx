@@ -65,7 +65,12 @@ function Configuracoes() {
         ))}
       </div>
 
-      {aba === "empresa" ? <Empresa podeEditar={can("empresa.editar")} /> : null}
+      {aba === "empresa" ? (
+        <div className="space-y-4">
+          <Empresa podeEditar={can("empresa.editar")} />
+          <MarcaDaguaRelatorio podeEditar={can("empresa.editar")} />
+        </div>
+      ) : null}
       {aba === "perfis" ? <Perfis /> : null}
       {aba === "usuarios" ? <Usuarios /> : null}
       {aba === "conta" ? (
