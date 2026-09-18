@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useDocumentos } from "@/components/documentos-projeto";
 import { BotaoPrimario, BotaoSecundario, Painel, Pill, inputClasses } from "@/components/kit";
 import { useFases, useMarcos, useProjeto } from "@/lib/dados";
-import { FASES_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
+import { FASE_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import { gerarResumoExecutivo, type ResumoExecutivo } from "@/lib/resumo-executivo.functions";
 
 function Lista({ titulo, itens }: { titulo: string; itens: string[] }) {
@@ -54,14 +54,14 @@ export function ResumoExecutivoRelatorio({ projetoId }: { projetoId: string }) {
       linhas.push(
         `Projeto: ${projeto.nome} (${projeto.codigo})`,
         `Situação: ${PROJETO_STATUS[projeto.status]?.label ?? projeto.status} · progresso ${projeto.progresso}%`,
-        `Início: ${fmtData(projeto.data_inicio, "dd/MM/yyyy")} · Prazo: ${fmtData(projeto.data_fim_prevista, "dd/MM/yyyy")}`,
+        `Início: ${fmtData(projeto.data_inicio, "dd/MM/yyyy")} · Prazo: ${fmtData(projeto.prazo, "dd/MM/yyyy")}`,
       );
     }
     if (fases?.length) {
       linhas.push("", "Fases:");
       for (const f of fases) {
         linhas.push(
-          `- ${f.nome}: ${FASES_STATUS[f.status]?.label ?? f.status}, ${f.progresso}%, prazo ${fmtData(f.data_fim_prevista, "dd/MM/yyyy")}`,
+          `- ${f.nome}: ${FASE_STATUS[f.status]?.label ?? f.status}, ${f.progresso}%, prazo ${fmtData(f.prazo, "dd/MM/yyyy")}`,
         );
       }
     }
