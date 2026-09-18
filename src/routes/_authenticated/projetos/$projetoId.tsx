@@ -45,6 +45,8 @@ import {
 } from "@/components/kit";
 import { TarefaDrawer } from "@/components/tarefa-drawer";
 import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenticated/tarefas";
+import { DocumentosProjeto } from "@/components/documentos-projeto";
+
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/projetos/$projetoId")({
