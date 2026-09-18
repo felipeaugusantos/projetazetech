@@ -6,24 +6,38 @@ import {
   CalendarClock,
   Check,
   Download,
+  FileDown,
   FileText,
   Loader2,
   MessageSquare,
   RotateCcw,
   Send,
+  Star,
 } from "lucide-react";
 import {
   BotaoPrimario,
   BotaoSecundario,
+  Campo,
   Indicador,
   Painel,
   Pill,
   Progresso,
   TituloPagina,
   Vazio,
+  inputClasses,
 } from "@/components/kit";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, diasRestantes, fmtData, fmtDataLonga } from "@/lib/enzova";
-import { baixarDocumento, usePortalComentar, usePortalDecidirMarco, usePortalProjeto } from "@/lib/portal";
+import {
+  baixarDocumento,
+  usePortalComentar,
+  usePortalDecidirMarco,
+  usePortalProjeto,
+  usePortalResponderPesquisa,
+  usePortalResumo,
+  type PortalProjetoDetalhe,
+} from "@/lib/portal";
+import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+
 
 export const Route = createFileRoute("/portal/$projetoId")({
   head: () => ({
@@ -42,10 +56,12 @@ export const Route = createFileRoute("/portal/$projetoId")({
 function PortalProjeto() {
   const { projetoId } = Route.useParams();
   const { data, isLoading } = usePortalProjeto(projetoId);
+  const { data: resumo } = usePortalResumo();
   const comentar = usePortalComentar(projetoId);
   const decidir = usePortalDecidirMarco(projetoId);
   const [texto, setTexto] = useState("");
   const [baixando, setBaixando] = useState<string | null>(null);
+
 
   if (isLoading) {
     return (
@@ -120,7 +136,21 @@ function PortalProjeto() {
         }
         titulo={projeto.nome}
         descricao={projeto.descricao ?? undefined}
+        acoes={
+          <BotaoSecundario
+            onClick={() =>
+              gerarRelatorioProjeto(data as PortalProjetoDetalhe, {
+                empresa: resumo?.empresa?.nome,
+                cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
+                tema: resumo?.tema,
+              })
+            }
+          >
+            <FileDown className="size-4" /> Baixar relatório PDF
+          </BotaoSecundario>
+        }
       />
+
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Indicador titulo="Progresso" valor={`${projeto.progresso}%`} progresso={projeto.progresso} />
@@ -233,7 +263,12 @@ function PortalProjeto() {
               {marcos.length === 0 ? <Vazio titulo="Nenhuma entrega registrada" /> : null}
             </div>
           </Painel>
+
+          {projeto.status === "concluido" ? (
+            <PesquisaSatisfacao projetoId={projetoId} pesquisa={data.pesquisa} />
+          ) : null}
         </div>
+
 
         <div className="space-y-4">
           <Painel>
@@ -310,3 +345,153 @@ function PortalProjeto() {
     </>
   );
 }
+
+const ITENS_NOTA = [
+  { campo: "nota_geral", rotulo: "Satisfação geral" },
+  { campo: "nota_prazo", rotulo: "Cumprimento de prazos" },
+  { campo: "nota_qualidade", rotulo: "Qualidade da entrega" },
+  { campo: "nota_comunicacao", rotulo: "Comunicação da equipe" },
+] as const;
+
+function Estrelas({
+  valor,
+  onChange,
+  somenteLeitura,
+}: {
+  valor: number;
+  onChange?: ((n: number) => void) | undefined;
+  somenteLeitura?: boolean | undefined;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          disabled={somenteLeitura}
+          onClick={() => onChange?.(n)}
+          className={somenteLeitura ? "cursor-default" : "transition hover:scale-110"}
+          aria-label={`${n} de 5`}
+        >
+          <Star
+            className={
+              n <= valor ? "size-5 fill-brand text-brand" : "size-5 text-muted-foreground/40"
+            }
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function PesquisaSatisfacao({
+  projetoId,
+  pesquisa,
+}: {
+  projetoId: string;
+  pesquisa: PortalProjetoDetalhe["pesquisa"];
+}) {
+  const responder = usePortalResponderPesquisa(projetoId);
+  const [editando, setEditando] = useState(false);
+  const [notas, setNotas] = useState({
+    nota_geral: pesquisa?.nota_geral ?? 0,
+    nota_prazo: pesquisa?.nota_prazo ?? 0,
+    nota_qualidade: pesquisa?.nota_qualidade ?? 0,
+    nota_comunicacao: pesquisa?.nota_comunicacao ?? 0,
+  });
+  const [recomendaria, setRecomendaria] = useState(String(pesquisa?.recomendaria ?? 9));
+  const [comentario, setComentario] = useState(pesquisa?.comentario ?? "");
+
+  const respondida = Boolean(pesquisa) && !editando;
+
+  async function enviar() {
+    if (!notas.nota_geral) {
+      toast.error("Dê ao menos a nota de satisfação geral.");
+      return;
+    }
+    try {
+      await responder.mutateAsync({
+        nota_geral: notas.nota_geral,
+        nota_prazo: notas.nota_prazo || undefined,
+        nota_qualidade: notas.nota_qualidade || undefined,
+        nota_comunicacao: notas.nota_comunicacao || undefined,
+        recomendaria: recomendaria === "" ? undefined : Number(recomendaria),
+        comentario,
+      });
+      setEditando(false);
+      toast.success("Obrigado pela sua avaliação!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível enviar a avaliação.");
+    }
+  }
+
+  return (
+    <Painel>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h2 className="flex items-center gap-2 font-display text-[15px] font-semibold">
+            <Star className="size-4 text-brand" /> Pesquisa de satisfação
+          </h2>
+          <p className="text-[11.5px] text-muted-foreground">
+            {respondida
+              ? `Avaliação enviada em ${fmtData(pesquisa!.created_at, "dd MMM yyyy")}.`
+              : "Este projeto foi concluído. Conte como foi a sua experiência."}
+          </p>
+        </div>
+        {respondida ? (
+          <BotaoSecundario className="px-3 py-2" onClick={() => setEditando(true)}>
+            Revisar resposta
+          </BotaoSecundario>
+        ) : null}
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {ITENS_NOTA.map((item) => (
+          <div key={item.campo} className="rounded-xl border border-border bg-card px-3.5 py-3">
+            <div className="text-[12px] font-medium text-muted-foreground">{item.rotulo}</div>
+            <div className="mt-1.5">
+              <Estrelas
+                valor={notas[item.campo]}
+                somenteLeitura={respondida}
+                onChange={(n) => setNotas((a) => ({ ...a, [item.campo]: n }))}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+        <Campo label="Recomendaria (0 a 10)">
+          <input
+            className={inputClasses}
+            type="number"
+            min={0}
+            max={10}
+            value={recomendaria}
+            disabled={respondida}
+            onChange={(e) => setRecomendaria(e.target.value)}
+          />
+        </Campo>
+        <Campo label="Comentário" className="sm:col-span-2">
+          <input
+            className={inputClasses}
+            value={comentario}
+            disabled={respondida}
+            placeholder="O que funcionou bem e o que podemos melhorar?"
+            onChange={(e) => setComentario(e.target.value)}
+          />
+        </Campo>
+      </div>
+
+      {respondida ? null : (
+        <div className="mt-4 flex justify-end">
+          <BotaoPrimario onClick={enviar} disabled={responder.isPending}>
+            {responder.isPending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+            Enviar avaliação
+          </BotaoPrimario>
+        </div>
+      )}
+    </Painel>
+  );
+}
+

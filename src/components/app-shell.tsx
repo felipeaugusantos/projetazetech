@@ -19,7 +19,9 @@ import {
   SlidersHorizontal,
   Timer,
   Users,
+  Smile,
   Wallet,
+
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,7 +41,9 @@ const NAV = [
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
   { to: "/riscos", label: "Riscos", icon: ShieldAlert },
+  { to: "/satisfacao", label: "Satisfação", icon: Smile },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
+
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
 

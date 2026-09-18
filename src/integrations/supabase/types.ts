@@ -962,6 +962,80 @@ export type Database = {
         }
         Relationships: []
       }
+      pesquisas_satisfacao: {
+        Row: {
+          cliente_id: string | null
+          comentario: string | null
+          created_at: string
+          id: string
+          nota_comunicacao: number | null
+          nota_geral: number
+          nota_prazo: number | null
+          nota_qualidade: number | null
+          portal_acesso_id: string | null
+          projeto_id: string
+          recomendaria: number | null
+          tenant_id: string
+        }
+        Insert: {
+          cliente_id?: string | null
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota_comunicacao?: number | null
+          nota_geral: number
+          nota_prazo?: number | null
+          nota_qualidade?: number | null
+          portal_acesso_id?: string | null
+          projeto_id: string
+          recomendaria?: number | null
+          tenant_id: string
+        }
+        Update: {
+          cliente_id?: string | null
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota_comunicacao?: number | null
+          nota_geral?: number
+          nota_prazo?: number | null
+          nota_qualidade?: number | null
+          portal_acesso_id?: string | null
+          projeto_id?: string
+          recomendaria?: number | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pesquisas_satisfacao_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pesquisas_satisfacao_portal_acesso_id_fkey"
+            columns: ["portal_acesso_id"]
+            isOneToOne: false
+            referencedRelation: "portal_acessos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pesquisas_satisfacao_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pesquisas_satisfacao_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_acessos: {
         Row: {
           ativo: boolean
@@ -1084,6 +1158,57 @@ export type Database = {
           },
           {
             foreignKeyName: "portal_aprovacoes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_temas: {
+        Row: {
+          cliente_id: string
+          cor_destaque: string | null
+          cor_primaria: string | null
+          created_at: string
+          id: string
+          logo_url: string | null
+          mensagem: string | null
+          nome_exibicao: string | null
+          tenant_id: string
+        }
+        Insert: {
+          cliente_id: string
+          cor_destaque?: string | null
+          cor_primaria?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          mensagem?: string | null
+          nome_exibicao?: string | null
+          tenant_id: string
+        }
+        Update: {
+          cliente_id?: string
+          cor_destaque?: string | null
+          cor_primaria?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          mensagem?: string | null
+          nome_exibicao?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_temas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_temas_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1889,6 +2014,18 @@ export type Database = {
         Returns: Json
       }
       portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
+      portal_responder_pesquisa: {
+        Args: {
+          p_comentario?: string
+          p_nota_comunicacao?: number
+          p_nota_geral: number
+          p_nota_prazo?: number
+          p_nota_qualidade?: number
+          p_projeto_id: string
+          p_recomendaria?: number
+        }
+        Returns: string
+      }
       portal_resumo: { Args: never; Returns: Json }
       portal_vincular: { Args: never; Returns: boolean }
     }

@@ -50,6 +50,13 @@
       "when": 1789730318152,
       "tag": "0006_portal_documento_arquivo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789731883216,
+      "tag": "0007_portal_pesquisa_e_tema",
+      "breakpoints": true
     }
   ]
 }
