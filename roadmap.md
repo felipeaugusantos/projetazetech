@@ -44,6 +44,7 @@
 - [x] Relatório PDF do projeto pelo portal (progresso, fases, prazos, entregas, documentos; sem custos)
 - [x] Personalização do portal por cliente (logotipo, nome e cores) com dados isolados
 - [x] Link seguro e compartilhável do relatório em PDF (validade, senha, limite de aberturas, revogação e histórico de acessos)
+- [x] Resumo executivo por IA do relatório compartilhado (prazos, entregas, pendências e alertas)
 
 ## Fases seguintes (não iniciar sem instrução)
 - Fase 4 (restante): change requests, reuniões, automações, IA, integrações, API pública
