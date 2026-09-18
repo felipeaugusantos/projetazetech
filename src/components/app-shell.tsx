@@ -42,6 +42,7 @@ const NAV = [
   { to: "/cronograma", label: "Cronograma", icon: GanttChartSquare },
   { to: "/calendario", label: "Calendário", icon: CalendarDays },
   { to: "/equipe", label: "Equipe", icon: Users },
+  { to: "/plano-dia", label: "Plano do dia", icon: CalendarCheck },
   { to: "/documentos", label: "Aprovação de documentos", icon: FileCheck },
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
