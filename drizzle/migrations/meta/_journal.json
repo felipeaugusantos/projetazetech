@@ -57,6 +57,13 @@
       "when": 1789731883216,
       "tag": "0007_portal_pesquisa_e_tema",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789733703411,
+      "tag": "0008_portal_acesso_logs",
+      "breakpoints": true
     }
   ]
 }

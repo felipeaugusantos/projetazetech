@@ -1036,6 +1036,48 @@ export type Database = {
           },
         ]
       }
+      portal_acesso_logs: {
+        Row: {
+          created_at: string
+          evento: string
+          id: string
+          portal_acesso_id: string
+          tenant_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          evento: string
+          id?: string
+          portal_acesso_id: string
+          tenant_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          evento?: string
+          id?: string
+          portal_acesso_id?: string
+          tenant_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_acesso_logs_portal_acesso_id_fkey"
+            columns: ["portal_acesso_id"]
+            isOneToOne: false
+            referencedRelation: "portal_acessos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_acesso_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_acessos: {
         Row: {
           ativo: boolean
@@ -2014,6 +2056,10 @@ export type Database = {
         Returns: Json
       }
       portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
+      portal_registrar_evento: {
+        Args: { p_evento: string; p_user_agent?: string }
+        Returns: string
+      }
       portal_responder_pesquisa: {
         Args: {
           p_comentario?: string
