@@ -256,6 +256,31 @@ function AprovacaoDocumentos() {
         <Indicador titulo="Visíveis no portal" valor={noPortal} detalhe="aprovados e liberados ao cliente" />
       </div>
 
+      {porProjeto.length > 0 ? (
+        <Painel className="mb-5 p-5">
+          <h3 className="font-display text-base font-semibold text-foreground">Situação por projeto</h3>
+          <p className="text-xs text-muted-foreground">
+            Aprovados, aguardando decisão e recusados em cada projeto, sem precisar abrir um por um.
+          </p>
+          <div className="mt-4 h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={porProjeto.slice(0, 14)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                <Tooltip labelFormatter={(l) => porProjeto.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Recusados" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Painel>
+      ) : null}
+
+
+
       {isLoading ? (
         <Painel>
           <Vazio titulo="Carregando documentos…" />
