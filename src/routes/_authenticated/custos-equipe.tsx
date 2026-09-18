@@ -289,6 +289,30 @@ function CustosPorEquipe() {
             </Painel>
           </div>
 
+          <Painel className="p-5">
+            <h3 className="font-display text-base font-semibold text-foreground">Documentos por projeto</h3>
+            <p className="text-xs text-muted-foreground">
+              Quantos documentos já foram aprovados e quantos ainda aguardam decisão em cada projeto.
+            </p>
+            <div className="mt-4 h-72">
+              {dadosDocumentos.length === 0 ? (
+                <p className="pt-10 text-center text-sm text-muted-foreground">Nenhum documento registrado.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dadosDocumentos}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                    <Tooltip labelFormatter={(l) => dadosDocumentos.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Painel>
+
           <Painel className="overflow-hidden" padded={false}>
             <div className="scroll-slim overflow-x-auto">
               <table className="w-full min-w-[860px] text-sm">
