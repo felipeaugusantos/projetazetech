@@ -15,7 +15,7 @@ import {
 } from "@/components/kit";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import { abrirRelatorioLink, type AberturaLink, type RelatorioCompartilhado } from "@/lib/relatorio-links";
-import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
 
 export const Route = createFileRoute("/relatorio/$token")({
   ssr: false,
