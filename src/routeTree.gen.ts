@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
+import { Route as AuthenticatedCapacidadeRouteImport } from './routes/_authenticated/capacidade'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
 import { Route as AuthenticatedCronogramaRouteImport } from './routes/_authenticated/cronograma'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -49,6 +50,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
   id: '/calendario',
   path: '/calendario',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCapacidadeRoute = AuthenticatedCapacidadeRouteImport.update({
+  id: '/capacidade',
+  path: '/capacidade',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedConfiguracoesRoute =
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/cronograma': typeof AuthenticatedCronogramaRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/cronograma': typeof AuthenticatedCronogramaRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
+  '/_authenticated/capacidade': typeof AuthenticatedCapacidadeRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/cronograma': typeof AuthenticatedCronogramaRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/calendario'
+    | '/capacidade'
     | '/configuracoes'
     | '/cronograma'
     | '/dashboard'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/calendario'
+    | '/capacidade'
     | '/configuracoes'
     | '/cronograma'
     | '/dashboard'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/_authenticated/calendario'
+    | '/_authenticated/capacidade'
     | '/_authenticated/configuracoes'
     | '/_authenticated/cronograma'
     | '/_authenticated/dashboard'
@@ -274,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/calendario'
       fullPath: '/calendario'
       preLoaderRoute: typeof AuthenticatedCalendarioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/capacidade': {
+      id: '/_authenticated/capacidade'
+      path: '/capacidade'
+      fullPath: '/capacidade'
+      preLoaderRoute: typeof AuthenticatedCapacidadeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/configuracoes': {
@@ -365,6 +384,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
+  AuthenticatedCapacidadeRoute: typeof AuthenticatedCapacidadeRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedCronogramaRoute: typeof AuthenticatedCronogramaRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -381,6 +401,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
+  AuthenticatedCapacidadeRoute: AuthenticatedCapacidadeRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedCronogramaRoute: AuthenticatedCronogramaRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
