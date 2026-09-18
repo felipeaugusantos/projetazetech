@@ -338,9 +338,15 @@ function PortalProjeto() {
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-semibold">{d.nome}</span>
-                    <span className="block text-[11px] text-muted-foreground">
-                      {d.categoria} · {fmtData(d.created_at, "dd MMM yyyy")}
+                    <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                      <span className="rounded-full bg-success-soft px-2 py-0.5 font-semibold text-success">
+                        Aprovado{d.aprovado_em ? ` em ${fmtData(d.aprovado_em, "dd MMM yyyy")}` : ""}
+                      </span>
+                      <span>
+                        {d.categoria} · enviado em {fmtData(d.created_at, "dd MMM yyyy")}
+                      </span>
                     </span>
+                    <span className="mt-0.5 block text-[11px] font-medium text-brand">Abrir documento</span>
                   </span>
                   {baixando === d.id ? (
                     <Loader2 className="size-4 animate-spin text-brand" />
