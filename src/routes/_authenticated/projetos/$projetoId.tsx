@@ -48,6 +48,7 @@ import {
 import { TarefaDrawer } from "@/components/tarefa-drawer";
 import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenticated/tarefas";
 import { DocumentosProjeto } from "@/components/documentos-projeto";
+import { RelatorioLinks } from "@/components/relatorio-links";
 import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
@@ -362,7 +363,12 @@ function DetalheProjeto() {
       ) : null}
 
       {aba === "equipe" ? <EquipeProjeto projetoId={projetoId} tarefas={tarefas} /> : null}
-      {aba === "documentos" ? <DocumentosProjeto projetoId={projetoId} /> : null}
+      {aba === "documentos" ? (
+        <div className="space-y-4">
+          <DocumentosProjeto projetoId={projetoId} />
+          <RelatorioLinks projetoId={projetoId} />
+        </div>
+      ) : null}
       {aba === "entregas" ? <EntregasProjeto projetoId={projetoId} /> : null}
       {aba === "orcamento" && can("financeiro.ver") ? <OrcamentoProjeto projetoId={projetoId} /> : null}
 

@@ -30,6 +30,7 @@ import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticate
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as PortalProjetoIdRouteImport } from './routes/portal/$projetoId'
 import { Route as PortalSenhaRouteImport } from './routes/portal/senha'
+import { Route as RelatorioTokenRouteImport } from './routes/relatorio.$token'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
 import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
@@ -141,6 +142,11 @@ const PortalSenhaRoute = PortalSenhaRouteImport.update({
   path: '/senha',
   getParentRoute: () => PortalRoute,
 } as any)
+const RelatorioTokenRoute = RelatorioTokenRouteImport.update({
+  id: '/relatorio/$token',
+  path: '/relatorio/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedClientesIndexRoute =
   AuthenticatedClientesIndexRouteImport.update({
     id: '/clientes/',
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/senha': typeof PortalSenhaRoute
+  '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal/': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/senha': typeof PortalSenhaRoute
+  '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/senha': typeof PortalSenhaRoute
+  '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal/': typeof PortalIndexRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
     | '/tarefas'
     | '/portal/$projetoId'
     | '/portal/senha'
+    | '/relatorio/$token'
     | '/portal/'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/tarefas'
     | '/portal/$projetoId'
     | '/portal/senha'
+    | '/relatorio/$token'
     | '/portal'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tarefas'
     | '/portal/$projetoId'
     | '/portal/senha'
+    | '/relatorio/$token'
     | '/portal/'
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/projetos/$projetoId'
@@ -333,6 +345,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PortalRoute: typeof PortalRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RelatorioTokenRoute: typeof RelatorioTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -484,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalSenhaRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/relatorio/$token': {
+      id: '/relatorio/$token'
+      path: '/relatorio/$token'
+      fullPath: '/relatorio/$token'
+      preLoaderRoute: typeof RelatorioTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/clientes/': {
       id: '/_authenticated/clientes/'
       path: '/clientes'
@@ -578,6 +598,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PortalRoute: PortalRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
+  RelatorioTokenRoute: RelatorioTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
