@@ -134,6 +134,8 @@ export function PortalAcessos({ clienteId }: { clienteId: string }) {
         ) : null}
       </div>
 
+      {acessos.length ? <HistoricoAcessos acessoIds={acessos.map((a) => a.id)} nomes={acessos} /> : null}
+
       {aberto ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-forest/40 p-4 backdrop-blur-sm">
           <div className="frost w-full max-w-md rounded-2xl p-5">
