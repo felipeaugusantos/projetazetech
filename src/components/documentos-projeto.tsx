@@ -18,6 +18,8 @@ type Documento = {
   tipo: string | null;
   tamanho: number | null;
   visivel_cliente: boolean;
+  solicita_portal: boolean;
+  aprovacao_status: "pendente" | "aprovado" | "rejeitado";
   fase_id: string | null;
   created_at: string;
 };
