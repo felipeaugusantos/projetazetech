@@ -18,7 +18,7 @@ type Acesso = {
 };
 
 export function PortalAcessos({ clienteId }: { clienteId: string }) {
-  const { can } = useAuth();
+  const { can, perfil } = useAuth();
   const queryClient = useQueryClient();
   const [aberto, setAberto] = useState(false);
   const [nome, setNome] = useState("");
@@ -48,6 +48,7 @@ export function PortalAcessos({ clienteId }: { clienteId: string }) {
   const autorizar = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("portal_acessos").insert({
+        tenant_id: perfil?.tenant_id ?? "",
         cliente_id: clienteId,
         nome: nome.trim(),
         email: email.trim().toLowerCase(),

@@ -141,6 +141,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
       const { data, error } = await supabase
         .from("documentos")
         .insert({
+          tenant_id: perfil?.tenant_id ?? "",
           projeto_id: projetoId,
           fase_id: faseId || null,
           nome: nome.trim() || arquivo.name,

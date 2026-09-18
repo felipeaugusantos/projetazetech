@@ -152,7 +152,7 @@ export function usePortalDecidirMarco(projetoId: string) {
       const { error } = await supabase.rpc("portal_decidir_marco", {
         p_marco_id: marcoId,
         p_decisao: decisao,
-        p_comentario: comentario ?? null,
+        p_comentario: comentario ?? undefined,
       });
       if (error) throw error;
     },
