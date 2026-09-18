@@ -34,5 +34,13 @@
 - [x] Horas: timesheet com envio e aprovação (Fase 2, integrado ao custo realizado)
 - [x] Capacidade: alocação semanal planejada x realizada (Fase 2)
 
+## Portal do cliente (concluído)
+- [x] Acessos autorizados por cliente (`portal_acessos`), primeiro acesso com senha própria em `/acesso-cliente`
+- [x] Portal em `/portal`: projetos, progresso, fases, prazos, entregas e documentos (sem custos internos)
+- [x] Aprovação de entregas pelo cliente e conversa com a equipe (notifica o gerente + auditoria)
+- [x] Documentos por projeto com controle de visibilidade ao cliente (aba Documentos)
+- [x] Gestão de acessos na ficha do cliente (autorizar, suspender, reativar)
+
 ## Fases seguintes (não iniciar sem instrução)
-- Fase 4: portal do cliente, change requests, documentos, reuniões, automações, IA, integrações, API pública
+- Fase 4 (restante): change requests, reuniões, automações, IA, integrações, API pública
+
