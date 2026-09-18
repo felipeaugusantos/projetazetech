@@ -266,6 +266,13 @@ function PlanoDoDia() {
                             {i.titulo}
                           </div>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <Pill
+                              className={
+                                i.concluido ? "bg-brand-soft text-brand-ink" : "bg-secondary text-muted-foreground"
+                              }
+                            >
+                              {i.concluido ? "Concluída" : "Pendente"}
+                            </Pill>
                             {i.projetos ? <Pill className="bg-brand-soft text-brand-ink">{i.projetos.codigo}</Pill> : null}
                             {Number(i.horas_previstas) > 0 ? <span>{fmtHoras(Number(i.horas_previstas))}</span> : null}
                             {i.tarefas ? <span className="truncate">Tarefa: {i.tarefas.titulo}</span> : null}
