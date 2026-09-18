@@ -66,6 +66,8 @@ function PortalProjeto() {
   const [texto, setTexto] = useState("");
   const [baixando, setBaixando] = useState<string | null>(null);
   const [conversa, setConversa] = useState<string | null>(null);
+  const [gerandoPdf, setGerandoPdf] = useState(false);
+  const resumirRelatorio = useServerFn(gerarResumoExecutivo);
 
 
   if (isLoading) {
