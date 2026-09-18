@@ -198,6 +198,19 @@ function KpisInternos() {
     .slice(0, 12)
     .map((l) => ({ nome: l.codigo, projeto: l.nome, horas: Math.round(l.horas * 10) / 10 }));
 
+  const dadosDocumentos = visiveis
+    .map((l) => {
+      const doProjeto = documentos.filter((d) => d.projeto_id === l.id);
+      return {
+        nome: l.codigo,
+        projeto: l.nome,
+        Aprovados: doProjeto.filter((d) => d.aprovacao_status === "aprovado").length,
+        Pendentes: doProjeto.filter((d) => d.aprovacao_status === "pendente").length,
+      };
+    })
+    .filter((d) => d.Aprovados > 0 || d.Pendentes > 0)
+    .slice(0, 12);
+
   const dadosCustos = visiveis
     .filter((l) => l.custoReal > 0 || l.orcado > 0)
     .slice(0, 12)
