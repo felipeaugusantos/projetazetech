@@ -5,6 +5,7 @@ import { CheckSquare, Square } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useProjetos, useTarefas, type Tarefa } from "@/lib/dados";
+import { useConcluirItemPlano, usePlanoDia } from "@/lib/plano-dia";
 import {
   PROJETO_STATUS,
   PRIORIDADES,
@@ -39,6 +40,9 @@ function MeuTrabalho() {
 
   const minhas = useMemo(() => tarefas.filter((t) => t.responsavel_id === perfil?.id), [tarefas, perfil]);
   const hoje = new Date().toISOString().slice(0, 10);
+
+  const { data: planoHoje = [] } = usePlanoDia({ data: hoje, apenasMeus: true });
+  const concluirPlano = useConcluirItemPlano();
 
   const abertas = minhas.filter((t) => !["concluida", "cancelada"].includes(t.status));
   const deHoje = abertas.filter((t) => t.prazo === hoje);
@@ -124,6 +128,45 @@ function MeuTrabalho() {
           tom={meusProjetos.some((p) => p.status === "em_risco") ? "atencao" : "neutro"}
         />
       </div>
+
+      <Painel className="mt-4">
+        <div className="flex items-center justify-between">
+          <div className="font-display text-[15px] font-semibold">Meu plano de hoje</div>
+          <span className="text-[12px] font-medium text-muted-foreground">definido pela coordenação</span>
+        </div>
+        <div className="mt-3 space-y-2">
+          {planoHoje.length === 0 ? (
+            <p className="text-[13px] text-muted-foreground">Nenhuma tarefa definida para o seu dia.</p>
+          ) : (
+            planoHoje.map((i) => (
+              <div key={i.id} className="flex items-start gap-2.5 rounded-xl border border-border/70 px-3 py-2.5">
+                <button
+                  type="button"
+                  onClick={() => concluirPlano.mutate({ id: i.id, concluido: !i.concluido })}
+                  className="mt-0.5 text-brand"
+                  aria-label={i.concluido ? "Marcar como pendente" : "Marcar como concluída"}
+                >
+                  {i.concluido ? <CheckSquare className="size-4" /> : <Square className="size-4" />}
+                </button>
+                <span className="min-w-0 flex-1">
+                  <span
+                    className={cn(
+                      "block truncate text-[13px] font-semibold",
+                      i.concluido && "text-muted-foreground line-through",
+                    )}
+                  >
+                    {i.titulo}
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground">
+                    {i.projetos ? `${i.projetos.codigo} · ` : ""}
+                    {Number(i.horas_previstas) > 0 ? fmtHoras(Number(i.horas_previstas)) : "sem horas previstas"}
+                  </span>
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </Painel>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Painel className="lg:col-span-2">

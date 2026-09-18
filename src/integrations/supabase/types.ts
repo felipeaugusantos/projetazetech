@@ -1196,6 +1196,93 @@ export type Database = {
           },
         ]
       }
+      plano_dia: {
+        Row: {
+          concluido: boolean
+          created_at: string
+          criado_por: string | null
+          data: string
+          deleted_at: string | null
+          detalhe: string | null
+          horas_previstas: number
+          id: string
+          ordem: number
+          profile_id: string
+          projeto_id: string | null
+          tarefa_id: string | null
+          tenant_id: string
+          titulo: string
+        }
+        Insert: {
+          concluido?: boolean
+          created_at?: string
+          criado_por?: string | null
+          data: string
+          deleted_at?: string | null
+          detalhe?: string | null
+          horas_previstas?: number
+          id?: string
+          ordem?: number
+          profile_id: string
+          projeto_id?: string | null
+          tarefa_id?: string | null
+          tenant_id: string
+          titulo: string
+        }
+        Update: {
+          concluido?: boolean
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          deleted_at?: string | null
+          detalhe?: string | null
+          horas_previstas?: number
+          id?: string
+          ordem?: number
+          profile_id?: string
+          projeto_id?: string | null
+          tarefa_id?: string | null
+          tenant_id?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_dia_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plano_dia_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plano_dia_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plano_dia_tarefa_id_fkey"
+            columns: ["tarefa_id"]
+            isOneToOne: false
+            referencedRelation: "tarefas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plano_dia_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_acesso_logs: {
         Row: {
           created_at: string
