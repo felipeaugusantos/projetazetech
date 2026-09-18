@@ -159,14 +159,30 @@ function PortalProjeto() {
           valor={`${fasesConcluidas}/${fases.length}`}
           detalhe="Etapas do cronograma"
         />
-        <Indicador
-          titulo="Prazo"
-          valor={prazo ? fmtData(prazo, "dd MMM yyyy") : "—"}
-          detalhe={
-            dias === null ? "A definir" : dias < 0 ? `${Math.abs(dias)} dias de atraso` : `${dias} dias restantes`
-          }
-          tom={dias !== null && dias < 0 ? "negativo" : "neutro"}
-        />
+        {projeto.status === "concluido" ? (
+          <Indicador
+            titulo="Concluído em"
+            valor={
+              projeto.data_real_conclusao
+                ? fmtData(projeto.data_real_conclusao, "dd MMM yyyy")
+                : prazo
+                  ? fmtData(prazo, "dd MMM yyyy")
+                  : "—"
+            }
+            detalhe="Projeto encerrado"
+            tom="positivo"
+          />
+        ) : (
+          <Indicador
+            titulo="Prazo"
+            valor={prazo ? fmtData(prazo, "dd MMM yyyy") : "—"}
+            detalhe={
+              dias === null ? "A definir" : dias < 0 ? `${Math.abs(dias)} dias de atraso` : `${dias} dias restantes`
+            }
+            tom={dias !== null && dias < 0 ? "negativo" : "neutro"}
+          />
+        )}
+
         <Indicador
           titulo="Aguardando você"
           valor={aguardando.length}
