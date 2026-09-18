@@ -54,7 +54,8 @@ function Projetos() {
   const { data: clientes = [] } = useClientes();
   const [busca, setBusca] = useState("");
   const [status, setStatus] = useState("");
-  const [novo, setNovo] = useState(false);
+  const { novo: abrirNovo } = Route.useSearch();
+  const [novo, setNovo] = useState(Boolean(abrirNovo));
 
   const lista = useMemo(
     () =>
