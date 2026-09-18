@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import iconeProjeta from "@/assets/projeta-icon.png";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -139,9 +140,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <div className="frost flex h-full flex-col rounded-2xl p-4">
             <div className="flex items-center gap-2.5 px-2 py-2">
-              <div className="grid size-9 place-items-center rounded-xl bg-brand font-display text-sm font-bold text-primary-foreground shadow-lg shadow-brand/30">
-                E
-              </div>
+              <img
+                src={iconeProjeta}
+                alt="Projeta"
+                width={1024}
+                height={1024}
+                className="size-9 rounded-xl shadow-lg shadow-brand/30"
+              />
               <div className="leading-tight">
                 <div className="font-display text-[15px] font-bold">Projeta</div>
                 <div className="-mt-0.5 text-[11px] text-muted-foreground">Gestão de projetos</div>
