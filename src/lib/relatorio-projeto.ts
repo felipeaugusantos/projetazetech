@@ -139,6 +139,50 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
     y += linhas.length * 13 + 6;
   }
 
+  // ---------- Resumo executivo (gerado por IA) ----------
+  const resumo = ctx.resumo;
+  if (resumo) {
+    titulo("Resumo executivo");
+    if (resumo.resumo) {
+      const linhasResumo = doc.splitTextToSize(resumo.resumo, largura) as string[];
+      garantir(linhasResumo.length * 13 + 8);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(45, 64, 54);
+      doc.text(linhasResumo, margem, y);
+      y += linhasResumo.length * 13 + 8;
+    }
+
+    const blocos: [string, string[]][] = [
+      ["Prazos", resumo.prazos],
+      ["Entregas", resumo.entregas],
+      ["Pendências", resumo.pendencias],
+      ["Alertas", resumo.alertas],
+    ];
+    for (const [rotulo, itens] of blocos) {
+      if (!itens?.length) continue;
+      garantir(28);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(...marca);
+      doc.text(rotulo.toUpperCase(), margem, y);
+      y += 13;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(26, 26, 26);
+      for (const item of itens) {
+        const partes = doc.splitTextToSize(item, largura - 14) as string[];
+        garantir(partes.length * 12 + 4);
+        doc.setFillColor(...marca);
+        doc.circle(margem + 3, y - 3, 1.6, "F");
+        doc.text(partes, margem + 12, y);
+        y += partes.length * 12 + 2;
+      }
+      y += 6;
+    }
+    y += 2;
+  }
+
   // ---------- Progresso ----------
   titulo("Progresso geral");
   const pct = Math.max(0, Math.min(100, projeto.progresso));
