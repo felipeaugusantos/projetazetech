@@ -31,6 +31,9 @@ import {
 } from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/projetos/")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    novo: search.novo === true || search.novo === "true" || search.novo === "1" ? true : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Projetos · Projeta" },
