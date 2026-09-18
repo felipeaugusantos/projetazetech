@@ -1884,6 +1884,10 @@ export type Database = {
         Args: { p_comentario?: string; p_decisao: string; p_marco_id: string }
         Returns: string
       }
+      portal_documento_arquivo: {
+        Args: { p_documento_id: string }
+        Returns: Json
+      }
       portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
       portal_resumo: { Args: never; Returns: Json }
       portal_vincular: { Args: never; Returns: boolean }

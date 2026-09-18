@@ -43,6 +43,13 @@
       "when": 1789730187424,
       "tag": "0005_politicas_storage_documentos",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789730318152,
+      "tag": "0006_portal_documento_arquivo",
+      "breakpoints": true
     }
   ]
 }
