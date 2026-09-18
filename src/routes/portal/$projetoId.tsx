@@ -105,6 +105,31 @@ function PortalProjeto() {
     }
   }
 
+  async function baixarRelatorio() {
+    if (!data?.projeto) return;
+    setGerandoPdf(true);
+    const detalhe = data as PortalProjetoDetalhe;
+    let resumoIa = null;
+    try {
+      resumoIa = await resumirRelatorio({
+        data: { conteudo: conteudoDoRelatorio(detalhe), projeto: detalhe.projeto.nome },
+      });
+    } catch {
+      toast.info("Gerando o relatório sem o resumo automático desta vez.");
+    }
+    try {
+      gerarRelatorioProjeto(detalhe, {
+        empresa: resumo?.empresa?.nome,
+        cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
+        tema: resumo?.tema,
+        marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
+        resumo: resumoIa,
+      });
+    } finally {
+      setGerandoPdf(false);
+    }
+  }
+
   async function enviarComentario() {
     if (!texto.trim()) return;
     try {
