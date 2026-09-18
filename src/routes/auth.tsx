@@ -75,8 +75,8 @@ function AuthPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-4 py-10">
       <div className="pointer-events-none absolute inset-0">
-        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 80, background: "#60A5FA" }} />
-        <div className="halo" style={{ width: 420, height: 420, bottom: -160, right: 60, background: "#A5B4FC" }} />
+        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 80, background: "#8FE0B2" }} />
+        <div className="halo" style={{ width: 420, height: 420, bottom: -160, right: 60, background: "#C9EFD9" }} />
       </div>
 
       <div className="relative z-10 w-full max-w-md">

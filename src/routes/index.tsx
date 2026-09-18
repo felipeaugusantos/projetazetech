@@ -26,8 +26,8 @@ function Landing() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-canvas text-foreground">
       <div className="pointer-events-none absolute inset-0">
-        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 120, background: "#60A5FA" }} />
-        <div className="halo" style={{ width: 460, height: 460, bottom: -180, right: 80, background: "#A5B4FC" }} />
+        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 120, background: "#8FE0B2" }} />
+        <div className="halo" style={{ width: 460, height: 460, bottom: -180, right: 80, background: "#C9EFD9" }} />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-8">

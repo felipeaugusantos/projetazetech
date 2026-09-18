@@ -46,7 +46,7 @@ function ResetPassword() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-4">
       <div className="pointer-events-none absolute inset-0">
-        <div className="halo" style={{ width: 480, height: 480, top: -140, left: 100, background: "#60A5FA" }} />
+        <div className="halo" style={{ width: 480, height: 480, top: -140, left: 100, background: "#8FE0B2" }} />
       </div>
       <div className="frost relative z-10 w-full max-w-md rounded-2xl p-6">
         <h1 className="font-display text-[22px] font-bold tracking-tight">Definir nova senha</h1>
