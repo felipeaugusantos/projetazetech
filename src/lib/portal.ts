@@ -246,3 +246,77 @@ export function usePortalResponderPesquisa(projetoId: string) {
   });
 }
 
+
+/* ------------------------ Conversa das entregas (marcos) ------------------------ */
+
+export type AnexoComentario = { id: string; nome: string; tipo: string | null; tamanho: number | null };
+
+export type ComentarioEntrega = {
+  id: string;
+  conteudo: string;
+  created_at: string;
+  autor: string | null;
+  do_cliente: boolean;
+  anexos: AnexoComentario[];
+};
+
+export function usePortalMarcoComentarios(marcoId: string, ativo = true) {
+  return useQuery({
+    queryKey: ["portal", "marco-comentarios", marcoId],
+    enabled: !!marcoId && ativo,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("portal_marco_comentarios", { p_marco_id: marcoId });
+      if (error) throw error;
+      return (data ?? []) as unknown as ComentarioEntrega[];
+    },
+  });
+}
+
+/** Envia arquivos para o bucket de anexos e devolve os metadados. */
+export async function enviarAnexos(projetoId: string, arquivos: File[]) {
+  const anexos: { nome: string; arquivo_path: string; tipo: string; tamanho: number }[] = [];
+  for (const arquivo of arquivos) {
+    const extensao = arquivo.name.includes(".") ? arquivo.name.split(".").pop() : "dat";
+    const caminho = `${projetoId}/${crypto.randomUUID()}.${extensao}`;
+    const { error } = await supabase.storage.from("anexos").upload(caminho, arquivo, {
+      contentType: arquivo.type || "application/octet-stream",
+    });
+    if (error) throw error;
+    anexos.push({
+      nome: arquivo.name,
+      arquivo_path: caminho,
+      tipo: arquivo.type || "application/octet-stream",
+      tamanho: arquivo.size,
+    });
+  }
+  return anexos;
+}
+
+export function usePortalComentarEntrega(projetoId: string, marcoId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ conteudo, arquivos }: { conteudo: string; arquivos: File[] }) => {
+      const anexos = arquivos.length ? await enviarAnexos(projetoId, arquivos) : [];
+      const { error } = await supabase.rpc("portal_marco_comentar", {
+        p_marco_id: marcoId,
+        p_conteudo: conteudo,
+        p_anexos: anexos,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["portal", "marco-comentarios", marcoId] });
+    },
+  });
+}
+
+/** Gera um link temporário para baixar um anexo da conversa. */
+export async function baixarAnexoPortal(anexoId: string) {
+  const { data, error } = await supabase.rpc("portal_anexo_arquivo", { p_anexo_id: anexoId });
+  if (error) throw error;
+  const anexo = data as unknown as { nome: string; arquivo_path: string } | null;
+  if (!anexo?.arquivo_path) throw new Error("Anexo não disponível");
+  const assinada = await supabase.storage.from("anexos").createSignedUrl(anexo.arquivo_path, 120);
+  if (assinada.error) throw assinada.error;
+  return assinada.data.signedUrl;
+}

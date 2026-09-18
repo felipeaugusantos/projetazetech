@@ -37,6 +37,7 @@ import {
   type PortalProjetoDetalhe,
 } from "@/lib/portal";
 import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+import { ConversaEntregaPortal } from "@/components/conversa-entrega";
 
 
 export const Route = createFileRoute("/portal/$projetoId")({
@@ -61,6 +62,7 @@ function PortalProjeto() {
   const decidir = usePortalDecidirMarco(projetoId);
   const [texto, setTexto] = useState("");
   const [baixando, setBaixando] = useState<string | null>(null);
+  const [conversa, setConversa] = useState<string | null>(null);
 
 
   if (isLoading) {
@@ -231,7 +233,8 @@ function PortalProjeto() {
                 const st = MARCO_STATUS[m.status];
                 const podeDecidir = m.entrega_cliente && m.status !== "atingido" && !m.decisao;
                 return (
-                  <div key={m.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                  <div key={m.id} className="py-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-[13.5px] font-semibold">{m.nome}</span>
@@ -255,24 +258,35 @@ function PortalProjeto() {
                         {m.data_real ? ` · entregue em ${fmtData(m.data_real, "dd MMM yyyy")}` : ""}
                       </div>
                     </div>
-                    {podeDecidir ? (
-                      <div className="flex items-center gap-2">
-                        <BotaoPrimario
-                          onClick={() => decidirMarco(m.id, "aprovado")}
-                          disabled={decidir.isPending}
-                          className="px-3 py-2"
-                        >
-                          <Check className="size-4" /> Aprovar
-                        </BotaoPrimario>
-                        <BotaoSecundario
-                          onClick={() => decidirMarco(m.id, "ajustes")}
-                          disabled={decidir.isPending}
-                          className="px-3 py-2"
-                        >
-                          <RotateCcw className="size-4" /> Pedir ajustes
-                        </BotaoSecundario>
-                      </div>
-                    ) : null}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <BotaoSecundario
+                        onClick={() => setConversa(conversa === m.id ? null : m.id)}
+                        className="px-3 py-2"
+                      >
+                        <MessageSquare className="size-4" />
+                        {conversa === m.id ? "Fechar conversa" : "Esclarecer pendências"}
+                      </BotaoSecundario>
+                      {podeDecidir ? (
+                        <>
+                          <BotaoPrimario
+                            onClick={() => decidirMarco(m.id, "aprovado")}
+                            disabled={decidir.isPending}
+                            className="px-3 py-2"
+                          >
+                            <Check className="size-4" /> Aprovar
+                          </BotaoPrimario>
+                          <BotaoSecundario
+                            onClick={() => decidirMarco(m.id, "ajustes")}
+                            disabled={decidir.isPending}
+                            className="px-3 py-2"
+                          >
+                            <RotateCcw className="size-4" /> Pedir ajustes
+                          </BotaoSecundario>
+                        </>
+                      ) : null}
+                    </div>
+                    </div>
+                    {conversa === m.id ? <ConversaEntregaPortal projetoId={projetoId} marcoId={m.id} /> : null}
                   </div>
                 );
               })}

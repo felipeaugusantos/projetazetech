@@ -450,6 +450,54 @@ export type Database = {
           },
         ]
       }
+      comentario_anexos: {
+        Row: {
+          arquivo_path: string
+          comentario_id: string
+          created_at: string
+          id: string
+          nome: string
+          tamanho: number | null
+          tenant_id: string
+          tipo: string | null
+        }
+        Insert: {
+          arquivo_path: string
+          comentario_id: string
+          created_at?: string
+          id?: string
+          nome: string
+          tamanho?: number | null
+          tenant_id: string
+          tipo?: string | null
+        }
+        Update: {
+          arquivo_path?: string
+          comentario_id?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          tamanho?: number | null
+          tenant_id?: string
+          tipo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comentario_anexos_comentario_id_fkey"
+            columns: ["comentario_id"]
+            isOneToOne: false
+            referencedRelation: "comentarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comentario_anexos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comentarios: {
         Row: {
           autor_id: string | null
@@ -458,6 +506,7 @@ export type Database = {
           deleted_at: string | null
           id: string
           interno: boolean
+          marco_id: string | null
           portal_acesso_id: string | null
           projeto_id: string | null
           tarefa_id: string | null
@@ -470,6 +519,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           interno?: boolean
+          marco_id?: string | null
           portal_acesso_id?: string | null
           projeto_id?: string | null
           tarefa_id?: string | null
@@ -482,6 +532,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           interno?: boolean
+          marco_id?: string | null
           portal_acesso_id?: string | null
           projeto_id?: string | null
           tarefa_id?: string | null
@@ -493,6 +544,13 @@ export type Database = {
             columns: ["autor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comentarios_marco_id_fkey"
+            columns: ["marco_id"]
+            isOneToOne: false
+            referencedRelation: "marcos"
             referencedColumns: ["id"]
           },
           {
@@ -2043,6 +2101,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      portal_anexo_arquivo: { Args: { p_anexo_id: string }; Returns: Json }
       portal_comentar: {
         Args: { p_conteudo: string; p_projeto_id: string }
         Returns: string
@@ -2055,6 +2114,11 @@ export type Database = {
         Args: { p_documento_id: string }
         Returns: Json
       }
+      portal_marco_comentar: {
+        Args: { p_anexos?: Json; p_conteudo: string; p_marco_id: string }
+        Returns: string
+      }
+      portal_marco_comentarios: { Args: { p_marco_id: string }; Returns: Json }
       portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
       portal_registrar_evento: {
         Args: { p_evento: string; p_user_agent?: string }

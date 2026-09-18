@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, Columns3, List, Plus } from "lucide-react";
+import { ArrowLeft, Columns3, List, MessageSquare, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import {
@@ -10,6 +10,7 @@ import {
   useDespesas,
   useEquipe,
   useFases,
+  useMarcos,
   useOrcamentoItens,
   useProjeto,
   useTarefas,
@@ -18,6 +19,7 @@ import {
 import {
   DESPESA_STATUS,
   FASE_STATUS,
+  MARCO_STATUS,
   ORCAMENTO_TIPO,
   PRIORIDADES,
   PROJETO_STATUS,
@@ -46,6 +48,7 @@ import {
 import { TarefaDrawer } from "@/components/tarefa-drawer";
 import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenticated/tarefas";
 import { DocumentosProjeto } from "@/components/documentos-projeto";
+import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
 
@@ -61,13 +64,23 @@ export const Route = createFileRoute("/_authenticated/projetos/$projetoId")({
   component: DetalheProjeto,
 });
 
-type Aba = "visao" | "fases" | "tarefas" | "equipe" | "documentos" | "orcamento" | "riscos" | "historico";
+type Aba =
+  | "visao"
+  | "fases"
+  | "tarefas"
+  | "equipe"
+  | "entregas"
+  | "documentos"
+  | "orcamento"
+  | "riscos"
+  | "historico";
 
 const ABAS: { id: Aba; label: string }[] = [
   { id: "visao", label: "Visão geral" },
   { id: "fases", label: "Fases" },
   { id: "tarefas", label: "Tarefas" },
   { id: "equipe", label: "Equipe" },
+  { id: "entregas", label: "Entregas" },
   { id: "documentos", label: "Documentos" },
   { id: "orcamento", label: "Orçamento" },
   { id: "riscos", label: "Riscos" },
@@ -350,6 +363,7 @@ function DetalheProjeto() {
 
       {aba === "equipe" ? <EquipeProjeto projetoId={projetoId} tarefas={tarefas} /> : null}
       {aba === "documentos" ? <DocumentosProjeto projetoId={projetoId} /> : null}
+      {aba === "entregas" ? <EntregasProjeto projetoId={projetoId} /> : null}
       {aba === "orcamento" && can("financeiro.ver") ? <OrcamentoProjeto projetoId={projetoId} /> : null}
 
       {aba === "riscos" ? <RiscosProjeto projetoId={projetoId} /> : null}
@@ -706,5 +720,51 @@ function OrcamentoProjeto({ projetoId }: { projetoId: string }) {
         </div>
       </Painel>
     </div>
+  );
+}
+
+function EntregasProjeto({ projetoId }: { projetoId: string }) {
+  const { data: marcos = [] } = useMarcos(projetoId);
+  const [aberta, setAberta] = useState<string | null>(null);
+
+  return (
+    <Painel>
+      <h2 className="font-display text-[15px] font-bold">Entregas e aprovações</h2>
+      <p className="text-[12px] text-muted-foreground">
+        Converse com o cliente sobre cada entrega e anexe arquivos antes da aprovação.
+      </p>
+      <div className="mt-3 divide-y divide-border/70">
+        {marcos.map((m) => {
+          const st = MARCO_STATUS[m.status];
+          return (
+            <div key={m.id} className="py-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[13.5px] font-semibold">{m.nome}</span>
+                    <Pill className={st.pill}>{st.label}</Pill>
+                    {m.entrega_cliente ? (
+                      <Pill className="bg-brand-soft text-brand-ink">Entrega ao cliente</Pill>
+                    ) : null}
+                  </div>
+                  <div className="mt-0.5 text-[11.5px] text-muted-foreground">
+                    {m.data ? fmtData(m.data, "dd MMM yyyy") : "data a definir"}
+                    {m.data_real ? ` · entregue em ${fmtData(m.data_real, "dd MMM yyyy")}` : ""}
+                  </div>
+                </div>
+                <BotaoSecundario className="px-3 py-2" onClick={() => setAberta(aberta === m.id ? null : m.id)}>
+                  <MessageSquare className="size-4" />
+                  {aberta === m.id ? "Fechar conversa" : "Ver conversa"}
+                </BotaoSecundario>
+              </div>
+              {aberta === m.id ? <ConversaEntregaInterna projetoId={projetoId} marcoId={m.id} /> : null}
+            </div>
+          );
+        })}
+        {marcos.length === 0 ? (
+          <Vazio titulo="Nenhuma entrega cadastrada" descricao="Cadastre marcos no cronograma do projeto." />
+        ) : null}
+      </div>
+    </Painel>
   );
 }

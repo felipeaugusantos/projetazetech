@@ -48,3 +48,6 @@
 - Fase 4 (restante): change requests, reuniões, automações, IA, integrações, API pública
 
 
+
+- [x] Conversa por entrega no portal, com histórico e anexos (cliente e equipe)
+- [ ] Notificações por e-mail ao cliente (aguardando domínio de envio do cliente)
