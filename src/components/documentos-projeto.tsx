@@ -18,6 +18,8 @@ type Documento = {
   tipo: string | null;
   tamanho: number | null;
   visivel_cliente: boolean;
+  solicita_portal: boolean;
+  aprovacao_status: "pendente" | "aprovado" | "rejeitado";
   fase_id: string | null;
   created_at: string;
 };
@@ -84,24 +86,24 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
     mutationFn: async (doc: Documento) => {
       const { error } = await supabase
         .from("documentos")
-        .update({ visivel_cliente: !doc.visivel_cliente })
+        .update({ solicita_portal: !doc.solicita_portal })
         .eq("id", doc.id);
       if (error) throw error;
       await auditar({
         entidade: "documento",
         entidade_id: doc.id,
         acao: "atualizou",
-        campo: "visivel_cliente",
-        valor_anterior: String(doc.visivel_cliente),
-        valor_novo: String(!doc.visivel_cliente),
+        campo: "solicita_portal",
+        valor_anterior: String(doc.solicita_portal),
+        valor_novo: String(!doc.solicita_portal),
         projeto_id: projetoId,
       });
     },
     onSuccess: () => {
       invalidar();
-      toast.success("Visibilidade atualizada.");
+      toast.success("Pedido de liberação atualizado. O portal só exibe depois da aprovação.");
     },
-    onError: () => toast.error("Não foi possível alterar a visibilidade."),
+    onError: () => toast.error("Não foi possível alterar a liberação."),
   });
 
   const remover = useMutation({
@@ -150,7 +152,8 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
           arquivo_path: caminho,
           tipo: arquivo.type || null,
           tamanho: arquivo.size,
-          visivel_cliente: visivel,
+          solicita_portal: visivel,
+          aprovacao_status: "pendente",
           autor_id: perfil?.id ?? null,
         })
         .select("id")
@@ -246,7 +249,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
 
           <label className="mt-3 flex items-center gap-2 text-[12.5px]">
             <input type="checkbox" checked={visivel} onChange={(e) => setVisivel(e.target.checked)} />
-            Liberar no portal do cliente
+            Pedir liberação no portal do cliente (aparece só depois de aprovado)
           </label>
 
           <input
@@ -280,6 +283,15 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
                     <Pill className={d.visivel_cliente ? "bg-success/12 text-success" : "bg-secondary text-muted-foreground"}>
                       {d.visivel_cliente ? "No portal" : "Interno"}
                     </Pill>
+                    {d.solicita_portal && d.aprovacao_status !== "aprovado" ? (
+                      <Pill
+                        className={
+                          d.aprovacao_status === "rejeitado" ? "bg-danger/12 text-danger" : "bg-warning/15 text-warning"
+                        }
+                      >
+                        {d.aprovacao_status === "rejeitado" ? "Recusado" : "Aguardando aprovação"}
+                      </Pill>
+                    ) : null}
                   </div>
                   <div className="text-[11.5px] text-muted-foreground">
                     {d.categoria} · {fmtData(d.created_at, "dd MMM yyyy")} · {tamanhoLegivel(d.tamanho)}

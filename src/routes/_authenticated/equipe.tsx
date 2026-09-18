@@ -1,35 +1,82 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Pencil, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useEquipe, useTarefas } from "@/lib/dados";
+import { useEquipe, useTarefas, registrarAuditoria } from "@/lib/dados";
 import { estaAtrasada, fmtHoras, fmtMoeda } from "@/lib/enzova";
-import { Avatar, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from "@/components/kit";
+import {
+  Avatar,
+  BotaoPrimario,
+  BotaoSecundario,
+  Campo,
+  Indicador,
+  Painel,
+  Pill,
+  Progresso,
+  TituloPagina,
+  Vazio,
+  inputClasses,
+} from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/equipe")({
   head: () => ({
     meta: [
       { title: "Equipe · Projeta" },
-      { name: "description", content: "Pessoas, papéis de acesso e carga de trabalho da semana." },
+      { name: "description", content: "Cadastro de pessoas com cargo, perfil de acesso, custo por hora e carga da semana." },
       { property: "og:title", content: "Equipe" },
-      { property: "og:description", content: "Pessoas, papéis de acesso e carga de trabalho." },
+      { property: "og:description", content: "Cadastro de pessoas, cargos e perfis de acesso." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Equipe,
 });
 
+type Pessoa = {
+  id: string;
+  nome: string;
+  email: string;
+  cargo: string | null;
+  custo_hora: number | null;
+  capacidade_semanal: number | null;
+  ativo: boolean;
+};
+
+function usePapeisDisponiveis() {
+  const { perfil } = useAuth();
+  return useQuery({
+    queryKey: ["roles", perfil?.tenant_id],
+    enabled: !!perfil,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("roles").select("id, nome, slug").order("nome");
+      if (error) throw error;
+      return (data ?? []) as { id: string; nome: string; slug: string }[];
+    },
+  });
+}
+
 function Equipe() {
   const { can } = useAuth();
   const { data: equipe = [], isLoading } = useEquipe();
   const { data: tarefas = [] } = useTarefas();
+  const [editando, setEditando] = useState<Pessoa | null>(null);
+  const [novo, setNovo] = useState(false);
+
+  const podeGerenciar = can("usuario.gerenciar");
 
   const { data: papeis = [] } = useQuery({
     queryKey: ["usuario-roles"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("usuario_roles").select("profile_id, roles(nome, slug)");
+      const { data, error } = await supabase.from("usuario_roles").select("profile_id, role_id, roles(nome, slug)");
       if (error) throw error;
-      return (data ?? []) as unknown as { profile_id: string; roles: { nome: string; slug: string } | null }[];
+      return (data ?? []) as unknown as {
+        profile_id: string;
+        role_id: string;
+        roles: { nome: string; slug: string } | null;
+      }[];
     },
   });
 
@@ -42,17 +89,31 @@ function Equipe() {
     return mapa;
   }, [papeis]);
 
+  const roleIdPorPessoa = useMemo(() => {
+    const mapa = new Map<string, string>();
+    for (const p of papeis) if (!mapa.has(p.profile_id)) mapa.set(p.profile_id, p.role_id);
+    return mapa;
+  }, [papeis]);
+
   const abertas = tarefas.filter((t) => t.status !== "concluida" && t.status !== "cancelada");
   const atrasadas = abertas.filter((t) => estaAtrasada(t.prazo, t.status));
   const capacidadeTotal = equipe.reduce((acc, m) => acc + Number(m.capacidade_semanal ?? 40), 0);
   const alocado = abertas.reduce((acc, t) => acc + Number(t.horas_estimadas ?? 0), 0);
+  const semCusto = equipe.filter((m) => !m.custo_hora).length;
 
   return (
     <>
       <TituloPagina
         sobretitulo={<>{equipe.length} pessoas na empresa</>}
         titulo="Equipe"
-        descricao="Carga estimada da semana calculada pelas horas das tarefas abertas."
+        descricao="Cadastre cargo, perfil de acesso e custo por hora — é o custo por hora que alimenta o gráfico de Custos por equipe."
+        acoes={
+          podeGerenciar ? (
+            <BotaoPrimario onClick={() => setNovo(true)}>
+              <Plus className="size-4" /> Nova pessoa
+            </BotaoPrimario>
+          ) : null
+        }
       />
 
       <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -65,12 +126,21 @@ function Equipe() {
           tom={alocado > capacidadeTotal ? "negativo" : "neutro"}
           progresso={capacidadeTotal ? (alocado / capacidadeTotal) * 100 : 0}
         />
-        <Indicador titulo="Tarefas atrasadas" valor={atrasadas.length} detalhe="em toda a equipe" tom={atrasadas.length ? "negativo" : "positivo"} />
+        <Indicador
+          titulo="Sem custo por hora"
+          valor={semCusto}
+          detalhe="ficam fora do gráfico de custos"
+          tom={semCusto ? "atencao" : "positivo"}
+        />
       </div>
 
       {isLoading ? (
         <Painel>
           <Vazio titulo="Carregando equipe…" />
+        </Painel>
+      ) : equipe.length === 0 ? (
+        <Painel>
+          <Vazio titulo="Nenhuma pessoa cadastrada" descricao="Cadastre a equipe com cargo, perfil e custo por hora." />
         </Painel>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -88,11 +158,22 @@ function Equipe() {
                     <div className="truncate font-display text-[15px] font-bold">{m.nome}</div>
                     <div className="truncate text-[11px] text-muted-foreground">{m.cargo ?? "—"}</div>
                   </div>
-                  {!m.ativo ? <Pill className="ml-auto bg-secondary text-muted-foreground">Inativo</Pill> : null}
+                  <div className="ml-auto flex items-center gap-1.5">
+                    {!m.ativo ? <Pill className="bg-secondary text-muted-foreground">Inativo</Pill> : null}
+                    {podeGerenciar ? (
+                      <button
+                        title="Editar cadastro"
+                        onClick={() => setEditando(m as Pessoa)}
+                        className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                      >
+                        <Pencil className="size-4" />
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {(papeisPorPessoa.get(m.id) ?? ["Sem papel"]).map((p) => (
+                  {(papeisPorPessoa.get(m.id) ?? ["Sem perfil"]).map((p) => (
                     <Pill key={p} className="bg-brand-soft text-brand-ink">
                       {p}
                     </Pill>
@@ -129,12 +210,175 @@ function Equipe() {
         </div>
       )}
 
-      <Painel className="mt-4">
-        <h2 className="font-display text-[15px] font-bold">Alocação avançada</h2>
-        <p className="mt-1 text-[13px] text-muted-foreground">
-          Mapa de capacidade por período, alocação percentual por projeto e custo real por pessoa entram na Fase 2.
-        </p>
-      </Painel>
+      {novo ? <PessoaModal onFechar={() => setNovo(false)} /> : null}
+      {editando ? (
+        <PessoaModal
+          pessoa={editando}
+          roleAtual={roleIdPorPessoa.get(editando.id) ?? ""}
+          onFechar={() => setEditando(null)}
+        />
+      ) : null}
     </>
+  );
+}
+
+function PessoaModal({
+  pessoa,
+  roleAtual = "",
+  onFechar,
+}: {
+  pessoa?: Pessoa;
+  roleAtual?: string;
+  onFechar: () => void;
+}) {
+  const { perfil } = useAuth();
+  const queryClient = useQueryClient();
+  const { data: papeisDisponiveis = [] } = usePapeisDisponiveis();
+  const [salvando, setSalvando] = useState(false);
+  const [form, setForm] = useState({
+    nome: pessoa?.nome ?? "",
+    email: pessoa?.email ?? "",
+    cargo: pessoa?.cargo ?? "",
+    custo_hora: pessoa?.custo_hora != null ? String(pessoa.custo_hora) : "",
+    capacidade_semanal: pessoa?.capacidade_semanal != null ? String(pessoa.capacidade_semanal) : "40",
+    ativo: pessoa?.ativo ?? true,
+    role_id: roleAtual,
+  });
+
+  async function salvar(e: React.FormEvent) {
+    e.preventDefault();
+    if (!perfil) return;
+    setSalvando(true);
+    try {
+      const dados = {
+        nome: form.nome.trim(),
+        email: form.email.trim(),
+        cargo: form.cargo.trim() || null,
+        custo_hora: form.custo_hora ? Number(form.custo_hora) : null,
+        capacidade_semanal: form.capacidade_semanal ? Number(form.capacidade_semanal) : null,
+        ativo: form.ativo,
+      };
+
+      let profileId = pessoa?.id ?? "";
+      if (pessoa) {
+        const { error } = await supabase.from("profiles").update(dados).eq("id", pessoa.id);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase
+          .from("profiles")
+          .insert({ ...dados, tenant_id: perfil.tenant_id })
+          .select("id")
+          .single();
+        if (error) throw error;
+        profileId = data.id;
+      }
+
+      if (form.role_id !== roleAtual) {
+        await supabase.from("usuario_roles").delete().eq("profile_id", profileId);
+        if (form.role_id) {
+          const { error } = await supabase
+            .from("usuario_roles")
+            .insert({ tenant_id: perfil.tenant_id, profile_id: profileId, role_id: form.role_id });
+          if (error) throw error;
+        }
+      }
+
+      await registrarAuditoria({
+        tenant_id: perfil.tenant_id,
+        profile_id: perfil.id,
+        entidade: "pessoa",
+        entidade_id: profileId,
+        acao: pessoa ? "atualizou" : "criou",
+        valor_novo: dados.nome,
+      });
+
+      void queryClient.invalidateQueries({ queryKey: ["equipe"] });
+      void queryClient.invalidateQueries({ queryKey: ["usuario-roles"] });
+      toast.success(pessoa ? "Cadastro atualizado." : "Pessoa cadastrada.");
+      onFechar();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível salvar o cadastro.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/25 p-4" onClick={onFechar}>
+      <form
+        onSubmit={salvar}
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] w-full max-w-xl overflow-y-auto scroll-slim rounded-2xl bg-card p-6 shadow-2xl"
+      >
+        <h2 className="font-display text-[20px] font-bold">{pessoa ? "Editar pessoa" : "Nova pessoa"}</h2>
+        <p className="mt-1 text-[12.5px] text-muted-foreground">
+          O custo por hora informado aqui é usado no gráfico de Custos por equipe.
+        </p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <Campo label="Nome" className="sm:col-span-2">
+            <input className={inputClasses} required value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+          </Campo>
+          <Campo label="E-mail">
+            <input
+              type="email"
+              className={inputClasses}
+              required
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </Campo>
+          <Campo label="Cargo">
+            <input
+              className={inputClasses}
+              placeholder="Gerente de projetos"
+              value={form.cargo}
+              onChange={(e) => setForm({ ...form, cargo: e.target.value })}
+            />
+          </Campo>
+          <Campo label="Perfil de acesso">
+            <select className={inputClasses} value={form.role_id} onChange={(e) => setForm({ ...form, role_id: e.target.value })}>
+              <option value="">Sem perfil</option>
+              {papeisDisponiveis.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nome}
+                </option>
+              ))}
+            </select>
+          </Campo>
+          <Campo label="Custo por hora (R$)">
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className={inputClasses}
+              value={form.custo_hora}
+              onChange={(e) => setForm({ ...form, custo_hora: e.target.value })}
+            />
+          </Campo>
+          <Campo label="Capacidade semanal (horas)">
+            <input
+              type="number"
+              min="0"
+              step="1"
+              className={inputClasses}
+              value={form.capacidade_semanal}
+              onChange={(e) => setForm({ ...form, capacidade_semanal: e.target.value })}
+            />
+          </Campo>
+          <label className="flex items-center gap-2 text-[12.5px] sm:col-span-2">
+            <input type="checkbox" checked={form.ativo} onChange={(e) => setForm({ ...form, ativo: e.target.checked })} />
+            Pessoa ativa
+          </label>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <BotaoSecundario type="button" onClick={onFechar}>
+            Cancelar
+          </BotaoSecundario>
+          <BotaoPrimario type="submit" disabled={salvando}>
+            {salvando ? "Salvando…" : pessoa ? "Salvar alterações" : "Cadastrar pessoa"}
+          </BotaoPrimario>
+        </div>
+      </form>
+    </div>
   );
 }
