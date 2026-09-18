@@ -219,6 +219,20 @@ function Dashboard() {
                 </option>
               ))}
             </select>
+            {can("cliente.criar") ? (
+              <Link to="/clientes" search={{ novo: true }}>
+                <BotaoSecundario>
+                  <Plus className="size-4" /> Novo cliente
+                </BotaoSecundario>
+              </Link>
+            ) : null}
+            {can("projeto.criar") ? (
+              <Link to="/projetos" search={{ novo: true }}>
+                <BotaoPrimario>
+                  <Plus className="size-4" /> Novo projeto
+                </BotaoPrimario>
+              </Link>
+            ) : null}
           </>
         }
       />
