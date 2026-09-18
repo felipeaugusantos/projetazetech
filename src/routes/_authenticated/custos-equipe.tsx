@@ -14,7 +14,7 @@ import { Download } from "lucide-react";
 
 import { Avatar, BotaoSecundario, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio, inputClasses } from "@/components/kit";
 import { useAuth } from "@/lib/auth";
-import { useApontamentos, useEquipe, useProjetos } from "@/lib/dados";
+import { useApontamentos, useDocumentosStatus, useEquipe, useProjetos } from "@/lib/dados";
 import { fmtHoras, fmtMoeda } from "@/lib/enzova";
 
 export const Route = createFileRoute("/_authenticated/custos-equipe")({
@@ -75,6 +75,23 @@ function CustosPorEquipe() {
   const { data: apontamentos = [], isLoading } = useApontamentos(desde ? { desde } : undefined);
   const { data: equipe = [] } = useEquipe();
   const { data: projetos = [] } = useProjetos();
+  const { data: documentos = [] } = useDocumentosStatus();
+
+  const dadosDocumentos = useMemo(() => {
+    return projetos
+      .filter((p) => !projeto || p.id === projeto)
+      .map((p) => {
+        const doProjeto = documentos.filter((d) => d.projeto_id === p.id);
+        return {
+          nome: p.codigo,
+          projeto: p.nome,
+          Aprovados: doProjeto.filter((d) => d.aprovacao_status === "aprovado").length,
+          Pendentes: doProjeto.filter((d) => d.aprovacao_status === "pendente").length,
+        };
+      })
+      .filter((d) => d.Aprovados > 0 || d.Pendentes > 0)
+      .slice(0, 14);
+  }, [documentos, projetos, projeto]);
 
   const podeVerCusto = can("financeiro.ver");
 

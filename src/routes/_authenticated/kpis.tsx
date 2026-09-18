@@ -19,6 +19,7 @@ import { useAuth } from "@/lib/auth";
 import {
   useApontamentos,
   useClientes,
+  useDocumentosStatus,
   useFasesTodas,
   useMarcos,
   useOrcamentoItens,
@@ -82,6 +83,7 @@ function KpisInternos() {
   const { data: custos = [] } = useCustosReais();
   const { data: orcamento = [] } = useOrcamentoItens();
   const { data: clientes = [] } = useClientes();
+  const { data: documentos = [] } = useDocumentosStatus();
 
   const [cliente, setCliente] = useState("");
   const [status, setStatus] = useState("");
