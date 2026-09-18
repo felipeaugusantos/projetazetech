@@ -58,3 +58,4 @@
 - [x] Custos reais por projeto (lançamento manual, custo real x orçamento por categoria, só interno)
 - [ ] Substituir projetos/clientes de demonstração pelos reais (aguardando dados da empresa)
 - [ ] Personalização real por cliente: logotipo, nome e cores (aguardando arquivos e cores)
+- [x] Tela interna "Custos" (/custos): custo real x orçamento de todos os projetos, consumo, estouros e exportação CSV
