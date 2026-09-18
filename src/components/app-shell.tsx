@@ -23,6 +23,7 @@ import {
   Wallet,
 
   X,
+  BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -41,6 +42,7 @@ const NAV = [
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
   { to: "/riscos", label: "Riscos", icon: ShieldAlert },
+  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/satisfacao", label: "Satisfação", icon: Smile },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
 
