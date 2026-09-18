@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcessoClienteRouteImport } from './routes/acesso-cliente'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
 import { Route as AuthenticatedCapacidadeRouteImport } from './routes/_authenticated/capacidade'
@@ -25,6 +26,7 @@ import { Route as AuthenticatedHorasRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenticated/meu-trabalho'
 import { Route as AuthenticatedRiscosRouteImport } from './routes/_authenticated/riscos'
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
+import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
 import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
@@ -47,6 +49,11 @@ const AcessoClienteRoute = AcessoClienteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -111,6 +118,11 @@ const AuthenticatedTarefasRoute = AuthenticatedTarefasRouteImport.update({
   path: '/tarefas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AuthenticatedClientesIndexRoute =
   AuthenticatedClientesIndexRouteImport.update({
     id: '/clientes/',
@@ -140,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/acesso-cliente': typeof AcessoClienteRoute
   '/auth': typeof AuthRoute
+  '/portal': typeof PortalRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/capacidade': typeof AuthenticatedCapacidadeRoute
@@ -152,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal/': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -173,6 +187,7 @@ export interface FileRoutesByTo {
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
@@ -184,6 +199,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/acesso-cliente': typeof AcessoClienteRoute
   '/auth': typeof AuthRoute
+  '/portal': typeof PortalRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/capacidade': typeof AuthenticatedCapacidadeRoute
@@ -196,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/_authenticated/riscos': typeof AuthenticatedRiscosRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal/': typeof PortalIndexRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
@@ -207,6 +224,7 @@ export interface FileRouteTypes {
     | '/'
     | '/acesso-cliente'
     | '/auth'
+    | '/portal'
     | '/reset-password'
     | '/calendario'
     | '/capacidade'
@@ -219,6 +237,7 @@ export interface FileRouteTypes {
     | '/meu-trabalho'
     | '/riscos'
     | '/tarefas'
+    | '/portal/'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
     | '/clientes/'
@@ -240,6 +259,7 @@ export interface FileRouteTypes {
     | '/meu-trabalho'
     | '/riscos'
     | '/tarefas'
+    | '/portal'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
     | '/clientes'
@@ -250,6 +270,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/acesso-cliente'
     | '/auth'
+    | '/portal'
     | '/reset-password'
     | '/_authenticated/calendario'
     | '/_authenticated/capacidade'
@@ -262,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/meu-trabalho'
     | '/_authenticated/riscos'
     | '/_authenticated/tarefas'
+    | '/portal/'
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/projetos/$projetoId'
     | '/_authenticated/clientes/'
@@ -273,6 +295,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AcessoClienteRoute: typeof AcessoClienteRoute
   AuthRoute: typeof AuthRoute
+  PortalRoute: typeof PortalRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -304,6 +327,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -390,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTarefasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/_authenticated/clientes/': {
       id: '/_authenticated/clientes/'
       path: '/clientes'
@@ -460,11 +497,23 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface PortalRouteChildren {
+  PortalIndexRoute: typeof PortalIndexRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalIndexRoute: PortalIndexRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AcessoClienteRoute: AcessoClienteRoute,
   AuthRoute: AuthRoute,
+  PortalRoute: PortalRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
