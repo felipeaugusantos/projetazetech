@@ -16,7 +16,14 @@
 
 - [x] Equipe, Configurações (empresa/perfis/permissões/usuários), Calendário, Horas e Financeiro (visões de Fase 1)
 
+## Fase 2 (concluída)
+- [x] Banco: apontamentos, marcos, alocacoes (+ permissões horas.apontar, alocacao.gerenciar, marco.gerenciar)
+- [x] Dados de demonstração (apontamentos das últimas semanas, marcos por fase, alocações de 4 semanas)
+- [x] Horas: Meu timesheet (semana), Aprovações, Consolidado
+- [x] Cronograma: Gantt de fases + marcos/entregas do portfólio
+- [x] Capacidade: alocação semanal por pessoa/projeto, sobrecarga, planejado x realizado
+- [x] Riscos: matriz probabilidade x impacto, severidade, plano de mitigação
+
 ## Fases seguintes (não iniciar sem instrução)
-- Fase 2: horas, timesheet, capacidade, custos, alocação, cronograma, milestones, riscos
 - Fase 3: portal do cliente, aprovações, change requests, documentos, reuniões, financeiro
 - Fase 4: automações, IA, integrações, API pública, webhooks

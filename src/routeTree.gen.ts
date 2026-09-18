@@ -14,12 +14,15 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
+import { Route as AuthenticatedCapacidadeRouteImport } from './routes/_authenticated/capacidade'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
+import { Route as AuthenticatedCronogramaRouteImport } from './routes/_authenticated/cronograma'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedHorasRouteImport } from './routes/_authenticated/horas'
 import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenticated/meu-trabalho'
+import { Route as AuthenticatedRiscosRouteImport } from './routes/_authenticated/riscos'
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
@@ -50,12 +53,22 @@ const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
   path: '/calendario',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCapacidadeRoute = AuthenticatedCapacidadeRouteImport.update({
+  id: '/capacidade',
+  path: '/capacidade',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedConfiguracoesRoute =
   AuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
     path: '/configuracoes',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCronogramaRoute = AuthenticatedCronogramaRouteImport.update({
+  id: '/cronograma',
+  path: '/cronograma',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -82,6 +95,11 @@ const AuthenticatedMeuTrabalhoRoute =
     path: '/meu-trabalho',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRiscosRoute = AuthenticatedRiscosRouteImport.update({
+  id: '/riscos',
+  path: '/riscos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTarefasRoute = AuthenticatedTarefasRouteImport.update({
   id: '/tarefas',
   path: '/tarefas',
@@ -117,12 +135,15 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/cronograma': typeof AuthenticatedCronogramaRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/horas': typeof AuthenticatedHorasRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -134,12 +155,15 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
+  '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/cronograma': typeof AuthenticatedCronogramaRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/horas': typeof AuthenticatedHorasRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -153,12 +177,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
+  '/_authenticated/capacidade': typeof AuthenticatedCapacidadeRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/_authenticated/cronograma': typeof AuthenticatedCronogramaRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/horas': typeof AuthenticatedHorasRoute
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/_authenticated/riscos': typeof AuthenticatedRiscosRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -172,12 +199,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/calendario'
+    | '/capacidade'
     | '/configuracoes'
+    | '/cronograma'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
     | '/horas'
     | '/meu-trabalho'
+    | '/riscos'
     | '/tarefas'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -189,12 +219,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/calendario'
+    | '/capacidade'
     | '/configuracoes'
+    | '/cronograma'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
     | '/horas'
     | '/meu-trabalho'
+    | '/riscos'
     | '/tarefas'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -207,12 +240,15 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/_authenticated/calendario'
+    | '/_authenticated/capacidade'
     | '/_authenticated/configuracoes'
+    | '/_authenticated/cronograma'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipe'
     | '/_authenticated/financeiro'
     | '/_authenticated/horas'
     | '/_authenticated/meu-trabalho'
+    | '/_authenticated/riscos'
     | '/_authenticated/tarefas'
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/projetos/$projetoId'
@@ -264,11 +300,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalendarioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/capacidade': {
+      id: '/_authenticated/capacidade'
+      path: '/capacidade'
+      fullPath: '/capacidade'
+      preLoaderRoute: typeof AuthenticatedCapacidadeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/configuracoes': {
       id: '/_authenticated/configuracoes'
       path: '/configuracoes'
       fullPath: '/configuracoes'
       preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/cronograma': {
+      id: '/_authenticated/cronograma'
+      path: '/cronograma'
+      fullPath: '/cronograma'
+      preLoaderRoute: typeof AuthenticatedCronogramaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -304,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/meu-trabalho'
       fullPath: '/meu-trabalho'
       preLoaderRoute: typeof AuthenticatedMeuTrabalhoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/riscos': {
+      id: '/_authenticated/riscos'
+      path: '/riscos'
+      fullPath: '/riscos'
+      preLoaderRoute: typeof AuthenticatedRiscosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tarefas': {
@@ -346,12 +403,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
+  AuthenticatedCapacidadeRoute: typeof AuthenticatedCapacidadeRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
+  AuthenticatedCronogramaRoute: typeof AuthenticatedCronogramaRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedHorasRoute: typeof AuthenticatedHorasRoute
   AuthenticatedMeuTrabalhoRoute: typeof AuthenticatedMeuTrabalhoRoute
+  AuthenticatedRiscosRoute: typeof AuthenticatedRiscosRoute
   AuthenticatedTarefasRoute: typeof AuthenticatedTarefasRoute
   AuthenticatedClientesClienteIdRoute: typeof AuthenticatedClientesClienteIdRoute
   AuthenticatedProjetosProjetoIdRoute: typeof AuthenticatedProjetosProjetoIdRoute
@@ -361,12 +421,15 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
+  AuthenticatedCapacidadeRoute: AuthenticatedCapacidadeRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
+  AuthenticatedCronogramaRoute: AuthenticatedCronogramaRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedHorasRoute: AuthenticatedHorasRoute,
   AuthenticatedMeuTrabalhoRoute: AuthenticatedMeuTrabalhoRoute,
+  AuthenticatedRiscosRoute: AuthenticatedRiscosRoute,
   AuthenticatedTarefasRoute: AuthenticatedTarefasRoute,
   AuthenticatedClientesClienteIdRoute: AuthenticatedClientesClienteIdRoute,
   AuthenticatedProjetosProjetoIdRoute: AuthenticatedProjetosProjetoIdRoute,
