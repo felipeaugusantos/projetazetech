@@ -16,6 +16,7 @@ type Contexto = {
   cliente?: string | undefined;
   tema?: PortalTema | null | undefined;
   marcaDagua?: MarcaDagua | null | undefined;
+  resumo?: ResumoExecutivo | null | undefined;
 };
 
 /** Converte a configuração de marca d'água da empresa para o formato do relatório. */
