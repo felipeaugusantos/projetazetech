@@ -22,6 +22,13 @@
       "when": 1789700522289,
       "tag": "0002_fase2_ajusta_politicas_permissoes",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789701412890,
+      "tag": "0003_fase3_orcamento_despesas",
+      "breakpoints": true
     }
   ]
 }

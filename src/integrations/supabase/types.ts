@@ -515,6 +515,105 @@ export type Database = {
           },
         ]
       }
+      despesas: {
+        Row: {
+          aprovado_em: string | null
+          aprovador_id: string | null
+          categoria: string
+          created_at: string
+          data: string
+          deleted_at: string | null
+          descricao: string
+          fase_id: string | null
+          faturavel: boolean
+          fornecedor: string | null
+          id: string
+          observacao_aprovacao: string | null
+          profile_id: string | null
+          projeto_id: string
+          reembolsavel: boolean
+          status: Database["public"]["Enums"]["despesa_status"]
+          tenant_id: string
+          valor: number
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          categoria?: string
+          created_at?: string
+          data?: string
+          deleted_at?: string | null
+          descricao: string
+          fase_id?: string | null
+          faturavel?: boolean
+          fornecedor?: string | null
+          id?: string
+          observacao_aprovacao?: string | null
+          profile_id?: string | null
+          projeto_id: string
+          reembolsavel?: boolean
+          status?: Database["public"]["Enums"]["despesa_status"]
+          tenant_id: string
+          valor?: number
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          categoria?: string
+          created_at?: string
+          data?: string
+          deleted_at?: string | null
+          descricao?: string
+          fase_id?: string | null
+          faturavel?: boolean
+          fornecedor?: string | null
+          id?: string
+          observacao_aprovacao?: string | null
+          profile_id?: string | null
+          projeto_id?: string
+          reembolsavel?: boolean
+          status?: Database["public"]["Enums"]["despesa_status"]
+          tenant_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "despesas_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_fase_id_fkey"
+            columns: ["fase_id"]
+            isOneToOne: false
+            referencedRelation: "projeto_fases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "despesas_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favoritos: {
         Row: {
           created_at: string
@@ -678,6 +777,73 @@ export type Database = {
           },
           {
             foreignKeyName: "notificacoes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orcamento_itens: {
+        Row: {
+          categoria: string
+          created_at: string
+          deleted_at: string | null
+          descricao: string
+          fase_id: string | null
+          id: string
+          observacao: string | null
+          projeto_id: string
+          quantidade: number
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["orcamento_tipo"]
+          valor_unitario: number
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          deleted_at?: string | null
+          descricao: string
+          fase_id?: string | null
+          id?: string
+          observacao?: string | null
+          projeto_id: string
+          quantidade?: number
+          tenant_id: string
+          tipo?: Database["public"]["Enums"]["orcamento_tipo"]
+          valor_unitario?: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          deleted_at?: string | null
+          descricao?: string
+          fase_id?: string | null
+          id?: string
+          observacao?: string | null
+          projeto_id?: string
+          quantidade?: number
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["orcamento_tipo"]
+          valor_unitario?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orcamento_itens_fase_id_fkey"
+            columns: ["fase_id"]
+            isOneToOne: false
+            referencedRelation: "projeto_fases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orcamento_itens_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orcamento_itens_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1468,8 +1634,10 @@ export type Database = {
     Enums: {
       apontamento_status: "rascunho" | "enviado" | "aprovado" | "rejeitado"
       cliente_tipo: "pf" | "pj"
+      despesa_status: "rascunho" | "enviada" | "aprovada" | "rejeitada"
       fase_status: "nao_iniciada" | "em_andamento" | "concluida" | "bloqueada"
       marco_status: "previsto" | "atingido" | "atrasado" | "cancelado"
+      orcamento_tipo: "receita" | "custo"
       prioridade: "baixa" | "normal" | "alta" | "urgente"
       projeto_status:
         | "planejamento"
@@ -1619,8 +1787,10 @@ export const Constants = {
     Enums: {
       apontamento_status: ["rascunho", "enviado", "aprovado", "rejeitado"],
       cliente_tipo: ["pf", "pj"],
+      despesa_status: ["rascunho", "enviada", "aprovada", "rejeitada"],
       fase_status: ["nao_iniciada", "em_andamento", "concluida", "bloqueada"],
       marco_status: ["previsto", "atingido", "atrasado", "cancelado"],
+      orcamento_tipo: ["receita", "custo"],
       prioridade: ["baixa", "normal", "alta", "urgente"],
       projeto_status: [
         "planejamento",
