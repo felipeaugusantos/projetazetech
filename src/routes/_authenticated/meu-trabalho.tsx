@@ -5,6 +5,7 @@ import { CheckSquare, Square } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useProjetos, useTarefas, type Tarefa } from "@/lib/dados";
+import { useConcluirItemPlano, usePlanoDia } from "@/lib/plano-dia";
 import {
   PROJETO_STATUS,
   PRIORIDADES,
