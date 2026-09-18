@@ -1,10 +1,10 @@
-# Enzova Projects — Roadmap
+# Projeta — Roadmap
 
 ## Fase 1 (concluída)
 - [x] Lovable Cloud habilitado
 - [x] Banco: tenants, usuarios/profiles, roles, permissoes, usuario_roles, clientes, cliente_contatos, projetos, projeto_fases, projeto_membros, tarefas, subtarefas, checklists, checklist_itens, comentarios, notificacoes, tags, auditoria
 - [x] RLS por tenant + has_role/has_permission
-- [x] Dados de demonstração (Enzova Tecnologia, 3 clientes, 3 projetos, fases, ~30 tarefas)
+- [x] Dados de demonstração (Projeta Tecnologia, 3 clientes, 3 projetos, fases, ~30 tarefas)
 - [x] Design system "Frosted SaaS" em src/styles.css
 - [x] Autenticação (/auth) + recuperação de senha
 - [x] Shell (sidebar + topbar + busca + notificações + tenant)

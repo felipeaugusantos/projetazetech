@@ -121,7 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 E
               </div>
               <div className="leading-tight">
-                <div className="font-display text-[15px] font-bold">Enzova</div>
+                <div className="font-display text-[15px] font-bold">Projeta</div>
                 <div className="-mt-0.5 text-[11px] text-muted-foreground">Projects</div>
               </div>
               <button className="ml-auto lg:hidden" onClick={() => setMenuAberto(false)} aria-label="Fechar menu">

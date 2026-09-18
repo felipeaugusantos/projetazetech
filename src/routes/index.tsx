@@ -4,13 +4,13 @@ import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Enzova Projects · Do lead ao aceite, em uma plataforma" },
+      { title: "Projeta · Do lead ao aceite, em uma plataforma" },
       {
         name: "description",
         content:
           "Plataforma multiempresa de gestão de projetos para software houses, consultorias, agências e prestadores de serviço.",
       },
-      { property: "og:title", content: "Enzova Projects" },
+      { property: "og:title", content: "Projeta" },
       {
         property: "og:description",
         content: "Clientes, projetos, fases, tarefas, equipes e indicadores em um só lugar.",
@@ -36,7 +36,7 @@ function Landing() {
             E
           </div>
           <div className="leading-tight">
-            <div className="font-display text-[15px] font-bold">Enzova</div>
+            <div className="font-display text-[15px] font-bold">Projeta</div>
             <div className="-mt-0.5 text-[11px] text-muted-foreground">Projects</div>
           </div>
           <Link
@@ -55,7 +55,7 @@ function Landing() {
             Do primeiro contato ao aceite do cliente, sem planilhas paralelas.
           </h1>
           <p className="mt-4 max-w-xl text-[15px] text-muted-foreground">
-            Enzova Projects reúne clientes, projetos, fases, tarefas, equipes e indicadores de saúde em uma plataforma
+            Projeta reúne clientes, projetos, fases, tarefas, equipes e indicadores de saúde em uma plataforma
             feita para empresas prestadoras de serviço.
           </p>
 

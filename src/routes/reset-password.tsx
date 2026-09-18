@@ -9,10 +9,10 @@ export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Definir nova senha · Enzova Projects" },
-      { name: "description", content: "Escolha uma nova senha para acessar o Enzova Projects." },
+      { title: "Definir nova senha · Projeta" },
+      { name: "description", content: "Escolha uma nova senha para acessar o Projeta." },
       { property: "og:title", content: "Definir nova senha" },
-      { property: "og:description", content: "Redefinição de senha do Enzova Projects." },
+      { property: "og:description", content: "Redefinição de senha do Projeta." },
     ],
   }),
   component: ResetPassword,

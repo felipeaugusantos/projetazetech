@@ -9,9 +9,9 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar · Enzova Projects" },
-      { name: "description", content: "Acesse o workspace da sua empresa no Enzova Projects." },
-      { property: "og:title", content: "Entrar no Enzova Projects" },
+      { title: "Entrar · Projeta" },
+      { name: "description", content: "Acesse o workspace da sua empresa no Projeta." },
+      { property: "og:title", content: "Entrar no Projeta" },
       { property: "og:description", content: "Login do workspace de gestão de projetos." },
     ],
   }),
@@ -85,7 +85,7 @@ function AuthPage() {
             E
           </div>
           <div className="leading-tight">
-            <div className="font-display text-[15px] font-bold">Enzova</div>
+            <div className="font-display text-[15px] font-bold">Projeta</div>
             <div className="-mt-0.5 text-[11px] text-muted-foreground">Projects</div>
           </div>
         </Link>
@@ -168,7 +168,7 @@ function AuthPage() {
         </div>
 
         <p className="mt-4 text-center text-[11px] text-muted-foreground">
-          Novas contas entram no workspace de demonstração <strong>Enzova Tecnologia</strong> como Administrador.
+          Novas contas entram no workspace de demonstração <strong>Projeta Tecnologia</strong> como Administrador.
         </p>
       </div>
     </div>

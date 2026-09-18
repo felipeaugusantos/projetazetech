@@ -10,7 +10,7 @@ import { Avatar, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from 
 export const Route = createFileRoute("/_authenticated/clientes/$clienteId")({
   head: () => ({
     meta: [
-      { title: "Ficha do cliente · Enzova Projects" },
+      { title: "Ficha do cliente · Projeta" },
       { name: "description", content: "Dados cadastrais, contatos e projetos do cliente." },
       { property: "og:title", content: "Ficha do cliente" },
       { property: "og:description", content: "Dados cadastrais, contatos e projetos do cliente." },

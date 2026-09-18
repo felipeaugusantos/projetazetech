@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/configuracoes")({
   head: () => ({
     meta: [
-      { title: "Configurações · Enzova Projects" },
+      { title: "Configurações · Projeta" },
       { name: "description", content: "Empresa, perfis de acesso, permissões e dados do seu usuário." },
       { property: "og:title", content: "Configurações" },
       { property: "og:description", content: "Empresa, perfis de acesso e permissões." },

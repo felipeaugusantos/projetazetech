@@ -10,7 +10,7 @@ import { Avatar, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from 
 export const Route = createFileRoute("/_authenticated/equipe")({
   head: () => ({
     meta: [
-      { title: "Equipe · Enzova Projects" },
+      { title: "Equipe · Projeta" },
       { name: "description", content: "Pessoas, papéis de acesso e carga de trabalho da semana." },
       { property: "og:title", content: "Equipe" },
       { property: "og:description", content: "Pessoas, papéis de acesso e carga de trabalho." },

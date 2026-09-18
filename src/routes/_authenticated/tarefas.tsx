@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/tarefas")({
   head: () => ({
     meta: [
-      { title: "Tarefas · Enzova Projects" },
+      { title: "Tarefas · Projeta" },
       { name: "description", content: "Kanban e lista de tarefas com prioridade, responsável, prazo e horas." },
       { property: "og:title", content: "Tarefas" },
       { property: "og:description", content: "Kanban e lista de tarefas dos projetos da empresa." },

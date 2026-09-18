@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/meu-trabalho")({
   head: () => ({
     meta: [
-      { title: "Meu Trabalho · Enzova Projects" },
+      { title: "Meu Trabalho · Projeta" },
       { name: "description", content: "Suas tarefas de hoje, atrasos, projetos e notificações em uma única tela." },
       { property: "og:title", content: "Meu Trabalho" },
       { property: "og:description", content: "Painel individual de tarefas e prazos." },
