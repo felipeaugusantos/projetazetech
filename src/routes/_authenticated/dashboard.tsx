@@ -23,7 +23,18 @@ import {
   fmtMoeda,
   type ProjetoStatus,
 } from "@/lib/enzova";
-import { Indicador, Painel, Pill, Progresso, TituloPagina, Vazio, inputClasses } from "@/components/kit";
+import { Plus } from "lucide-react";
+import {
+  BotaoPrimario,
+  BotaoSecundario,
+  Indicador,
+  Painel,
+  Pill,
+  Progresso,
+  TituloPagina,
+  Vazio,
+  inputClasses,
+} from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -219,6 +230,20 @@ function Dashboard() {
                 </option>
               ))}
             </select>
+            {can("cliente.criar") ? (
+              <Link to="/clientes" search={{ novo: true }}>
+                <BotaoSecundario>
+                  <Plus className="size-4" /> Novo cliente
+                </BotaoSecundario>
+              </Link>
+            ) : null}
+            {can("projeto.criar") ? (
+              <Link to="/projetos" search={{ novo: true }}>
+                <BotaoPrimario>
+                  <Plus className="size-4" /> Novo projeto
+                </BotaoPrimario>
+              </Link>
+            ) : null}
           </>
         }
       />

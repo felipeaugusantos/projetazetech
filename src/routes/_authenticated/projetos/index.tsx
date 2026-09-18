@@ -31,6 +31,10 @@ import {
 } from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/projetos/")({
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } => {
+    const v = search['novo'];
+    return v === true || v === "true" || v === "1" ? { novo: true } : {};
+  },
   head: () => ({
     meta: [
       { title: "Projetos · Projeta" },
@@ -51,7 +55,8 @@ function Projetos() {
   const { data: clientes = [] } = useClientes();
   const [busca, setBusca] = useState("");
   const [status, setStatus] = useState("");
-  const [novo, setNovo] = useState(false);
+  const { novo: abrirNovo } = Route.useSearch();
+  const [novo, setNovo] = useState(Boolean(abrirNovo));
 
   const lista = useMemo(
     () =>
