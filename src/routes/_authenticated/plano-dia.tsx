@@ -128,6 +128,16 @@ function PlanoDoDia() {
               <ChevronRight className="h-4 w-4" />
             </BotaoSecundario>
             <BotaoSecundario onClick={() => setDia(isoDia(new Date()))}>Hoje</BotaoSecundario>
+            <select
+              value={situacao}
+              onChange={(e) => setSituacao(e.target.value as typeof situacao)}
+              className={`${inputClasses} w-auto`}
+              aria-label="Situação das tarefas"
+            >
+              <option value="todas">Todas as situações</option>
+              <option value="pendentes">Só pendentes</option>
+              <option value="concluidas">Só concluídas</option>
+            </select>
             {podeEditar && perfil ? (
               <BotaoPrimario onClick={() => setModal({ profileId: pessoas[0]?.id ?? perfil.id })}>
                 <Plus className="h-4 w-4" />
