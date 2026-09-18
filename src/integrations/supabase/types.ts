@@ -1582,6 +1582,121 @@ export type Database = {
           },
         ]
       }
+      relatorio_link_acessos: {
+        Row: {
+          created_at: string
+          id: string
+          link_id: string
+          resultado: string
+          tenant_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link_id: string
+          resultado: string
+          tenant_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link_id?: string
+          resultado?: string
+          tenant_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_link_acessos_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_link_acessos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorio_links: {
+        Row: {
+          acessos: number
+          ativo: boolean
+          created_at: string
+          criado_por: string | null
+          descricao: string | null
+          expira_em: string
+          id: string
+          max_acessos: number | null
+          projeto_id: string
+          revogado_em: string | null
+          senha_hash: string | null
+          tenant_id: string
+          token: string
+          ultimo_acesso: string | null
+        }
+        Insert: {
+          acessos?: number
+          ativo?: boolean
+          created_at?: string
+          criado_por?: string | null
+          descricao?: string | null
+          expira_em: string
+          id?: string
+          max_acessos?: number | null
+          projeto_id: string
+          revogado_em?: string | null
+          senha_hash?: string | null
+          tenant_id: string
+          token: string
+          ultimo_acesso?: string | null
+        }
+        Update: {
+          acessos?: number
+          ativo?: boolean
+          created_at?: string
+          criado_por?: string | null
+          descricao?: string | null
+          expira_em?: string
+          id?: string
+          max_acessos?: number | null
+          projeto_id?: string
+          revogado_em?: string | null
+          senha_hash?: string | null
+          tenant_id?: string
+          token?: string
+          ultimo_acesso?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_links_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_links_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_links_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       riscos: {
         Row: {
           created_at: string
@@ -2138,6 +2253,11 @@ export type Database = {
       }
       portal_resumo: { Args: never; Returns: Json }
       portal_vincular: { Args: never; Returns: boolean }
+      relatorio_link_abrir: {
+        Args: { p_senha?: string; p_token: string; p_user_agent?: string }
+        Returns: Json
+      }
+      relatorio_link_hash: { Args: { p_senha: string }; Returns: string }
     }
     Enums: {
       apontamento_status: "rascunho" | "enviado" | "aprovado" | "rejeitado"
