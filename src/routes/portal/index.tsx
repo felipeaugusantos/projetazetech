@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarClock, FileText, Flag, Layers } from "lucide-react";
+import { ArrowRight, CalendarClock, FileText, Flag, Layers, Star } from "lucide-react";
 import { Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from "@/components/kit";
 import { PROJETO_STATUS, diasRestantes, fmtData } from "@/lib/enzova";
 import { usePortalResumo } from "@/lib/portal";
@@ -63,8 +63,16 @@ function PortalHome() {
                     <div className="text-[11px] font-semibold text-muted-foreground">{p.codigo}</div>
                     <div className="font-display text-[17px] font-bold tracking-tight">{p.nome}</div>
                   </div>
-                  <Pill className={status.pill}>{status.label}</Pill>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <Pill className={status.pill}>{status.label}</Pill>
+                    {p.concluido && !p.pesquisa_respondida ? (
+                      <Pill className="bg-warning-soft text-warning">
+                        <Star className="size-3" /> Avaliar projeto
+                      </Pill>
+                    ) : null}
+                  </div>
                 </div>
+
 
                 {p.descricao ? (
                   <p className="mt-2 line-clamp-2 text-[12.5px] text-muted-foreground">{p.descricao}</p>
