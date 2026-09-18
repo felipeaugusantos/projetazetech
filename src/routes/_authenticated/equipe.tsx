@@ -108,13 +108,18 @@ function Equipe() {
         titulo="Equipe"
         descricao="Cadastre cargo, perfil de acesso e custo por hora — é o custo por hora que alimenta o gráfico de Custos por equipe."
         acoes={
-          podeGerenciar ? (
-            <BotaoPrimario onClick={() => setNovo(true)}>
-              <Plus className="size-4" /> Nova pessoa
-            </BotaoPrimario>
-          ) : null
+          <BotaoPrimario
+            onClick={() =>
+              podeGerenciar
+                ? setNovo(true)
+                : toast.error("Seu perfil de acesso não permite cadastrar funcionários.")
+            }
+          >
+            <Plus className="size-4" /> Cadastrar funcionário
+          </BotaoPrimario>
         }
       />
+
 
       <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Indicador titulo="Pessoas ativas" valor={equipe.filter((m) => m.ativo).length} detalhe={`${equipe.length} cadastradas`} />
