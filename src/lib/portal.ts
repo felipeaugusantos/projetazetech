@@ -123,6 +123,21 @@ export async function vincularPortal() {
   return data === true;
 }
 
+export type EventoPortal = "login" | "logout" | "sessao_expirada" | "senha_alterada";
+
+/** Registra um evento de acesso do cliente (histórico visível para a equipe interna). */
+export async function registrarEventoPortal(evento: EventoPortal) {
+  const ua = typeof navigator === "undefined" ? "" : navigator.userAgent;
+  await supabase.rpc("portal_registrar_evento", { p_evento: evento, p_user_agent: ua }).then(
+    () => undefined,
+    () => undefined,
+  );
+}
+
+/** Minutos de inatividade antes de encerrar a sessão do portal. */
+export const PORTAL_INATIVIDADE_MIN = 30;
+export const PORTAL_SESSAO_EXPIRADA = "portal:sessao-expirada";
+
 export function usePortalResumo() {
   return useQuery({
     queryKey: ["portal", "resumo"],
