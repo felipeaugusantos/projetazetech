@@ -43,6 +43,7 @@ const NAV = [
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
   { to: "/riscos", label: "Riscos", icon: ShieldAlert },
+  { to: "/kpis", label: "KPIs internos", icon: Activity },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/satisfacao", label: "Satisfação", icon: Smile },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
