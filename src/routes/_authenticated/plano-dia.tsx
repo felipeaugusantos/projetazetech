@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { CalendarCheck, CheckSquare, ChevronLeft, ChevronRight, Plus, Square, Trash2 } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 
 import {
   Avatar,
@@ -58,6 +60,7 @@ function PlanoDoDia() {
   const { perfil, can } = useAuth();
   const [dia, setDia] = useState(() => isoDia(new Date()));
   const [modal, setModal] = useState<{ profileId: string; item?: ItemPlanoDia } | null>(null);
+  const [situacao, setSituacao] = useState<"todas" | "pendentes" | "concluidas">("todas");
 
   const { data: equipe = [] } = useEquipe();
   const { data: itens = [], isLoading } = usePlanoDia({ data: dia });
@@ -73,17 +76,37 @@ function PlanoDoDia() {
         const meus = itens.filter((i) => i.profile_id === p.id);
         const horas = meus.reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
         const feitos = meus.filter((i) => i.concluido).length;
+        const horasFeitas = meus
+          .filter((i) => i.concluido)
+          .reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
+        const visiveis =
+          situacao === "todas" ? meus : meus.filter((i) => (situacao === "concluidas" ? i.concluido : !i.concluido));
         return {
           id: p.id,
           nome: p.nome,
           cargo: p.cargo,
           itens: meus,
+          visiveis,
           horas,
+          horasFeitas,
           feitos,
           pct: meus.length ? Math.round((feitos / meus.length) * 100) : 0,
         };
       });
-  }, [equipe, itens]);
+  }, [equipe, itens, situacao]);
+
+  const dadosGrafico = useMemo(
+    () =>
+      pessoas
+        .filter((p) => p.itens.length > 0)
+        .map((p) => ({
+          nome: p.nome.split(" ")[0] ?? p.nome,
+          pessoa: p.nome,
+          "Horas previstas": Math.round(p.horas * 10) / 10,
+          "Horas concluídas": Math.round(p.horasFeitas * 10) / 10,
+        })),
+    [pessoas],
+  );
 
   const totalItens = itens.length;
   const totalHoras = itens.reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
@@ -105,6 +128,16 @@ function PlanoDoDia() {
               <ChevronRight className="h-4 w-4" />
             </BotaoSecundario>
             <BotaoSecundario onClick={() => setDia(isoDia(new Date()))}>Hoje</BotaoSecundario>
+            <select
+              value={situacao}
+              onChange={(e) => setSituacao(e.target.value as typeof situacao)}
+              className={`${inputClasses} w-auto`}
+              aria-label="Situação das tarefas"
+            >
+              <option value="todas">Todas as situações</option>
+              <option value="pendentes">Só pendentes</option>
+              <option value="concluidas">Só concluídas</option>
+            </select>
             {podeEditar && perfil ? (
               <BotaoPrimario onClick={() => setModal({ profileId: pessoas[0]?.id ?? perfil.id })}>
                 <Plus className="h-4 w-4" />
@@ -137,6 +170,33 @@ function PlanoDoDia() {
           detalhe="Pessoas sem tarefa definida no dia"
         />
       </div>
+
+      <Painel className="p-5">
+        <h3 className="font-display text-base font-semibold text-foreground">Horas planejadas por pessoa</h3>
+        <p className="text-xs text-muted-foreground">
+          Horas previstas no dia e quanto já foi concluído por cada pessoa da equipe.
+        </p>
+        <div className="mt-4 h-72">
+          {dadosGrafico.length === 0 ? (
+            <p className="pt-10 text-center text-sm text-muted-foreground">Nenhuma tarefa planejada neste dia.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dadosGrafico}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="nome" tick={{ fontSize: 11 }} interval={0} height={50} angle={-15} textAnchor="end" />
+                <YAxis tick={{ fontSize: 11 }} width={50} />
+                <Tooltip
+                  formatter={(v: number) => fmtHoras(v)}
+                  labelFormatter={(l) => dadosGrafico.find((d) => d.nome === l)?.pessoa ?? String(l)}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Horas previstas" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Horas concluídas" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </Painel>
 
       {isLoading ? (
         <Painel className="p-6">
@@ -176,10 +236,14 @@ function PlanoDoDia() {
               ) : null}
 
               <div className="mt-4 space-y-2">
-                {p.itens.length === 0 ? (
-                  <p className="text-[13px] text-muted-foreground">Nenhuma tarefa definida para este dia.</p>
+                {p.visiveis.length === 0 ? (
+                  <p className="text-[13px] text-muted-foreground">
+                    {p.itens.length === 0
+                      ? "Nenhuma tarefa definida para este dia."
+                      : "Nenhuma tarefa nesta situação."}
+                  </p>
                 ) : (
-                  p.itens.map((i) => {
+                  p.visiveis.map((i) => {
                     const podeMarcar = podeEditar || i.profile_id === perfil?.id;
                     return (
                       <div
@@ -202,6 +266,13 @@ function PlanoDoDia() {
                             {i.titulo}
                           </div>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <Pill
+                              className={
+                                i.concluido ? "bg-brand-soft text-brand-ink" : "bg-secondary text-muted-foreground"
+                              }
+                            >
+                              {i.concluido ? "Concluída" : "Pendente"}
+                            </Pill>
                             {i.projetos ? <Pill className="bg-brand-soft text-brand-ink">{i.projetos.codigo}</Pill> : null}
                             {Number(i.horas_previstas) > 0 ? <span>{fmtHoras(Number(i.horas_previstas))}</span> : null}
                             {i.tarefas ? <span className="truncate">Tarefa: {i.tarefas.titulo}</span> : null}
