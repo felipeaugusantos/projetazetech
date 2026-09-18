@@ -17,6 +17,53 @@ type Acesso = {
   ultimo_acesso: string | null;
 };
 
+const EVENTOS: Record<string, string> = {
+  login: "Entrou no portal",
+  logout: "Saiu do portal",
+  sessao_expirada: "Sessão encerrada por inatividade",
+  senha_alterada: "Alterou a senha",
+};
+
+function HistoricoAcessos({ acessoIds, nomes }: { acessoIds: string[]; nomes: { id: string; nome: string }[] }) {
+  const { data: registros = [] } = useQuery({
+    queryKey: ["portal-acesso-logs", acessoIds],
+    enabled: acessoIds.length > 0,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("portal_acesso_logs")
+        .select("id, portal_acesso_id, evento, created_at")
+        .in("portal_acesso_id", acessoIds)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return (data ?? []) as { id: string; portal_acesso_id: string; evento: string; created_at: string }[];
+    },
+  });
+
+  const nomePor = new Map(nomes.map((n) => [n.id, n.nome]));
+
+  return (
+    <div className="mt-4 border-t border-border/70 pt-3">
+      <h3 className="text-[12.5px] font-semibold">Histórico de acessos</h3>
+      {registros.length === 0 ? (
+        <p className="mt-1 text-[11.5px] text-muted-foreground">Nenhum acesso registrado ainda.</p>
+      ) : (
+        <ul className="mt-2 space-y-1.5">
+          {registros.map((r) => (
+            <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 text-[11.5px]">
+              <span className="text-foreground">
+                <strong className="font-semibold">{nomePor.get(r.portal_acesso_id) ?? "Contato"}</strong> ·{" "}
+                {EVENTOS[r.evento] ?? r.evento}
+              </span>
+              <span className="text-muted-foreground">{fmtDataLonga(r.created_at)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function PortalAcessos({ clienteId }: { clienteId: string }) {
   const { can, perfil } = useAuth();
   const queryClient = useQueryClient();

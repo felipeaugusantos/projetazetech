@@ -54,9 +54,63 @@ function Estrelas({ valor }: { valor: number }) {
   );
 }
 
+const PERIODOS = [
+  { id: "todos", label: "Todo o período", dias: null },
+  { id: "30", label: "Últimos 30 dias", dias: 30 },
+  { id: "90", label: "Últimos 90 dias", dias: 90 },
+  { id: "365", label: "Últimos 12 meses", dias: 365 },
+] as const;
+
+function celulaCsv(valor: string | number | null) {
+  const texto = valor === null ? "" : String(valor);
+  return `"${texto.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+}
+
+function exportarCsv(linhas: Resposta[]) {
+  const cabecalho = [
+    "Data",
+    "Cliente",
+    "Projeto",
+    "Codigo",
+    "Contato",
+    "Satisfacao geral",
+    "Prazo",
+    "Qualidade",
+    "Comunicacao",
+    "Recomendaria",
+    "Comentario",
+  ];
+  const corpo = linhas.map((r) =>
+    [
+      fmtData(r.created_at, "dd/MM/yyyy"),
+      r.clientes?.nome ?? "",
+      r.projetos?.nome ?? "",
+      r.projetos?.codigo ?? "",
+      r.portal_acessos?.nome ?? "",
+      r.nota_geral,
+      r.nota_prazo,
+      r.nota_qualidade,
+      r.nota_comunicacao,
+      r.recomendaria,
+      r.comentario,
+    ]
+      .map(celulaCsv)
+      .join(";"),
+  );
+  const csv = `\ufeff${[cabecalho.join(";"), ...corpo].join("\r\n")}`;
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `satisfacao-clientes-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function Satisfacao() {
   const { can } = useAuth();
   const [cliente, setCliente] = useState("todos");
+  const [projeto, setProjeto] = useState("todos");
+  const [periodo, setPeriodo] = useState<string>("todos");
 
   const { data: respostas } = useQuery({
     queryKey: ["pesquisas-satisfacao"],
