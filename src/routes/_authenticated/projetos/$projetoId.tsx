@@ -347,7 +347,9 @@ function DetalheProjeto() {
       ) : null}
 
       {aba === "equipe" ? <EquipeProjeto projetoId={projetoId} tarefas={tarefas} /> : null}
+      {aba === "documentos" ? <DocumentosProjeto projetoId={projetoId} /> : null}
       {aba === "orcamento" && can("financeiro.ver") ? <OrcamentoProjeto projetoId={projetoId} /> : null}
+
       {aba === "riscos" ? <RiscosProjeto projetoId={projetoId} /> : null}
       {aba === "historico" ? <HistoricoProjeto projetoId={projetoId} /> : null}
 
