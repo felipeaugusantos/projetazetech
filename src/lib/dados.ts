@@ -157,7 +157,17 @@ export async function registrarAuditoria(entrada: {
   projeto_id?: string | null | undefined;
 }) {
   try {
-    await supabase.from("auditoria").insert(entrada);
+    await supabase.from("auditoria").insert({
+      tenant_id: entrada.tenant_id,
+      profile_id: entrada.profile_id,
+      entidade: entrada.entidade,
+      entidade_id: entrada.entidade_id ?? null,
+      acao: entrada.acao,
+      campo: entrada.campo ?? null,
+      valor_anterior: entrada.valor_anterior ?? null,
+      valor_novo: entrada.valor_novo ?? null,
+      projeto_id: entrada.projeto_id ?? null,
+    });
   } catch (error) {
     console.warn("auditoria", error);
   }

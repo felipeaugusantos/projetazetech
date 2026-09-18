@@ -48,9 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Garante que a conta autenticada tenha um perfil dentro de uma empresa.
-    await supabase.rpc("bootstrap_perfil", {
-      _nome: (userData.user.user_metadata?.['nome'] as string | undefined) ?? undefined,
-    });
+    const nomeMeta = userData.user.user_metadata?.['nome'] as string | undefined;
+    await supabase.rpc("bootstrap_perfil", nomeMeta ? { _nome: nomeMeta } : {});
 
     const { data: perfilData } = await supabase
       .from("profiles")
