@@ -50,6 +50,7 @@ import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenti
 import { DocumentosProjeto } from "@/components/documentos-projeto";
 import { RelatorioLinks } from "@/components/relatorio-links";
 import { ResumoExecutivoRelatorio } from "@/components/resumo-executivo";
+import { CustosReaisProjeto } from "@/components/custos-reais";
 import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
