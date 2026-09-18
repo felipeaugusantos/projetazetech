@@ -48,6 +48,7 @@ import {
 import { TarefaDrawer } from "@/components/tarefa-drawer";
 import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenticated/tarefas";
 import { DocumentosProjeto } from "@/components/documentos-projeto";
+import { RelatorioLinks } from "@/components/relatorio-links";
 import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
