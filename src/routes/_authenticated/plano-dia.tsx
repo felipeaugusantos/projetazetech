@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { CalendarCheck, CheckSquare, ChevronLeft, ChevronRight, Plus, Square, Trash2 } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 
 import {
   Avatar,
