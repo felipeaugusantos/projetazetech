@@ -1,9 +1,15 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Loader2 } from "lucide-react";
+import { KeyRound, LogOut, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { usePortalResumo, vincularPortal } from "@/lib/portal";
+import {
+  PORTAL_INATIVIDADE_MIN,
+  PORTAL_SESSAO_EXPIRADA,
+  registrarEventoPortal,
+  usePortalResumo,
+  vincularPortal,
+} from "@/lib/portal";
 
 export const Route = createFileRoute("/portal")({
   ssr: false,
