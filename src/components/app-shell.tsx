@@ -5,6 +5,7 @@ import {
   Activity,
   Bell,
   Building2,
+  CalendarCheck,
   CalendarDays,
   ChevronDown,
   Coins,
