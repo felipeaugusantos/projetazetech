@@ -25,6 +25,7 @@ import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authentic
 import { Route as AuthenticatedHorasRouteImport } from './routes/_authenticated/horas'
 import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenticated/meu-trabalho'
 import { Route as AuthenticatedRiscosRouteImport } from './routes/_authenticated/riscos'
+import { Route as AuthenticatedSatisfacaoRouteImport } from './routes/_authenticated/satisfacao'
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as PortalProjetoIdRouteImport } from './routes/portal/$projetoId'
@@ -114,6 +115,11 @@ const AuthenticatedRiscosRoute = AuthenticatedRiscosRouteImport.update({
   path: '/riscos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSatisfacaoRoute = AuthenticatedSatisfacaoRouteImport.update({
+  id: '/satisfacao',
+  path: '/satisfacao',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTarefasRoute = AuthenticatedTarefasRouteImport.update({
   id: '/tarefas',
   path: '/tarefas',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/horas': typeof AuthenticatedHorasRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
+  '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/': typeof PortalIndexRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/horas': typeof AuthenticatedHorasRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
+  '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal': typeof PortalIndexRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/_authenticated/horas': typeof AuthenticatedHorasRoute
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/_authenticated/riscos': typeof AuthenticatedRiscosRoute
+  '/_authenticated/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/': typeof PortalIndexRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/horas'
     | '/meu-trabalho'
     | '/riscos'
+    | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
     | '/portal/'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/horas'
     | '/meu-trabalho'
     | '/riscos'
+    | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
     | '/portal'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/_authenticated/horas'
     | '/_authenticated/meu-trabalho'
     | '/_authenticated/riscos'
+    | '/_authenticated/satisfacao'
     | '/_authenticated/tarefas'
     | '/portal/$projetoId'
     | '/portal/'
@@ -425,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRiscosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/satisfacao': {
+      id: '/_authenticated/satisfacao'
+      path: '/satisfacao'
+      fullPath: '/satisfacao'
+      preLoaderRoute: typeof AuthenticatedSatisfacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tarefas': {
       id: '/_authenticated/tarefas'
       path: '/tarefas'
@@ -488,6 +507,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHorasRoute: typeof AuthenticatedHorasRoute
   AuthenticatedMeuTrabalhoRoute: typeof AuthenticatedMeuTrabalhoRoute
   AuthenticatedRiscosRoute: typeof AuthenticatedRiscosRoute
+  AuthenticatedSatisfacaoRoute: typeof AuthenticatedSatisfacaoRoute
   AuthenticatedTarefasRoute: typeof AuthenticatedTarefasRoute
   AuthenticatedClientesClienteIdRoute: typeof AuthenticatedClientesClienteIdRoute
   AuthenticatedProjetosProjetoIdRoute: typeof AuthenticatedProjetosProjetoIdRoute
@@ -506,6 +526,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHorasRoute: AuthenticatedHorasRoute,
   AuthenticatedMeuTrabalhoRoute: AuthenticatedMeuTrabalhoRoute,
   AuthenticatedRiscosRoute: AuthenticatedRiscosRoute,
+  AuthenticatedSatisfacaoRoute: AuthenticatedSatisfacaoRoute,
   AuthenticatedTarefasRoute: AuthenticatedTarefasRoute,
   AuthenticatedClientesClienteIdRoute: AuthenticatedClientesClienteIdRoute,
   AuthenticatedProjetosProjetoIdRoute: AuthenticatedProjetosProjetoIdRoute,
