@@ -49,6 +49,7 @@ import { TarefaDrawer } from "@/components/tarefa-drawer";
 import { ListaTarefas, NovaTarefaModal, QuadroTarefas } from "@/routes/_authenticated/tarefas";
 import { DocumentosProjeto } from "@/components/documentos-projeto";
 import { RelatorioLinks } from "@/components/relatorio-links";
+import { ResumoExecutivoRelatorio } from "@/components/resumo-executivo";
 import { ConversaEntregaInterna } from "@/components/conversa-entrega";
 
 import { cn } from "@/lib/utils";
@@ -367,6 +368,7 @@ function DetalheProjeto() {
         <div className="space-y-4">
           <DocumentosProjeto projetoId={projetoId} />
           <RelatorioLinks projetoId={projetoId} />
+          <ResumoExecutivoRelatorio projetoId={projetoId} />
         </div>
       ) : null}
       {aba === "entregas" ? <EntregasProjeto projetoId={projetoId} /> : null}
