@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import type { PortalProjetoDetalhe, PortalTema } from "@/lib/portal";
+import type { ResumoExecutivo } from "@/lib/relatorio-conteudo";
 
 export type MarcaDagua = {
   ativa?: boolean | null;
