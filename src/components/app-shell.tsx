@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Activity,
   Bell,
   Building2,
   CalendarDays,
@@ -43,6 +44,7 @@ const NAV = [
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
   { to: "/riscos", label: "Riscos", icon: ShieldAlert },
+  { to: "/kpis", label: "KPIs internos", icon: Activity },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/satisfacao", label: "Satisfação", icon: Smile },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
