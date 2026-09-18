@@ -216,11 +216,12 @@ export function usePortalResponderPesquisa(projetoId: string) {
       const { error } = await supabase.rpc("portal_responder_pesquisa", {
         p_projeto_id: projetoId,
         p_nota_geral: r.nota_geral,
-        p_nota_prazo: r.nota_prazo ?? null,
-        p_nota_qualidade: r.nota_qualidade ?? null,
-        p_nota_comunicacao: r.nota_comunicacao ?? null,
-        p_recomendaria: r.recomendaria ?? null,
-        p_comentario: r.comentario?.trim() ? r.comentario.trim() : null,
+        ...(r.nota_prazo ? { p_nota_prazo: r.nota_prazo } : {}),
+        ...(r.nota_qualidade ? { p_nota_qualidade: r.nota_qualidade } : {}),
+        ...(r.nota_comunicacao ? { p_nota_comunicacao: r.nota_comunicacao } : {}),
+        ...(typeof r.recomendaria === "number" ? { p_recomendaria: r.recomendaria } : {}),
+        ...(r.comentario?.trim() ? { p_comentario: r.comentario.trim() } : {}),
+
       });
       if (error) throw error;
     },
