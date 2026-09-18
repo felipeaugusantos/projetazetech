@@ -23,7 +23,18 @@ import {
   fmtMoeda,
   type ProjetoStatus,
 } from "@/lib/enzova";
-import { Indicador, Painel, Pill, Progresso, TituloPagina, Vazio, inputClasses } from "@/components/kit";
+import { Plus } from "lucide-react";
+import {
+  BotaoPrimario,
+  BotaoSecundario,
+  Indicador,
+  Painel,
+  Pill,
+  Progresso,
+  TituloPagina,
+  Vazio,
+  inputClasses,
+} from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
