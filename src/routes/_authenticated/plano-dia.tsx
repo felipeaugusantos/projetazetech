@@ -171,6 +171,33 @@ function PlanoDoDia() {
         />
       </div>
 
+      <Painel className="p-5">
+        <h3 className="font-display text-base font-semibold text-foreground">Horas planejadas por pessoa</h3>
+        <p className="text-xs text-muted-foreground">
+          Horas previstas no dia e quanto já foi concluído por cada pessoa da equipe.
+        </p>
+        <div className="mt-4 h-72">
+          {dadosGrafico.length === 0 ? (
+            <p className="pt-10 text-center text-sm text-muted-foreground">Nenhuma tarefa planejada neste dia.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dadosGrafico}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="nome" tick={{ fontSize: 11 }} interval={0} height={50} angle={-15} textAnchor="end" />
+                <YAxis tick={{ fontSize: 11 }} width={50} />
+                <Tooltip
+                  formatter={(v: number) => fmtHoras(v)}
+                  labelFormatter={(l) => dadosGrafico.find((d) => d.nome === l)?.pessoa ?? String(l)}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Horas previstas" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Horas concluídas" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </Painel>
+
       {isLoading ? (
         <Painel className="p-6">
           <p className="text-sm text-muted-foreground">Carregando o plano do dia...</p>
