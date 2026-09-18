@@ -16,6 +16,8 @@ import {
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import { abrirRelatorioLink, type AberturaLink, type RelatorioCompartilhado } from "@/lib/relatorio-links";
 import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
+import { gerarResumoRelatorioLink } from "@/lib/resumo-executivo.functions";
+import { useServerFn } from "@tanstack/react-start";
 
 export const Route = createFileRoute("/relatorio/$token")({
   ssr: false,
@@ -83,7 +85,8 @@ function RelatorioCompartilhadoPagina() {
     );
   }
 
-  if (estado?.status === "ok" && estado.dados) return <Conteudo dados={estado.dados} />;
+  if (estado?.status === "ok" && estado.dados)
+    return <Conteudo dados={estado.dados} token={token} senha={senha.trim() || null} />;
 
   if (estado?.status === "senha" || estado?.status === "senha_invalida") {
     return (
@@ -142,12 +145,43 @@ function Centro({ children }: { children: React.ReactNode }) {
   return <div className="grid min-h-screen place-items-center bg-canvas px-4 py-10">{children}</div>;
 }
 
-function Conteudo({ dados }: { dados: RelatorioCompartilhado }) {
+function Conteudo({
+  dados,
+  token,
+  senha,
+}: {
+  dados: RelatorioCompartilhado;
+  token: string;
+  senha: string | null;
+}) {
   const { projeto, fases, marcos, documentos, tema, empresa, cliente, link } = dados;
   const status = PROJETO_STATUS[projeto.status];
   const prazo = projeto.prazo ?? projeto.data_prevista_conclusao;
   const fasesConcluidas = fases.filter((f) => f.status === "concluida").length;
   const marca = tema?.nome_exibicao || empresa?.nome || "Projeta";
+  const [gerandoPdf, setGerandoPdf] = useState(false);
+  const resumirRelatorio = useServerFn(gerarResumoRelatorioLink);
+
+  async function baixarRelatorio() {
+    setGerandoPdf(true);
+    let resumoIa = null;
+    try {
+      resumoIa = await resumirRelatorio({ data: { token, senha } });
+    } catch {
+      toast.info("Gerando o relatório sem o resumo automático desta vez.");
+    }
+    try {
+      gerarRelatorioProjeto(dados, {
+        empresa: empresa?.nome,
+        cliente: cliente?.nome_fantasia ?? cliente?.nome,
+        tema,
+        marcaDagua: marcaDaguaDaEmpresa(empresa),
+        resumo: resumoIa,
+      });
+    } finally {
+      setGerandoPdf(false);
+    }
+  }
 
   const estilo = {
     ...(tema?.cor_primaria ? { "--primary": tema.cor_primaria, "--brand-ink": tema.cor_primaria } : {}),
@@ -171,17 +205,9 @@ function Conteudo({ dados }: { dados: RelatorioCompartilhado }) {
               <div className="text-[11.5px] text-muted-foreground">Relatório de acompanhamento do projeto</div>
             </div>
           </div>
-          <BotaoSecundario
-            onClick={() =>
-              gerarRelatorioProjeto(dados, {
-                empresa: empresa?.nome,
-                cliente: cliente?.nome_fantasia ?? cliente?.nome,
-                tema,
-                marcaDagua: marcaDaguaDaEmpresa(empresa),
-              })
-            }
-          >
-            <FileDown className="size-4" /> Baixar relatório PDF
+          <BotaoSecundario onClick={baixarRelatorio} disabled={gerandoPdf}>
+            {gerandoPdf ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />}
+            {gerandoPdf ? "Preparando relatório…" : "Baixar relatório PDF"}
           </BotaoSecundario>
         </div>
       </header>

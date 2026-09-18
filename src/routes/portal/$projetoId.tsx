@@ -37,6 +37,9 @@ import {
   type PortalProjetoDetalhe,
 } from "@/lib/portal";
 import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
+import { conteudoDoRelatorio } from "@/lib/relatorio-conteudo";
+import { gerarResumoExecutivo } from "@/lib/resumo-executivo.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { ConversaEntregaPortal } from "@/components/conversa-entrega";
 
 
@@ -63,6 +66,8 @@ function PortalProjeto() {
   const [texto, setTexto] = useState("");
   const [baixando, setBaixando] = useState<string | null>(null);
   const [conversa, setConversa] = useState<string | null>(null);
+  const [gerandoPdf, setGerandoPdf] = useState(false);
+  const resumirRelatorio = useServerFn(gerarResumoExecutivo);
 
 
   if (isLoading) {
@@ -97,6 +102,31 @@ function PortalProjeto() {
       toast.error(err instanceof Error ? err.message : `Não foi possível abrir ${nome}.`);
     } finally {
       setBaixando(null);
+    }
+  }
+
+  async function baixarRelatorio() {
+    if (!data?.projeto) return;
+    setGerandoPdf(true);
+    const detalhe = data as PortalProjetoDetalhe;
+    let resumoIa = null;
+    try {
+      resumoIa = await resumirRelatorio({
+        data: { conteudo: conteudoDoRelatorio(detalhe), projeto: detalhe.projeto.nome },
+      });
+    } catch {
+      toast.info("Gerando o relatório sem o resumo automático desta vez.");
+    }
+    try {
+      gerarRelatorioProjeto(detalhe, {
+        empresa: resumo?.empresa?.nome,
+        cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
+        tema: resumo?.tema,
+        marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
+        resumo: resumoIa,
+      });
+    } finally {
+      setGerandoPdf(false);
     }
   }
 
@@ -139,17 +169,9 @@ function PortalProjeto() {
         titulo={projeto.nome}
         descricao={projeto.descricao ?? undefined}
         acoes={
-          <BotaoSecundario
-            onClick={() =>
-              gerarRelatorioProjeto(data as PortalProjetoDetalhe, {
-                empresa: resumo?.empresa?.nome,
-                cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
-                tema: resumo?.tema,
-                marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
-              })
-            }
-          >
-            <FileDown className="size-4" /> Baixar relatório PDF
+          <BotaoSecundario onClick={baixarRelatorio} disabled={gerandoPdf}>
+            {gerandoPdf ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />}
+            {gerandoPdf ? "Preparando relatório…" : "Baixar relatório PDF"}
           </BotaoSecundario>
         }
       />
