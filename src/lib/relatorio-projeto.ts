@@ -271,14 +271,15 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
       doc.setGState(estado);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(...corMarca);
-      const tamanho = Math.max(26, Math.min(64, 520 / Math.max(6, textoMarca.length)) * 4);
+      // ajusta o tamanho para o texto caber na diagonal da página
+      const alvo = (larguraPagina - margem * 2) * 1.05;
+      let tamanho = 48;
       doc.setFontSize(tamanho);
-      for (const [dx, dy] of [
-        [0, -180],
-        [0, 0],
-        [0, 180],
-      ] as const) {
-        doc.text(textoMarca, larguraPagina / 2 + dx, alturaPagina / 2 + dy, {
+      const larguraTexto = doc.getTextWidth(textoMarca) || alvo;
+      tamanho = Math.max(16, Math.min(48, (tamanho * alvo) / larguraTexto));
+      doc.setFontSize(tamanho);
+      for (const dy of [-230, 0, 230]) {
+        doc.text(textoMarca, larguraPagina / 2, alturaPagina / 2 + dy, {
           align: "center",
           angle: 32,
           baseline: "middle",
