@@ -27,6 +27,7 @@ import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenti
 import { Route as AuthenticatedRiscosRouteImport } from './routes/_authenticated/riscos'
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
+import { Route as PortalProjetoIdRouteImport } from './routes/portal/$projetoId'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
 import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
@@ -123,6 +124,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalProjetoIdRoute = PortalProjetoIdRouteImport.update({
+  id: '/$projetoId',
+  path: '/$projetoId',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AuthenticatedClientesIndexRoute =
   AuthenticatedClientesIndexRouteImport.update({
     id: '/clientes/',
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/riscos': typeof AuthenticatedRiscosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/_authenticated/riscos': typeof AuthenticatedRiscosRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
+  '/portal/$projetoId': typeof PortalProjetoIdRoute
   '/portal/': typeof PortalIndexRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -237,6 +246,7 @@ export interface FileRouteTypes {
     | '/meu-trabalho'
     | '/riscos'
     | '/tarefas'
+    | '/portal/$projetoId'
     | '/portal/'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/meu-trabalho'
     | '/riscos'
     | '/tarefas'
+    | '/portal/$projetoId'
     | '/portal'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/_authenticated/meu-trabalho'
     | '/_authenticated/riscos'
     | '/_authenticated/tarefas'
+    | '/portal/$projetoId'
     | '/portal/'
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/projetos/$projetoId'
@@ -427,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/portal/$projetoId': {
+      id: '/portal/$projetoId'
+      path: '/$projetoId'
+      fullPath: '/portal/$projetoId'
+      preLoaderRoute: typeof PortalProjetoIdRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/_authenticated/clientes/': {
       id: '/_authenticated/clientes/'
       path: '/clientes'
@@ -498,10 +517,12 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface PortalRouteChildren {
+  PortalProjetoIdRoute: typeof PortalProjetoIdRoute
   PortalIndexRoute: typeof PortalIndexRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
+  PortalProjetoIdRoute: PortalProjetoIdRoute,
   PortalIndexRoute: PortalIndexRoute,
 }
 
