@@ -764,6 +764,9 @@ export type Database = {
       }
       documentos: {
         Row: {
+          aprovacao_status: string
+          aprovado_em: string | null
+          aprovador_id: string | null
           arquivo_path: string | null
           autor_id: string | null
           categoria: string
@@ -773,7 +776,9 @@ export type Database = {
           fase_id: string | null
           id: string
           nome: string
+          observacao_aprovacao: string | null
           projeto_id: string
+          solicita_portal: boolean
           tamanho: number | null
           tenant_id: string
           tipo: string | null
@@ -781,6 +786,9 @@ export type Database = {
           visivel_cliente: boolean
         }
         Insert: {
+          aprovacao_status?: string
+          aprovado_em?: string | null
+          aprovador_id?: string | null
           arquivo_path?: string | null
           autor_id?: string | null
           categoria?: string
@@ -790,7 +798,9 @@ export type Database = {
           fase_id?: string | null
           id?: string
           nome: string
+          observacao_aprovacao?: string | null
           projeto_id: string
+          solicita_portal?: boolean
           tamanho?: number | null
           tenant_id: string
           tipo?: string | null
@@ -798,6 +808,9 @@ export type Database = {
           visivel_cliente?: boolean
         }
         Update: {
+          aprovacao_status?: string
+          aprovado_em?: string | null
+          aprovador_id?: string | null
           arquivo_path?: string | null
           autor_id?: string | null
           categoria?: string
@@ -807,7 +820,9 @@ export type Database = {
           fase_id?: string | null
           id?: string
           nome?: string
+          observacao_aprovacao?: string | null
           projeto_id?: string
+          solicita_portal?: boolean
           tamanho?: number | null
           tenant_id?: string
           tipo?: string | null
@@ -815,6 +830,13 @@ export type Database = {
           visivel_cliente?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "documentos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "documentos_autor_id_fkey"
             columns: ["autor_id"]
