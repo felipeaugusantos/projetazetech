@@ -6,6 +6,7 @@ import {
   Building2,
   CalendarDays,
   ChevronDown,
+  Coins,
   FolderKanban,
   GanttChartSquare,
   Gauge,
