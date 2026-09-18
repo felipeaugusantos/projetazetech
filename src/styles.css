@@ -31,6 +31,12 @@
   --color-brand: var(--primary);
   --color-brand-soft: var(--brand-soft);
   --color-brand-ink: var(--brand-ink);
+  --color-brand-hover: var(--brand-hover);
+  --color-forest: var(--forest);
+  --color-neon: var(--neon);
+  --color-neon-hover: var(--neon-hover);
+  --color-cream: var(--cream);
+  --color-whatsapp: var(--whatsapp);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
