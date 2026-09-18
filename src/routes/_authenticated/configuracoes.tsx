@@ -73,7 +73,7 @@ function Configuracoes() {
           nome={perfil?.nome ?? ""}
           cargo={perfil?.cargo ?? ""}
           email={perfil?.email ?? ""}
-          papeis={papeis.map((p) => p.nome)}
+          papeis={papeis}
           permissoes={permissoes}
           onSalvo={recarregar}
         />
@@ -109,9 +109,6 @@ function Empresa({ podeEditar }: { podeEditar: boolean }) {
           <Campo label="Nome da empresa" className="sm:col-span-2">
             <input className={inputClasses} value={nome} onChange={(e) => setNome(e.target.value)} disabled={!podeEditar} />
           </Campo>
-          <Campo label="Identificador">
-            <input className={inputClasses} value={tenant?.slug ?? ""} disabled />
-          </Campo>
           <Campo label="Plano">
             <input className={inputClasses} value={tenant?.plano ?? ""} disabled />
           </Campo>
@@ -135,10 +132,6 @@ function Empresa({ podeEditar }: { podeEditar: boolean }) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Assentos contratados</span>
             <span className="font-semibold">{tenant?.assentos ?? "—"}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Situação</span>
-            <span className="font-semibold">{tenant?.ativo ? "Ativa" : "Suspensa"}</span>
           </div>
         </div>
         <p className="mt-4 border-t border-border pt-3 text-[12px] text-muted-foreground">
@@ -250,7 +243,7 @@ function Perfis() {
 function Usuarios() {
   const { data: equipe = [] } = useEquipe();
   const queryClient = useQueryClient();
-  const { can } = useAuth();
+  const { can, perfil } = useAuth();
 
   const { data: roles = [] } = useQuery({
     queryKey: ["roles"],
@@ -270,13 +263,13 @@ function Usuarios() {
     },
   });
 
-  async function trocarPapel(profileId: string, roleId: string, tenantId: string) {
+  async function trocarPapel(profileId: string, roleId: string) {
     const atual = vinculos.filter((v) => v.profile_id === profileId);
     for (const v of atual) await supabase.from("usuario_roles").delete().eq("id", v.id);
     if (roleId) {
       const { error } = await supabase
         .from("usuario_roles")
-        .insert({ tenant_id: tenantId, profile_id: profileId, role_id: roleId });
+        .insert({ tenant_id: perfil!.tenant_id, profile_id: profileId, role_id: roleId });
       if (error) {
         toast.error("Não foi possível alterar o perfil de acesso.");
         return;
@@ -322,7 +315,7 @@ function Usuarios() {
                       <select
                         className={`${inputClasses} w-auto py-1.5`}
                         value={atual?.role_id ?? ""}
-                        onChange={(e) => void trocarPapel(m.id, e.target.value, m.tenant_id ?? "")}
+                        onChange={(e) => void trocarPapel(m.id, e.target.value)}
                       >
                         <option value="">Sem perfil</option>
                         {roles.map((r) => (
