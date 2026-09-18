@@ -249,7 +249,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
 
           <label className="mt-3 flex items-center gap-2 text-[12.5px]">
             <input type="checkbox" checked={visivel} onChange={(e) => setVisivel(e.target.checked)} />
-            Liberar no portal do cliente
+            Pedir liberação no portal do cliente (aparece só depois de aprovado)
           </label>
 
           <input
