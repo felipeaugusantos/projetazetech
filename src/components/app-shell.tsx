@@ -8,6 +8,7 @@ import {
   CalendarDays,
   ChevronDown,
   Coins,
+  FileCheck,
   FolderKanban,
   GanttChartSquare,
   Gauge,
