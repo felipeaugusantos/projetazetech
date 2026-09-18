@@ -5,9 +5,20 @@ import { toast } from "sonner";
 import { ArrowLeft, Columns3, List, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useEquipe, useFases, useProjeto, useTarefas, type Tarefa } from "@/lib/dados";
 import {
+  useApontamentos,
+  useDespesas,
+  useEquipe,
+  useFases,
+  useOrcamentoItens,
+  useProjeto,
+  useTarefas,
+  type Tarefa,
+} from "@/lib/dados";
+import {
+  DESPESA_STATUS,
   FASE_STATUS,
+  ORCAMENTO_TIPO,
   PRIORIDADES,
   PROJETO_STATUS,
   SAUDE,
@@ -17,6 +28,7 @@ import {
   fmtDataLonga,
   fmtHoras,
   fmtMoeda,
+  margem,
   type ProjetoStatus,
 } from "@/lib/enzova";
 import {
@@ -571,5 +583,122 @@ function HistoricoProjeto({ projetoId }: { projetoId: string }) {
         {itens.length === 0 ? <Vazio titulo="Nenhum registro de histórico ainda" /> : null}
       </ol>
     </Painel>
+  );
+}
+
+/* ======================= Orçamento do projeto ======================= */
+
+function OrcamentoProjeto({ projetoId }: { projetoId: string }) {
+  const { data: itens = [] } = useOrcamentoItens(projetoId);
+  const { data: despesas = [] } = useDespesas({ projetoId });
+  const { data: apontamentos = [] } = useApontamentos();
+
+  const receita = itens
+    .filter((i) => i.tipo === "receita")
+    .reduce((acc, i) => acc + Number(i.quantidade) * Number(i.valor_unitario), 0);
+  const custoOrcado = itens
+    .filter((i) => i.tipo === "custo")
+    .reduce((acc, i) => acc + Number(i.quantidade) * Number(i.valor_unitario), 0);
+
+  const horas = apontamentos.filter((a) => a.projeto_id === projetoId && a.status === "aprovado");
+  const custoHoras = horas.reduce((acc, a) => acc + Number(a.horas) * Number(a.profiles?.custo_hora ?? 0), 0);
+  const custoDespesas = despesas
+    .filter((d) => d.status === "aprovada")
+    .reduce((acc, d) => acc + Number(d.valor), 0);
+  const custoRealizado = custoHoras + custoDespesas;
+  const m = margem(receita, custoRealizado);
+
+  return (
+    <div className="grid gap-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Indicador titulo="Receita orçada" valor={fmtMoeda(receita)} />
+        <Indicador titulo="Custo orçado" valor={fmtMoeda(custoOrcado)} />
+        <Indicador
+          titulo="Custo realizado"
+          valor={fmtMoeda(custoRealizado)}
+          detalhe={`${fmtMoeda(custoHoras)} em horas · ${fmtMoeda(custoDespesas)} em despesas`}
+          tom={custoOrcado && custoRealizado > custoOrcado ? "negativo" : "neutro"}
+          progresso={custoOrcado ? (custoRealizado / custoOrcado) * 100 : 0}
+        />
+        <Indicador
+          titulo="Margem realizada"
+          valor={fmtMoeda(m.valor)}
+          detalhe={`${m.pct}% da receita`}
+          tom={m.valor >= 0 ? "positivo" : "negativo"}
+        />
+      </div>
+
+      <Painel padded={false} className="py-2">
+        <div className="px-4 pt-2 pb-1 font-display text-[15px] font-bold">Linhas do orçamento</div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-3xl border-collapse text-left">
+            <thead>
+              <tr className="text-[10px] tracking-wide text-muted-foreground uppercase">
+                <th className="px-4 py-2 font-medium">Descrição</th>
+                <th className="px-3 py-2 font-medium">Tipo</th>
+                <th className="px-3 py-2 font-medium">Categoria</th>
+                <th className="px-3 py-2 font-medium">Fase</th>
+                <th className="px-3 py-2 text-right font-medium">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {itens.map((i) => (
+                <tr key={i.id} className="text-[12px]">
+                  <td className="px-4 py-2.5 font-medium">{i.descricao}</td>
+                  <td className="px-3 py-2.5">
+                    <Pill className={ORCAMENTO_TIPO[i.tipo].pill}>{ORCAMENTO_TIPO[i.tipo].label}</Pill>
+                  </td>
+                  <td className="px-3 py-2.5 text-muted-foreground">{i.categoria}</td>
+                  <td className="px-3 py-2.5 text-muted-foreground">{i.projeto_fases?.nome ?? "—"}</td>
+                  <td className="px-3 py-2.5 text-right font-semibold">
+                    {fmtMoeda(Number(i.quantidade) * Number(i.valor_unitario))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {itens.length === 0 ? (
+            <Vazio titulo="Sem orçamento" descricao="Monte as linhas de receita e custo na tela Financeiro." />
+          ) : null}
+        </div>
+      </Painel>
+
+      <Painel padded={false} className="py-2">
+        <div className="px-4 pt-2 pb-1 font-display text-[15px] font-bold">Despesas do projeto</div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-3xl border-collapse text-left">
+            <thead>
+              <tr className="text-[10px] tracking-wide text-muted-foreground uppercase">
+                <th className="px-4 py-2 font-medium">Despesa</th>
+                <th className="px-3 py-2 font-medium">Quem lançou</th>
+                <th className="px-3 py-2 font-medium">Data</th>
+                <th className="px-3 py-2 text-right font-medium">Valor</th>
+                <th className="px-3 py-2 font-medium">Situação</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {despesas.map((d) => (
+                <tr key={d.id} className="text-[12px]">
+                  <td className="px-4 py-2.5">
+                    <div className="font-medium">{d.descricao}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {d.categoria}
+                      {d.fornecedor ? ` · ${d.fornecedor}` : ""}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5 text-muted-foreground">{d.profiles?.nome ?? "—"}</td>
+                  <td className="px-3 py-2.5 text-muted-foreground">{fmtData(d.data)}</td>
+                  <td className="px-3 py-2.5 text-right font-semibold">{fmtMoeda(Number(d.valor))}</td>
+                  <td className="px-3 py-2.5">
+                    <Pill className={DESPESA_STATUS[d.status].pill}>{DESPESA_STATUS[d.status].label}</Pill>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {despesas.length === 0 ? <Vazio titulo="Nenhuma despesa lançada" /> : null}
+        </div>
+      </Painel>
+    </div>
   );
 }
