@@ -372,6 +372,30 @@ function KpisInternos() {
             </Painel>
           </div>
 
+          <Painel className="p-5">
+            <h3 className="font-display text-base font-semibold text-foreground">Documentos aprovados e pendentes</h3>
+            <p className="text-xs text-muted-foreground">
+              Documentos já aprovados e os que ainda aguardam decisão em cada projeto.
+            </p>
+            <div className="mt-4 h-72">
+              {dadosDocumentos.length === 0 ? (
+                <p className="pt-10 text-center text-sm text-muted-foreground">Nenhum documento registrado.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dadosDocumentos}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                    <Tooltip labelFormatter={(l) => dadosDocumentos.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Painel>
+
           {verFinanceiro && dadosCustos.length > 0 && (
             <Painel className="p-5">
               <h3 className="font-display text-base font-semibold text-foreground">Custo real x orçamento</h3>
