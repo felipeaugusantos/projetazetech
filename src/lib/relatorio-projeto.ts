@@ -17,6 +17,30 @@ type Contexto = {
   marcaDagua?: MarcaDagua | null | undefined;
 };
 
+/** Converte a configuração de marca d'água da empresa para o formato do relatório. */
+export function marcaDaguaDaEmpresa(
+  empresa:
+    | {
+        nome?: string;
+        marca_dagua_ativa?: boolean | null;
+        marca_dagua_texto?: string | null;
+        marca_dagua_cor?: string | null;
+        marca_dagua_opacidade?: number | null;
+        marca_dagua_aviso?: string | null;
+      }
+    | null
+    | undefined,
+): MarcaDagua | undefined {
+  if (!empresa) return undefined;
+  return {
+    ativa: empresa.marca_dagua_ativa ?? true,
+    texto: empresa.marca_dagua_texto || empresa.nome || null,
+    cor: empresa.marca_dagua_cor ?? null,
+    opacidade: empresa.marca_dagua_opacidade ?? null,
+    aviso: empresa.marca_dagua_aviso ?? null,
+  };
+}
+
 function hexToRgb(hex: string | null | undefined, padrao: [number, number, number]): [number, number, number] {
   if (!hex) return padrao;
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
