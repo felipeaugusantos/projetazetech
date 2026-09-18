@@ -236,10 +236,14 @@ function PlanoDoDia() {
               ) : null}
 
               <div className="mt-4 space-y-2">
-                {p.itens.length === 0 ? (
-                  <p className="text-[13px] text-muted-foreground">Nenhuma tarefa definida para este dia.</p>
+                {p.visiveis.length === 0 ? (
+                  <p className="text-[13px] text-muted-foreground">
+                    {p.itens.length === 0
+                      ? "Nenhuma tarefa definida para este dia."
+                      : "Nenhuma tarefa nesta situação."}
+                  </p>
                 ) : (
-                  p.itens.map((i) => {
+                  p.visiveis.map((i) => {
                     const podeMarcar = podeEditar || i.profile_id === perfil?.id;
                     return (
                       <div
