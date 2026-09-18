@@ -36,7 +36,7 @@ import {
   usePortalResumo,
   type PortalProjetoDetalhe,
 } from "@/lib/portal";
-import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
 import { ConversaEntregaPortal } from "@/components/conversa-entrega";
 
 
