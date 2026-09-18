@@ -2,10 +2,19 @@ import { jsPDF } from "jspdf";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import type { PortalProjetoDetalhe, PortalTema } from "@/lib/portal";
 
+export type MarcaDagua = {
+  ativa?: boolean | null;
+  texto?: string | null;
+  cor?: string | null;
+  opacidade?: number | null;
+  aviso?: string | null;
+};
+
 type Contexto = {
   empresa?: string | undefined;
   cliente?: string | undefined;
   tema?: PortalTema | null | undefined;
+  marcaDagua?: MarcaDagua | null | undefined;
 };
 
 function hexToRgb(hex: string | null | undefined, padrao: [number, number, number]): [number, number, number] {
