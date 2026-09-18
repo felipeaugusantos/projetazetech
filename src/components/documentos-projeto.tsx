@@ -152,7 +152,8 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
           arquivo_path: caminho,
           tipo: arquivo.type || null,
           tamanho: arquivo.size,
-          visivel_cliente: visivel,
+          solicita_portal: visivel,
+          aprovacao_status: "pendente",
           autor_id: perfil?.id ?? null,
         })
         .select("id")
