@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Smile, Star } from "lucide-react";
+import { Download, Smile, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { fmtData } from "@/lib/enzova";
-import { Indicador, Painel, Pill, TituloPagina, Vazio, inputClasses } from "@/components/kit";
+import { BotaoSecundario, Indicador, Painel, Pill, TituloPagina, Vazio, inputClasses } from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/satisfacao")({
   head: () => ({
