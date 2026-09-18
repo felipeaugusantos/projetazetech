@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, Clock, Download, FileText, History, X } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useProjetos, registrarAuditoria } from "@/lib/dados";
@@ -148,6 +149,21 @@ function AprovacaoDocumentos() {
     (d) => (filtro === "todos" || d.aprovacao_status === filtro) && (!projetoId || d.projeto_id === projetoId),
   );
 
+  const porProjeto = useMemo(() => {
+    const mapa = new Map<string, { nome: string; projeto: string; Aprovados: number; Pendentes: number; Recusados: number }>();
+    for (const d of documentos) {
+      const rotulo = nomeProjeto(d.projeto_id);
+      const atual =
+        mapa.get(d.projeto_id) ??
+        { nome: rotulo.split(" · ")[0] ?? rotulo, projeto: rotulo, Aprovados: 0, Pendentes: 0, Recusados: 0 };
+      if (d.aprovacao_status === "aprovado") atual.Aprovados += 1;
+      else if (d.aprovacao_status === "rejeitado") atual.Recusados += 1;
+      else atual.Pendentes += 1;
+      mapa.set(d.projeto_id, atual);
+    }
+    return Array.from(mapa.values()).sort((a, b) => b.Pendentes - a.Pendentes);
+  }, [documentos, nomeProjeto]);
+
   const pendentes = documentos.filter((d) => d.aprovacao_status === "pendente").length;
   const aprovados = documentos.filter((d) => d.aprovacao_status === "aprovado").length;
   const recusados = documentos.filter((d) => d.aprovacao_status === "rejeitado").length;
@@ -239,6 +255,31 @@ function AprovacaoDocumentos() {
         <Indicador titulo="Recusados" valor={recusados} detalhe="precisam de correção" tom={recusados ? "negativo" : "neutro"} />
         <Indicador titulo="Visíveis no portal" valor={noPortal} detalhe="aprovados e liberados ao cliente" />
       </div>
+
+      {porProjeto.length > 0 ? (
+        <Painel className="mb-5 p-5">
+          <h3 className="font-display text-base font-semibold text-foreground">Situação por projeto</h3>
+          <p className="text-xs text-muted-foreground">
+            Aprovados, aguardando decisão e recusados em cada projeto, sem precisar abrir um por um.
+          </p>
+          <div className="mt-4 h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={porProjeto.slice(0, 14)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                <Tooltip labelFormatter={(l) => porProjeto.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Recusados" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Painel>
+      ) : null}
+
+
 
       {isLoading ? (
         <Painel>

@@ -19,6 +19,7 @@ import { useAuth } from "@/lib/auth";
 import {
   useApontamentos,
   useClientes,
+  useDocumentosStatus,
   useFasesTodas,
   useMarcos,
   useOrcamentoItens,
@@ -82,6 +83,7 @@ function KpisInternos() {
   const { data: custos = [] } = useCustosReais();
   const { data: orcamento = [] } = useOrcamentoItens();
   const { data: clientes = [] } = useClientes();
+  const { data: documentos = [] } = useDocumentosStatus();
 
   const [cliente, setCliente] = useState("");
   const [status, setStatus] = useState("");
@@ -195,6 +197,19 @@ function KpisInternos() {
     .filter((l) => l.horas > 0)
     .slice(0, 12)
     .map((l) => ({ nome: l.codigo, projeto: l.nome, horas: Math.round(l.horas * 10) / 10 }));
+
+  const dadosDocumentos = visiveis
+    .map((l) => {
+      const doProjeto = documentos.filter((d) => d.projeto_id === l.id);
+      return {
+        nome: l.codigo,
+        projeto: l.nome,
+        Aprovados: doProjeto.filter((d) => d.aprovacao_status === "aprovado").length,
+        Pendentes: doProjeto.filter((d) => d.aprovacao_status === "pendente").length,
+      };
+    })
+    .filter((d) => d.Aprovados > 0 || d.Pendentes > 0)
+    .slice(0, 12);
 
   const dadosCustos = visiveis
     .filter((l) => l.custoReal > 0 || l.orcado > 0)
@@ -369,6 +384,30 @@ function KpisInternos() {
               </div>
             </Painel>
           </div>
+
+          <Painel className="p-5">
+            <h3 className="font-display text-base font-semibold text-foreground">Documentos aprovados e pendentes</h3>
+            <p className="text-xs text-muted-foreground">
+              Documentos já aprovados e os que ainda aguardam decisão em cada projeto.
+            </p>
+            <div className="mt-4 h-72">
+              {dadosDocumentos.length === 0 ? (
+                <p className="pt-10 text-center text-sm text-muted-foreground">Nenhum documento registrado.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dadosDocumentos}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                    <Tooltip labelFormatter={(l) => dadosDocumentos.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Painel>
 
           {verFinanceiro && dadosCustos.length > 0 && (
             <Painel className="p-5">

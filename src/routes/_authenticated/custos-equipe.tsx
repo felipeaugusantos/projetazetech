@@ -14,7 +14,7 @@ import { Download } from "lucide-react";
 
 import { Avatar, BotaoSecundario, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio, inputClasses } from "@/components/kit";
 import { useAuth } from "@/lib/auth";
-import { useApontamentos, useEquipe, useProjetos } from "@/lib/dados";
+import { useApontamentos, useDocumentosStatus, useEquipe, useProjetos } from "@/lib/dados";
 import { fmtHoras, fmtMoeda } from "@/lib/enzova";
 
 export const Route = createFileRoute("/_authenticated/custos-equipe")({
@@ -75,6 +75,23 @@ function CustosPorEquipe() {
   const { data: apontamentos = [], isLoading } = useApontamentos(desde ? { desde } : undefined);
   const { data: equipe = [] } = useEquipe();
   const { data: projetos = [] } = useProjetos();
+  const { data: documentos = [] } = useDocumentosStatus();
+
+  const dadosDocumentos = useMemo(() => {
+    return projetos
+      .filter((p) => !projeto || p.id === projeto)
+      .map((p) => {
+        const doProjeto = documentos.filter((d) => d.projeto_id === p.id);
+        return {
+          nome: p.codigo,
+          projeto: p.nome,
+          Aprovados: doProjeto.filter((d) => d.aprovacao_status === "aprovado").length,
+          Pendentes: doProjeto.filter((d) => d.aprovacao_status === "pendente").length,
+        };
+      })
+      .filter((d) => d.Aprovados > 0 || d.Pendentes > 0)
+      .slice(0, 14);
+  }, [documentos, projetos, projeto]);
 
   const podeVerCusto = can("financeiro.ver");
 
@@ -271,6 +288,30 @@ function CustosPorEquipe() {
               </div>
             </Painel>
           </div>
+
+          <Painel className="p-5">
+            <h3 className="font-display text-base font-semibold text-foreground">Documentos por projeto</h3>
+            <p className="text-xs text-muted-foreground">
+              Quantos documentos já foram aprovados e quantos ainda aguardam decisão em cada projeto.
+            </p>
+            <div className="mt-4 h-72">
+              {dadosDocumentos.length === 0 ? (
+                <p className="pt-10 text-center text-sm text-muted-foreground">Nenhum documento registrado.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dadosDocumentos}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="nome" tick={{ fontSize: 11 }} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={40} />
+                    <Tooltip labelFormatter={(l) => dadosDocumentos.find((d) => d.nome === l)?.projeto ?? String(l)} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="Aprovados" fill="var(--neon)" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="Pendentes" fill="var(--destructive)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </Painel>
 
           <Painel className="overflow-hidden" padded={false}>
             <div className="scroll-slim overflow-x-auto">
