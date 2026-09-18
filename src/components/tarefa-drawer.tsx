@@ -26,7 +26,7 @@ export function TarefaDrawer({
 }: {
   tarefa: Tarefa;
   onFechar: () => void;
-  nomeProjeto?: string;
+  nomeProjeto?: string | undefined;
 }) {
   const { perfil, can } = useAuth();
   const queryClient = useQueryClient();
@@ -105,7 +105,7 @@ export function TarefaDrawer({
         .eq("id", tarefa.id);
       if (error) throw error;
       if (perfil) {
-        const campo = Object.keys(patch)[0];
+        const campo = Object.keys(patch)[0] ?? "";
         await registrarAuditoria({
           tenant_id: perfil.tenant_id,
           profile_id: perfil.id,
