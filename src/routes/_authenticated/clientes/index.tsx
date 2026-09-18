@@ -20,9 +20,10 @@ import {
 } from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/clientes/")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    novo: search.novo === true || search.novo === "true" || search.novo === "1" ? true : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { novo?: boolean } => {
+    const v = search['novo'];
+    return v === true || v === "true" || v === "1" ? { novo: true } : {};
+  },
   head: () => ({
     meta: [
       { title: "Clientes · Projeta" },
