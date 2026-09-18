@@ -230,10 +230,39 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
     }
   }
 
-  // ---------- Rodapé ----------
+  // ---------- Marca d'água e rodapé ----------
+  const md = ctx.marcaDagua;
+  const marcaDaguaAtiva = md?.ativa !== false;
+  const textoMarca = (md?.texto || ctx.empresa || ctx.tema?.nome_exibicao || "").trim();
+  const corMarca = hexToRgb(md?.cor, marca);
+  const opacidade = Math.max(0.02, Math.min(0.3, md?.opacidade ?? 0.08));
+
   const total = doc.getNumberOfPages();
   for (let i = 1; i <= total; i++) {
     doc.setPage(i);
+
+    if (marcaDaguaAtiva && textoMarca) {
+      const estado = doc.GState({ opacity: opacidade });
+      doc.saveGraphicsState();
+      doc.setGState(estado);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...corMarca);
+      const tamanho = Math.max(26, Math.min(64, 520 / Math.max(6, textoMarca.length)) * 4);
+      doc.setFontSize(tamanho);
+      for (const [dx, dy] of [
+        [0, -180],
+        [0, 0],
+        [0, 180],
+      ] as const) {
+        doc.text(textoMarca, larguraPagina / 2 + dx, alturaPagina / 2 + dy, {
+          align: "center",
+          angle: 32,
+          baseline: "middle",
+        });
+      }
+      doc.restoreGraphicsState();
+    }
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(...cinza);
@@ -243,6 +272,15 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
       alturaPagina - 24,
     );
     doc.text(`${i}/${total}`, larguraPagina - margem, alturaPagina - 24, { align: "right" });
+    if (md?.aviso) {
+      doc.setFontSize(7.5);
+      doc.text(
+        (doc.splitTextToSize(md.aviso, largura) as string[])[0] ?? md.aviso,
+        larguraPagina / 2,
+        alturaPagina - 12,
+        { align: "center" },
+      );
+    }
   }
 
   doc.save(`relatorio-${projeto.codigo.toLowerCase()}.pdf`);
