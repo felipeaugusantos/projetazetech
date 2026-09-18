@@ -458,6 +458,7 @@ export type Database = {
           deleted_at: string | null
           id: string
           interno: boolean
+          portal_acesso_id: string | null
           projeto_id: string | null
           tarefa_id: string | null
           tenant_id: string
@@ -469,6 +470,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           interno?: boolean
+          portal_acesso_id?: string | null
           projeto_id?: string | null
           tarefa_id?: string | null
           tenant_id: string
@@ -480,6 +482,7 @@ export type Database = {
           deleted_at?: string | null
           id?: string
           interno?: boolean
+          portal_acesso_id?: string | null
           projeto_id?: string | null
           tarefa_id?: string | null
           tenant_id?: string
@@ -490,6 +493,13 @@ export type Database = {
             columns: ["autor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comentarios_portal_acesso_id_fkey"
+            columns: ["portal_acesso_id"]
+            isOneToOne: false
+            referencedRelation: "portal_acessos"
             referencedColumns: ["id"]
           },
           {
@@ -607,6 +617,89 @@ export type Database = {
           },
           {
             foreignKeyName: "despesas_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentos: {
+        Row: {
+          arquivo_path: string | null
+          autor_id: string | null
+          categoria: string
+          created_at: string
+          deleted_at: string | null
+          descricao: string | null
+          fase_id: string | null
+          id: string
+          nome: string
+          projeto_id: string
+          tamanho: number | null
+          tenant_id: string
+          tipo: string | null
+          url: string | null
+          visivel_cliente: boolean
+        }
+        Insert: {
+          arquivo_path?: string | null
+          autor_id?: string | null
+          categoria?: string
+          created_at?: string
+          deleted_at?: string | null
+          descricao?: string | null
+          fase_id?: string | null
+          id?: string
+          nome: string
+          projeto_id: string
+          tamanho?: number | null
+          tenant_id: string
+          tipo?: string | null
+          url?: string | null
+          visivel_cliente?: boolean
+        }
+        Update: {
+          arquivo_path?: string | null
+          autor_id?: string | null
+          categoria?: string
+          created_at?: string
+          deleted_at?: string | null
+          descricao?: string | null
+          fase_id?: string | null
+          id?: string
+          nome?: string
+          projeto_id?: string
+          tamanho?: number | null
+          tenant_id?: string
+          tipo?: string | null
+          url?: string | null
+          visivel_cliente?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_fase_id_fkey"
+            columns: ["fase_id"]
+            isOneToOne: false
+            referencedRelation: "projeto_fases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -868,6 +961,135 @@ export type Database = {
           grupo?: string
         }
         Relationships: []
+      }
+      portal_acessos: {
+        Row: {
+          ativo: boolean
+          cargo: string | null
+          cliente_id: string
+          contato_id: string | null
+          created_at: string
+          deleted_at: string | null
+          email: string
+          id: string
+          nome: string
+          tenant_id: string
+          ultimo_acesso: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          cargo?: string | null
+          cliente_id: string
+          contato_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          email: string
+          id?: string
+          nome: string
+          tenant_id: string
+          ultimo_acesso?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          cargo?: string | null
+          cliente_id?: string
+          contato_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          email?: string
+          id?: string
+          nome?: string
+          tenant_id?: string
+          ultimo_acesso?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_acessos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_acessos_contato_id_fkey"
+            columns: ["contato_id"]
+            isOneToOne: false
+            referencedRelation: "cliente_contatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_acessos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_aprovacoes: {
+        Row: {
+          comentario: string | null
+          created_at: string
+          decisao: string
+          id: string
+          marco_id: string | null
+          portal_acesso_id: string | null
+          projeto_id: string
+          tenant_id: string
+        }
+        Insert: {
+          comentario?: string | null
+          created_at?: string
+          decisao: string
+          id?: string
+          marco_id?: string | null
+          portal_acesso_id?: string | null
+          projeto_id: string
+          tenant_id: string
+        }
+        Update: {
+          comentario?: string | null
+          created_at?: string
+          decisao?: string
+          id?: string
+          marco_id?: string | null
+          portal_acesso_id?: string | null
+          projeto_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_aprovacoes_marco_id_fkey"
+            columns: ["marco_id"]
+            isOneToOne: false
+            referencedRelation: "marcos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_aprovacoes_portal_acesso_id_fkey"
+            columns: ["portal_acesso_id"]
+            isOneToOne: false
+            referencedRelation: "portal_acessos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_aprovacoes_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_aprovacoes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1630,6 +1852,41 @@ export type Database = {
       current_tenant_id: { Args: never; Returns: string }
       has_permission: { Args: { _permissao: string }; Returns: boolean }
       has_role: { Args: { _slug: string }; Returns: boolean }
+      is_portal_user: { Args: never; Returns: boolean }
+      portal_acesso_atual: {
+        Args: never
+        Returns: {
+          ativo: boolean
+          cargo: string | null
+          cliente_id: string
+          contato_id: string | null
+          created_at: string
+          deleted_at: string | null
+          email: string
+          id: string
+          nome: string
+          tenant_id: string
+          ultimo_acesso: string | null
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "portal_acessos"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      portal_comentar: {
+        Args: { p_conteudo: string; p_projeto_id: string }
+        Returns: string
+      }
+      portal_decidir_marco: {
+        Args: { p_comentario?: string; p_decisao: string; p_marco_id: string }
+        Returns: string
+      }
+      portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
+      portal_resumo: { Args: never; Returns: Json }
+      portal_vincular: { Args: never; Returns: boolean }
     }
     Enums: {
       apontamento_status: "rascunho" | "enviado" | "aprovado" | "rejeitado"
