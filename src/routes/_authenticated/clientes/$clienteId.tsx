@@ -139,6 +139,10 @@ function DetalheCliente() {
           </div>
         </Painel>
 
+        <PortalAcessos clienteId={clienteId} />
+
+
+
         <Painel>
           <h2 className="font-display text-[15px] font-bold">Projetos do cliente</h2>
           <div className="mt-3 space-y-2.5">
