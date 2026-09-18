@@ -181,11 +181,21 @@ function Satisfacao() {
         titulo="Satisfação do cliente"
         descricao="Avaliações enviadas pelos clientes no portal após a conclusão dos projetos."
         acoes={
-          clientes.length > 1 ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <select className={`${inputClasses} w-auto`} value={periodo} onChange={(e) => setPeriodo(e.target.value)}>
+              {PERIODOS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
             <select
               className={`${inputClasses} w-auto`}
               value={cliente}
-              onChange={(e) => setCliente(e.target.value)}
+              onChange={(e) => {
+                setCliente(e.target.value);
+                setProjeto("todos");
+              }}
             >
               <option value="todos">Todos os clientes</option>
               {clientes.map(([id, nome]) => (
@@ -194,7 +204,22 @@ function Satisfacao() {
                 </option>
               ))}
             </select>
-          ) : null
+            <select className={`${inputClasses} w-auto`} value={projeto} onChange={(e) => setProjeto(e.target.value)}>
+              <option value="todos">Todos os projetos</option>
+              {projetos.map(([id, nome]) => (
+                <option key={id} value={id}>
+                  {nome}
+                </option>
+              ))}
+            </select>
+            <BotaoSecundario
+              onClick={() => exportarCsv(filtradas)}
+              disabled={filtradas.length === 0}
+              className="px-3 py-2"
+            >
+              <Download className="size-4" /> Exportar CSV
+            </BotaoSecundario>
+          </div>
         }
       />
 
