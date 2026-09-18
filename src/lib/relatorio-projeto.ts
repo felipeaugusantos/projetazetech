@@ -108,13 +108,15 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
   titulo("Progresso geral");
   const pct = Math.max(0, Math.min(100, projeto.progresso));
   doc.setFillColor(230, 245, 237);
-  doc.roundedRect(margem, y, largura, 14, 7, 7, "F");
+  const larguraBarra = largura - 46;
+  doc.roundedRect(margem, y, larguraBarra, 14, 7, 7, "F");
   doc.setFillColor(...marca);
-  doc.roundedRect(margem, y, Math.max(8, (largura * pct) / 100), 14, 7, 7, "F");
+  doc.roundedRect(margem, y, Math.max(8, (larguraBarra * pct) / 100), 14, 7, 7, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9.5);
   doc.setTextColor(26, 26, 26);
-  doc.text(`${pct}%`, margem + largura + 4, y + 11, { align: "right" });
+  doc.text(`${pct}%`, margem + largura, y + 11, { align: "right" });
+
   y += 30;
 
   const fasesConcluidas = fases.filter((f) => f.status === "concluida").length;
