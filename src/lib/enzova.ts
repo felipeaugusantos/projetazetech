@@ -268,3 +268,47 @@ export function rotuloSemana(referencia: Date | string) {
   const fim = addDays(inicio, 6);
   return `${format(inicio, "dd MMM", { locale: ptBR })} — ${format(fim, "dd MMM", { locale: ptBR })}`;
 }
+
+/* ================= Fase 3: orçamento, custos e despesas ================= */
+
+export type OrcamentoTipo = "receita" | "custo";
+export type DespesaStatus = "rascunho" | "enviada" | "aprovada" | "rejeitada";
+
+export const ORCAMENTO_TIPO: Record<OrcamentoTipo, { label: string; pill: string }> = {
+  receita: { label: "Receita", pill: "bg-success-soft text-success" },
+  custo: { label: "Custo", pill: "bg-secondary text-muted-foreground" },
+};
+
+export const DESPESA_STATUS: Record<DespesaStatus, { label: string; pill: string; dot: string }> = {
+  rascunho: { label: "Rascunho", pill: "bg-secondary text-muted-foreground", dot: "bg-muted-foreground" },
+  enviada: { label: "Em aprovação", pill: "bg-warning-soft text-warning", dot: "bg-warning" },
+  aprovada: { label: "Aprovada", pill: "bg-success-soft text-success", dot: "bg-success" },
+  rejeitada: { label: "Rejeitada", pill: "bg-danger-soft text-danger", dot: "bg-danger" },
+};
+
+export const CATEGORIAS_ORCAMENTO = [
+  "Contrato",
+  "Mão de obra",
+  "Infraestrutura",
+  "Terceiros",
+  "Licenças",
+  "Viagem",
+  "Material",
+  "Outros",
+] as const;
+
+export const CATEGORIAS_DESPESA = [
+  "Viagem",
+  "Software",
+  "Infraestrutura",
+  "Terceiros",
+  "Material",
+  "Alimentação",
+  "Outros",
+] as const;
+
+/** Margem em valor e percentual sobre a receita. */
+export function margem(receita: number, custo: number) {
+  const valor = receita - custo;
+  return { valor, pct: receita ? Math.round((valor / receita) * 100) : 0 };
+}

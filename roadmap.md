@@ -24,6 +24,15 @@
 - [x] Capacidade: alocação semanal por pessoa/projeto, sobrecarga, planejado x realizado
 - [x] Riscos: matriz probabilidade x impacto, severidade, plano de mitigação
 
+## Fase 3 (concluída) — orçamento, custos, alocação e horas
+- [x] Banco: orcamento_itens, despesas (+ permissões despesa.lancar, despesa.aprovar)
+- [x] Dados de demonstração (orçamento por projeto/fase, despesas em vários estágios)
+- [x] Financeiro: Resultado (receita x custo previsto x realizado, margem por projeto)
+- [x] Financeiro: Orçamento por projeto (linhas de receita/custo, custo por categoria)
+- [x] Financeiro: Despesas com fluxo enviar → aprovar/rejeitar
+- [x] Projeto: aba Orçamento com linhas e despesas do projeto
+- [x] Horas: timesheet com envio e aprovação (Fase 2, integrado ao custo realizado)
+- [x] Capacidade: alocação semanal planejada x realizada (Fase 2)
+
 ## Fases seguintes (não iniciar sem instrução)
-- Fase 3: portal do cliente, aprovações, change requests, documentos, reuniões, financeiro
-- Fase 4: automações, IA, integrações, API pública, webhooks
+- Fase 4: portal do cliente, change requests, documentos, reuniões, automações, IA, integrações, API pública
