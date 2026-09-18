@@ -263,7 +263,12 @@ function PortalProjeto() {
               {marcos.length === 0 ? <Vazio titulo="Nenhuma entrega registrada" /> : null}
             </div>
           </Painel>
+
+          {projeto.status === "concluido" ? (
+            <PesquisaSatisfacao projetoId={projetoId} pesquisa={data.pesquisa} />
+          ) : null}
         </div>
+
 
         <div className="space-y-4">
           <Painel>
