@@ -2,11 +2,44 @@ import { jsPDF } from "jspdf";
 import { FASE_STATUS, MARCO_STATUS, PROJETO_STATUS, fmtData } from "@/lib/enzova";
 import type { PortalProjetoDetalhe, PortalTema } from "@/lib/portal";
 
+export type MarcaDagua = {
+  ativa?: boolean | null;
+  texto?: string | null;
+  cor?: string | null;
+  opacidade?: number | null;
+  aviso?: string | null;
+};
+
 type Contexto = {
   empresa?: string | undefined;
   cliente?: string | undefined;
   tema?: PortalTema | null | undefined;
+  marcaDagua?: MarcaDagua | null | undefined;
 };
+
+/** Converte a configuração de marca d'água da empresa para o formato do relatório. */
+export function marcaDaguaDaEmpresa(
+  empresa:
+    | {
+        nome?: string;
+        marca_dagua_ativa?: boolean | null;
+        marca_dagua_texto?: string | null;
+        marca_dagua_cor?: string | null;
+        marca_dagua_opacidade?: number | null;
+        marca_dagua_aviso?: string | null;
+      }
+    | null
+    | undefined,
+): MarcaDagua | undefined {
+  if (!empresa) return undefined;
+  return {
+    ativa: empresa.marca_dagua_ativa ?? true,
+    texto: empresa.marca_dagua_texto || empresa.nome || null,
+    cor: empresa.marca_dagua_cor ?? null,
+    opacidade: empresa.marca_dagua_opacidade ?? null,
+    aviso: empresa.marca_dagua_aviso ?? null,
+  };
+}
 
 function hexToRgb(hex: string | null | undefined, padrao: [number, number, number]): [number, number, number] {
   if (!hex) return padrao;
@@ -221,10 +254,40 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
     }
   }
 
-  // ---------- Rodapé ----------
+  // ---------- Marca d'água e rodapé ----------
+  const md = ctx.marcaDagua;
+  const marcaDaguaAtiva = md?.ativa !== false;
+  const textoMarca = (md?.texto || ctx.empresa || ctx.tema?.nome_exibicao || "").trim();
+  const corMarca = hexToRgb(md?.cor, marca);
+  const opacidade = Math.max(0.02, Math.min(0.3, md?.opacidade ?? 0.08));
+
   const total = doc.getNumberOfPages();
   for (let i = 1; i <= total; i++) {
     doc.setPage(i);
+
+    if (marcaDaguaAtiva && textoMarca) {
+      const estado = doc.GState({ opacity: opacidade });
+      doc.saveGraphicsState();
+      doc.setGState(estado);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...corMarca);
+      // ajusta o tamanho para o texto caber na diagonal da página
+      const alvo = (larguraPagina - margem * 2) * 1.05;
+      let tamanho = 48;
+      doc.setFontSize(tamanho);
+      const larguraTexto = doc.getTextWidth(textoMarca) || alvo;
+      tamanho = Math.max(16, Math.min(48, (tamanho * alvo) / larguraTexto));
+      doc.setFontSize(tamanho);
+      for (const dy of [-230, 0, 230]) {
+        doc.text(textoMarca, larguraPagina / 2, alturaPagina / 2 + dy, {
+          align: "center",
+          angle: 32,
+          baseline: "middle",
+        });
+      }
+      doc.restoreGraphicsState();
+    }
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(...cinza);
@@ -234,6 +297,15 @@ export function gerarRelatorioProjeto(dados: PortalProjetoDetalhe, ctx: Contexto
       alturaPagina - 24,
     );
     doc.text(`${i}/${total}`, larguraPagina - margem, alturaPagina - 24, { align: "right" });
+    if (md?.aviso) {
+      doc.setFontSize(7.5);
+      doc.text(
+        (doc.splitTextToSize(md.aviso, largura) as string[])[0] ?? md.aviso,
+        larguraPagina / 2,
+        alturaPagina - 12,
+        { align: "center" },
+      );
+    }
   }
 
   doc.save(`relatorio-${projeto.codigo.toLowerCase()}.pdf`);

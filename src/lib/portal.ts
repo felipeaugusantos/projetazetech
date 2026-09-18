@@ -42,10 +42,19 @@ export type PortalPesquisa = {
   created_at: string;
 };
 
+export type EmpresaPortal = {
+  nome: string;
+  marca_dagua_ativa?: boolean | null;
+  marca_dagua_texto?: string | null;
+  marca_dagua_cor?: string | null;
+  marca_dagua_opacidade?: number | null;
+  marca_dagua_aviso?: string | null;
+};
+
 export type PortalResumo = {
   acesso: PortalAcesso;
   cliente: { id: string; nome: string; nome_fantasia: string | null } | null;
-  empresa: { nome: string } | null;
+  empresa: EmpresaPortal | null;
   tema: PortalTema | null;
   projetos: PortalProjetoResumo[];
 };

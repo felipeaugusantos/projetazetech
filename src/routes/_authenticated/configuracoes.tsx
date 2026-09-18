@@ -65,7 +65,12 @@ function Configuracoes() {
         ))}
       </div>
 
-      {aba === "empresa" ? <Empresa podeEditar={can("empresa.editar")} /> : null}
+      {aba === "empresa" ? (
+        <div className="space-y-4">
+          <Empresa podeEditar={can("empresa.editar")} />
+          <MarcaDaguaRelatorio podeEditar={can("empresa.editar")} />
+        </div>
+      ) : null}
       {aba === "perfis" ? <Perfis /> : null}
       {aba === "usuarios" ? <Usuarios /> : null}
       {aba === "conta" ? (
@@ -137,6 +142,164 @@ function Empresa({ podeEditar }: { podeEditar: boolean }) {
         <p className="mt-4 border-t border-border pt-3 text-[12px] text-muted-foreground">
           Faturamento do próprio SaaS, personalização de marca e domínio próprio entram nas fases seguintes.
         </p>
+      </Painel>
+    </div>
+  );
+}
+
+const OPACIDADES = [
+  { valor: 0.05, label: "Discreta" },
+  { valor: 0.08, label: "Equilibrada" },
+  { valor: 0.14, label: "Visível" },
+  { valor: 0.22, label: "Forte" },
+];
+
+function MarcaDaguaRelatorio({ podeEditar }: { podeEditar: boolean }) {
+  const { tenant, recarregar } = useAuth();
+  const t = tenant as
+    | {
+        id: string;
+        nome: string;
+        marca_dagua_ativa?: boolean | null;
+        marca_dagua_texto?: string | null;
+        marca_dagua_cor?: string | null;
+        marca_dagua_opacidade?: number | null;
+        marca_dagua_aviso?: string | null;
+      }
+    | null
+    | undefined;
+
+  const [ativa, setAtiva] = useState(t?.marca_dagua_ativa ?? true);
+  const [texto, setTexto] = useState(t?.marca_dagua_texto ?? "");
+  const [cor, setCor] = useState(t?.marca_dagua_cor ?? "#008037");
+  const [opacidade, setOpacidade] = useState(Number(t?.marca_dagua_opacidade ?? 0.08));
+  const [aviso, setAviso] = useState(t?.marca_dagua_aviso ?? "");
+  const [salvando, setSalvando] = useState(false);
+
+  const exemplo = (texto || t?.nome || "Sua empresa").trim();
+
+  async function salvar(e: React.FormEvent) {
+    e.preventDefault();
+    if (!t) return;
+    setSalvando(true);
+    const { error } = await supabase
+      .from("tenants")
+      .update({
+        marca_dagua_ativa: ativa,
+        marca_dagua_texto: texto.trim() || null,
+        marca_dagua_cor: cor || null,
+        marca_dagua_opacidade: opacidade,
+        marca_dagua_aviso: aviso.trim() || null,
+      } as never)
+      .eq("id", t.id);
+    setSalvando(false);
+    if (error) {
+      toast.error("Não foi possível salvar a marca d'água.");
+      return;
+    }
+    toast.success("Marca d'água atualizada.");
+    await recarregar();
+  }
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-3">
+      <Painel className="lg:col-span-2">
+        <h2 className="font-display text-[15px] font-bold">Marca d'água do relatório</h2>
+        <p className="mt-1 text-[12px] text-muted-foreground">
+          Identifica a sua empresa em todas as páginas do relatório em PDF baixado pelo cliente ou por quem recebe um
+          link compartilhado.
+        </p>
+        <form onSubmit={salvar} className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label className="flex items-center gap-2 text-[12.5px] sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={ativa}
+              onChange={(e) => setAtiva(e.target.checked)}
+              disabled={!podeEditar}
+              className="size-4 accent-[var(--primary)]"
+            />
+            Aplicar marca d'água nos relatórios em PDF
+          </label>
+          <Campo label="Texto da marca d'água" className="sm:col-span-2">
+            <input
+              className={inputClasses}
+              value={texto}
+              onChange={(e) => setTexto(e.target.value)}
+              placeholder={t?.nome ?? "Nome da sua empresa"}
+              disabled={!podeEditar || !ativa}
+            />
+          </Campo>
+          <Campo label="Cor">
+            <input
+              type="color"
+              className={cn(inputClasses, "h-10 p-1")}
+              value={cor}
+              onChange={(e) => setCor(e.target.value)}
+              disabled={!podeEditar || !ativa}
+            />
+          </Campo>
+          <Campo label="Intensidade">
+            <select
+              className={inputClasses}
+              value={String(opacidade)}
+              onChange={(e) => setOpacidade(Number(e.target.value))}
+              disabled={!podeEditar || !ativa}
+            >
+              {OPACIDADES.map((o) => (
+                <option key={o.valor} value={o.valor}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Campo>
+          <Campo label="Aviso de confidencialidade (rodapé)" className="sm:col-span-2">
+            <input
+              className={inputClasses}
+              value={aviso}
+              onChange={(e) => setAviso(e.target.value)}
+              placeholder="Documento confidencial — uso restrito ao destinatário."
+              disabled={!podeEditar}
+            />
+          </Campo>
+          {podeEditar ? (
+            <div className="sm:col-span-2">
+              <BotaoPrimario type="submit" disabled={salvando}>
+                {salvando ? "Salvando…" : "Salvar marca d'água"}
+              </BotaoPrimario>
+            </div>
+          ) : (
+            <p className="text-[12px] text-muted-foreground sm:col-span-2">
+              Seu perfil pode visualizar, mas não alterar a marca d'água.
+            </p>
+          )}
+        </form>
+      </Painel>
+
+      <Painel>
+        <h2 className="font-display text-[15px] font-bold">Prévia</h2>
+        <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card">
+          <div className="relative grid h-44 place-items-center">
+            <div className="absolute inset-0 grid place-items-center">
+              <span
+                className="select-none whitespace-nowrap font-display text-[26px] font-bold"
+                style={{
+                  color: cor,
+                  opacity: ativa ? Math.min(1, opacidade * 4) : 0,
+                  transform: "rotate(-28deg)",
+                }}
+              >
+                {exemplo}
+              </span>
+            </div>
+            <div className="relative space-y-1 px-4 text-center">
+              <div className="text-[12px] font-semibold">Relatório de acompanhamento</div>
+              <div className="text-[11px] text-muted-foreground">Progresso, fases, prazos e documentos</div>
+            </div>
+          </div>
+          <div className="border-t border-border px-3 py-2 text-center text-[10px] text-muted-foreground">
+            {aviso || "Sem aviso de confidencialidade"}
+          </div>
+        </div>
       </Painel>
     </div>
   );

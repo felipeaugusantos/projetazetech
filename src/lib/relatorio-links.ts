@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { PortalProjetoDetalhe, PortalTema } from "@/lib/portal";
+import type { EmpresaPortal, PortalProjetoDetalhe, PortalTema } from "@/lib/portal";
 
 export type RelatorioLink = {
   id: string;
@@ -27,7 +27,7 @@ export type StatusLink =
   | "nao_encontrado";
 
 export type RelatorioCompartilhado = PortalProjetoDetalhe & {
-  empresa: { nome: string } | null;
+  empresa: EmpresaPortal | null;
   cliente: { id: string; nome: string; nome_fantasia: string | null } | null;
   tema: PortalTema | null;
   link: { descricao: string | null; expira_em: string };

@@ -36,7 +36,7 @@ import {
   usePortalResumo,
   type PortalProjetoDetalhe,
 } from "@/lib/portal";
-import { gerarRelatorioProjeto } from "@/lib/relatorio-projeto";
+import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
 import { ConversaEntregaPortal } from "@/components/conversa-entrega";
 
 
@@ -145,6 +145,7 @@ function PortalProjeto() {
                 empresa: resumo?.empresa?.nome,
                 cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
                 tema: resumo?.tema,
+                marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
               })
             }
           >
