@@ -283,6 +283,15 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
                     <Pill className={d.visivel_cliente ? "bg-success/12 text-success" : "bg-secondary text-muted-foreground"}>
                       {d.visivel_cliente ? "No portal" : "Interno"}
                     </Pill>
+                    {d.solicita_portal && d.aprovacao_status !== "aprovado" ? (
+                      <Pill
+                        className={
+                          d.aprovacao_status === "rejeitado" ? "bg-danger/12 text-danger" : "bg-warning/15 text-warning"
+                        }
+                      >
+                        {d.aprovacao_status === "rejeitado" ? "Recusado" : "Aguardando aprovação"}
+                      </Pill>
+                    ) : null}
                   </div>
                   <div className="text-[11.5px] text-muted-foreground">
                     {d.categoria} · {fmtData(d.created_at, "dd MMM yyyy")} · {tamanhoLegivel(d.tamanho)}
