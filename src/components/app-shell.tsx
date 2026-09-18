@@ -108,9 +108,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-canvas text-foreground">
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 120, background: "#60A5FA" }} />
-        <div className="halo" style={{ width: 460, height: 460, bottom: -180, right: 80, background: "#A5B4FC" }} />
-        <div className="halo" style={{ width: 360, height: 360, top: "40%", left: "55%", background: "#67E8F9", opacity: 0.4 }} />
+        <div className="halo" style={{ width: 520, height: 520, top: -160, left: 120, background: "#8FE0B2" }} />
+        <div className="halo" style={{ width: 460, height: 460, bottom: -180, right: 80, background: "#C9EFD9" }} />
+        <div className="halo" style={{ width: 360, height: 360, top: "40%", left: "55%", background: "#E6F5ED", opacity: 0.4 }} />
       </div>
 
       <div className="relative z-10 flex min-h-screen">

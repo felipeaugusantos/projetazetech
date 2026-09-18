@@ -93,7 +93,7 @@ export function BotaoPrimario({
     <button
       {...props}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-primary-foreground shadow-lg shadow-brand/30 transition hover:brightness-110 disabled:opacity-60",
+        "inline-flex items-center gap-1.5 rounded-xl bg-neon px-4 py-2.5 text-[13px] font-semibold text-forest shadow-lg shadow-neon/30 transition hover:bg-neon-hover hover:text-primary-foreground disabled:opacity-60",
         className,
       )}
     >
