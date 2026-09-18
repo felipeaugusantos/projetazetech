@@ -1,7 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import type { ApontamentoStatus, MarcoStatus, Prioridade, ProjetoStatus, TarefaStatus } from "@/lib/enzova";
+import type {
+  ApontamentoStatus,
+  DespesaStatus,
+  MarcoStatus,
+  OrcamentoTipo,
+  Prioridade,
+  ProjetoStatus,
+  TarefaStatus,
+} from "@/lib/enzova";
 
 export type Projeto = {
   id: string;
@@ -285,6 +293,83 @@ export function useRiscos(projetoId?: string) {
       const { data, error } = await query.order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
+    },
+  });
+}
+
+/* ================= Fase 3 ================= */
+
+export type OrcamentoItem = {
+  id: string;
+  tenant_id: string;
+  projeto_id: string;
+  fase_id: string | null;
+  tipo: OrcamentoTipo;
+  categoria: string;
+  descricao: string;
+  quantidade: number;
+  valor_unitario: number;
+  observacao: string | null;
+  projetos?: { id: string; nome: string } | null;
+  projeto_fases?: { id: string; nome: string } | null;
+};
+
+export type Despesa = {
+  id: string;
+  tenant_id: string;
+  projeto_id: string;
+  fase_id: string | null;
+  profile_id: string | null;
+  categoria: string;
+  descricao: string;
+  fornecedor: string | null;
+  data: string;
+  valor: number;
+  faturavel: boolean;
+  reembolsavel: boolean;
+  status: DespesaStatus;
+  aprovador_id: string | null;
+  aprovado_em: string | null;
+  observacao_aprovacao: string | null;
+  profiles?: { id: string; nome: string } | null;
+  projetos?: { id: string; nome: string } | null;
+};
+
+const ORCAMENTO_SELECT =
+  "id, tenant_id, projeto_id, fase_id, tipo, categoria, descricao, quantidade, valor_unitario, observacao, projetos(id, nome), projeto_fases(id, nome)";
+
+const DESPESA_SELECT =
+  "id, tenant_id, projeto_id, fase_id, profile_id, categoria, descricao, fornecedor, data, valor, faturavel, reembolsavel, status, aprovador_id, aprovado_em, observacao_aprovacao, profiles!despesas_profile_id_fkey(id, nome), projetos(id, nome)";
+
+export function useOrcamentoItens(projetoId?: string) {
+  const { perfil } = useAuth();
+  return useQuery({
+    queryKey: ["orcamento_itens", projetoId ?? "todos", perfil?.tenant_id],
+    enabled: !!perfil,
+    queryFn: async () => {
+      let query = supabase.from("orcamento_itens").select(ORCAMENTO_SELECT).is("deleted_at", null);
+      if (projetoId) query = query.eq("projeto_id", projetoId);
+      const { data, error } = await query.order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as unknown as OrcamentoItem[];
+    },
+  });
+}
+
+export function useDespesas(opcoes?: { projetoId?: string; apenasMinhas?: boolean }) {
+  const { perfil } = useAuth();
+  const projetoId = opcoes?.projetoId;
+  const apenasMinhas = opcoes?.apenasMinhas ?? false;
+  return useQuery({
+    queryKey: ["despesas", projetoId ?? "todos", apenasMinhas ? perfil?.id : "todas", perfil?.tenant_id],
+    enabled: !!perfil,
+    queryFn: async () => {
+      let query = supabase.from("despesas").select(DESPESA_SELECT).is("deleted_at", null);
+      if (projetoId) query = query.eq("projeto_id", projetoId);
+      if (apenasMinhas && perfil) query = query.eq("profile_id", perfil.id);
+      const { data, error } = await query.order("data", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as Despesa[];
     },
   });
 }
