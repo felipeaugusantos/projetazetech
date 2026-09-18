@@ -19,6 +19,7 @@ import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authentic
 import { Route as AuthenticatedCapacidadeRouteImport } from './routes/_authenticated/capacidade'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
 import { Route as AuthenticatedCronogramaRouteImport } from './routes/_authenticated/cronograma'
+import { Route as AuthenticatedCustosRouteImport } from './routes/_authenticated/custos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -85,6 +86,11 @@ const AuthenticatedConfiguracoesRoute =
 const AuthenticatedCronogramaRoute = AuthenticatedCronogramaRouteImport.update({
   id: '/cronograma',
   path: '/cronograma',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCustosRoute = AuthenticatedCustosRouteImport.update({
+  id: '/custos',
+  path: '/custos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/cronograma': typeof AuthenticatedCronogramaRoute
+  '/custos': typeof AuthenticatedCustosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -215,6 +222,7 @@ export interface FileRoutesByTo {
   '/capacidade': typeof AuthenticatedCapacidadeRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/cronograma': typeof AuthenticatedCronogramaRoute
+  '/custos': typeof AuthenticatedCustosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/_authenticated/capacidade': typeof AuthenticatedCapacidadeRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/cronograma': typeof AuthenticatedCronogramaRoute
+  '/_authenticated/custos': typeof AuthenticatedCustosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/capacidade'
     | '/configuracoes'
     | '/cronograma'
+    | '/custos'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/capacidade'
     | '/configuracoes'
     | '/cronograma'
+    | '/custos'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/_authenticated/capacidade'
     | '/_authenticated/configuracoes'
     | '/_authenticated/cronograma'
+    | '/_authenticated/custos'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipe'
     | '/_authenticated/financeiro'
@@ -430,6 +442,13 @@ declare module '@tanstack/react-router' {
       path: '/cronograma'
       fullPath: '/cronograma'
       preLoaderRoute: typeof AuthenticatedCronogramaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/custos': {
+      id: '/_authenticated/custos'
+      path: '/custos'
+      fullPath: '/custos'
+      preLoaderRoute: typeof AuthenticatedCustosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -559,6 +578,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCapacidadeRoute: typeof AuthenticatedCapacidadeRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedCronogramaRoute: typeof AuthenticatedCronogramaRoute
+  AuthenticatedCustosRoute: typeof AuthenticatedCustosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -579,6 +599,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCapacidadeRoute: AuthenticatedCapacidadeRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedCronogramaRoute: AuthenticatedCronogramaRoute,
+  AuthenticatedCustosRoute: AuthenticatedCustosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,

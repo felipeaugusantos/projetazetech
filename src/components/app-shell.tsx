@@ -6,6 +6,7 @@ import {
   Building2,
   CalendarDays,
   ChevronDown,
+  Coins,
   FolderKanban,
   GanttChartSquare,
   Gauge,
@@ -45,6 +46,7 @@ const NAV = [
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/satisfacao", label: "Satisfação", icon: Smile },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
+  { to: "/custos", label: "Custos", icon: Coins },
 
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
