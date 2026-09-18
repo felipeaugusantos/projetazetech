@@ -37,6 +37,9 @@ import {
   type PortalProjetoDetalhe,
 } from "@/lib/portal";
 import { gerarRelatorioProjeto, marcaDaguaDaEmpresa } from "@/lib/relatorio-projeto";
+import { conteudoDoRelatorio } from "@/lib/relatorio-conteudo";
+import { gerarResumoExecutivo } from "@/lib/resumo-executivo.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { ConversaEntregaPortal } from "@/components/conversa-entrega";
 
 
@@ -139,17 +142,9 @@ function PortalProjeto() {
         titulo={projeto.nome}
         descricao={projeto.descricao ?? undefined}
         acoes={
-          <BotaoSecundario
-            onClick={() =>
-              gerarRelatorioProjeto(data as PortalProjetoDetalhe, {
-                empresa: resumo?.empresa?.nome,
-                cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
-                tema: resumo?.tema,
-                marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
-              })
-            }
-          >
-            <FileDown className="size-4" /> Baixar relatório PDF
+          <BotaoSecundario onClick={baixarRelatorio} disabled={gerandoPdf}>
+            {gerandoPdf ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />}
+            {gerandoPdf ? "Preparando relatório…" : "Baixar relatório PDF"}
           </BotaoSecundario>
         }
       />
