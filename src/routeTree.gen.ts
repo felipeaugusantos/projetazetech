@@ -21,6 +21,7 @@ import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authen
 import { Route as AuthenticatedCronogramaRouteImport } from './routes/_authenticated/cronograma'
 import { Route as AuthenticatedCustosRouteImport } from './routes/_authenticated/custos'
 import { Route as AuthenticatedCustosClientesRouteImport } from './routes/_authenticated/custos-clientes'
+import { Route as AuthenticatedCustosEquipeRouteImport } from './routes/_authenticated/custos-equipe'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -98,6 +99,12 @@ const AuthenticatedCustosClientesRoute =
   AuthenticatedCustosClientesRouteImport.update({
     id: '/custos-clientes',
     path: '/custos-clientes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCustosEquipeRoute =
+  AuthenticatedCustosEquipeRouteImport.update({
+    id: '/custos-equipe',
+    path: '/custos-equipe',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/cronograma': typeof AuthenticatedCronogramaRoute
   '/custos': typeof AuthenticatedCustosRoute
   '/custos-clientes': typeof AuthenticatedCustosClientesRoute
+  '/custos-equipe': typeof AuthenticatedCustosEquipeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -232,6 +240,7 @@ export interface FileRoutesByTo {
   '/cronograma': typeof AuthenticatedCronogramaRoute
   '/custos': typeof AuthenticatedCustosRoute
   '/custos-clientes': typeof AuthenticatedCustosClientesRoute
+  '/custos-equipe': typeof AuthenticatedCustosEquipeRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -264,6 +273,7 @@ export interface FileRoutesById {
   '/_authenticated/cronograma': typeof AuthenticatedCronogramaRoute
   '/_authenticated/custos': typeof AuthenticatedCustosRoute
   '/_authenticated/custos-clientes': typeof AuthenticatedCustosClientesRoute
+  '/_authenticated/custos-equipe': typeof AuthenticatedCustosEquipeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/cronograma'
     | '/custos'
     | '/custos-clientes'
+    | '/custos-equipe'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/cronograma'
     | '/custos'
     | '/custos-clientes'
+    | '/custos-equipe'
     | '/dashboard'
     | '/equipe'
     | '/financeiro'
@@ -356,6 +368,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cronograma'
     | '/_authenticated/custos'
     | '/_authenticated/custos-clientes'
+    | '/_authenticated/custos-equipe'
     | '/_authenticated/dashboard'
     | '/_authenticated/equipe'
     | '/_authenticated/financeiro'
@@ -469,6 +482,13 @@ declare module '@tanstack/react-router' {
       path: '/custos-clientes'
       fullPath: '/custos-clientes'
       preLoaderRoute: typeof AuthenticatedCustosClientesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/custos-equipe': {
+      id: '/_authenticated/custos-equipe'
+      path: '/custos-equipe'
+      fullPath: '/custos-equipe'
+      preLoaderRoute: typeof AuthenticatedCustosEquipeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -600,6 +620,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCronogramaRoute: typeof AuthenticatedCronogramaRoute
   AuthenticatedCustosRoute: typeof AuthenticatedCustosRoute
   AuthenticatedCustosClientesRoute: typeof AuthenticatedCustosClientesRoute
+  AuthenticatedCustosEquipeRoute: typeof AuthenticatedCustosEquipeRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
@@ -622,6 +643,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCronogramaRoute: AuthenticatedCronogramaRoute,
   AuthenticatedCustosRoute: AuthenticatedCustosRoute,
   AuthenticatedCustosClientesRoute: AuthenticatedCustosClientesRoute,
+  AuthenticatedCustosEquipeRoute: AuthenticatedCustosEquipeRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
