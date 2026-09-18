@@ -14,6 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
+      alocacoes: {
+        Row: {
+          created_at: string
+          horas_planejadas: number
+          id: string
+          observacao: string | null
+          profile_id: string
+          projeto_id: string
+          semana: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          horas_planejadas?: number
+          id?: string
+          observacao?: string | null
+          profile_id: string
+          projeto_id: string
+          semana: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          horas_planejadas?: number
+          id?: string
+          observacao?: string | null
+          profile_id?: string
+          projeto_id?: string
+          semana?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alocacoes_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alocacoes_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alocacoes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      apontamentos: {
+        Row: {
+          aprovado_em: string | null
+          aprovador_id: string | null
+          created_at: string
+          data: string
+          deleted_at: string | null
+          descricao: string | null
+          faturavel: boolean
+          horas: number
+          id: string
+          observacao_aprovacao: string | null
+          profile_id: string
+          projeto_id: string
+          status: Database["public"]["Enums"]["apontamento_status"]
+          tarefa_id: string | null
+          tenant_id: string
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          created_at?: string
+          data?: string
+          deleted_at?: string | null
+          descricao?: string | null
+          faturavel?: boolean
+          horas?: number
+          id?: string
+          observacao_aprovacao?: string | null
+          profile_id: string
+          projeto_id: string
+          status?: Database["public"]["Enums"]["apontamento_status"]
+          tarefa_id?: string | null
+          tenant_id: string
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          created_at?: string
+          data?: string
+          deleted_at?: string | null
+          descricao?: string | null
+          faturavel?: boolean
+          horas?: number
+          id?: string
+          observacao_aprovacao?: string | null
+          profile_id?: string
+          projeto_id?: string
+          status?: Database["public"]["Enums"]["apontamento_status"]
+          tarefa_id?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apontamentos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apontamentos_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apontamentos_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apontamentos_tarefa_id_fkey"
+            columns: ["tarefa_id"]
+            isOneToOne: false
+            referencedRelation: "tarefas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "apontamentos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auditoria: {
         Row: {
           acao: string
@@ -405,6 +550,83 @@ export type Database = {
           },
           {
             foreignKeyName: "favoritos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marcos: {
+        Row: {
+          created_at: string
+          data: string | null
+          data_real: string | null
+          deleted_at: string | null
+          descricao: string | null
+          entrega_cliente: boolean
+          fase_id: string | null
+          id: string
+          nome: string
+          projeto_id: string
+          responsavel_id: string | null
+          status: Database["public"]["Enums"]["marco_status"]
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: string | null
+          data_real?: string | null
+          deleted_at?: string | null
+          descricao?: string | null
+          entrega_cliente?: boolean
+          fase_id?: string | null
+          id?: string
+          nome: string
+          projeto_id: string
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["marco_status"]
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: string | null
+          data_real?: string | null
+          deleted_at?: string | null
+          descricao?: string | null
+          entrega_cliente?: boolean
+          fase_id?: string | null
+          id?: string
+          nome?: string
+          projeto_id?: string
+          responsavel_id?: string | null
+          status?: Database["public"]["Enums"]["marco_status"]
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marcos_fase_id_fkey"
+            columns: ["fase_id"]
+            isOneToOne: false
+            referencedRelation: "projeto_fases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marcos_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marcos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marcos_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1244,8 +1466,10 @@ export type Database = {
       has_role: { Args: { _slug: string }; Returns: boolean }
     }
     Enums: {
+      apontamento_status: "rascunho" | "enviado" | "aprovado" | "rejeitado"
       cliente_tipo: "pf" | "pj"
       fase_status: "nao_iniciada" | "em_andamento" | "concluida" | "bloqueada"
+      marco_status: "previsto" | "atingido" | "atrasado" | "cancelado"
       prioridade: "baixa" | "normal" | "alta" | "urgente"
       projeto_status:
         | "planejamento"
@@ -1393,8 +1617,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      apontamento_status: ["rascunho", "enviado", "aprovado", "rejeitado"],
       cliente_tipo: ["pf", "pj"],
       fase_status: ["nao_iniciada", "em_andamento", "concluida", "bloqueada"],
+      marco_status: ["previsto", "atingido", "atrasado", "cancelado"],
       prioridade: ["baixa", "normal", "alta", "urgente"],
       projeto_status: [
         "planejamento",

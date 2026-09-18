@@ -8,6 +8,13 @@
       "when": 1789699178450,
       "tag": "0000_enzova_fase1_core",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789700496026,
+      "tag": "0001_fase2_horas_marcos_alocacoes",
+      "breakpoints": true
     }
   ]
 }
