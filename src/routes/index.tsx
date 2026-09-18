@@ -39,12 +39,21 @@ function Landing() {
             <div className="font-display text-[15px] font-bold">Projeta</div>
             <div className="-mt-0.5 text-[11px] text-muted-foreground">Gestão de projetos</div>
           </div>
-          <Link
-            to="/auth"
-            className="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-primary-foreground shadow-lg shadow-brand/30 transition hover:brightness-110"
-          >
-            Entrar <ArrowRight className="size-4" />
-          </Link>
+          <div className="ml-auto flex items-center gap-2">
+            <Link
+              to="/acesso-cliente"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-[13px] font-medium text-foreground frost-soft transition hover:bg-card"
+            >
+              Portal do cliente
+            </Link>
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-primary-foreground shadow-lg shadow-brand/30 transition hover:brightness-110"
+            >
+              Entrar <ArrowRight className="size-4" />
+            </Link>
+          </div>
+
         </header>
 
         <div className="flex flex-1 flex-col justify-center py-14">
