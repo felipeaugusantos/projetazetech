@@ -27,18 +27,53 @@ function PortalLayout() {
   const queryClient = useQueryClient();
   const { data, isLoading } = usePortalResumo();
   const [saindo, setSaindo] = useState(false);
+  const encerrando = useRef(false);
 
   useEffect(() => {
     document.title = "Portal do cliente · Projeta";
   }, []);
 
-  async function sair() {
-    setSaindo(true);
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/acesso-cliente", replace: true });
-  }
+  // Registra o acesso uma vez por sessão do navegador.
+  useEffect(() => {
+    if (sessionStorage.getItem("portal:acesso-registrado")) return;
+    sessionStorage.setItem("portal:acesso-registrado", "1");
+    void registrarEventoPortal("login");
+  }, []);
+
+  const encerrar = useCallback(
+    async (motivo: "logout" | "sessao_expirada") => {
+      if (encerrando.current) return;
+      encerrando.current = true;
+      setSaindo(true);
+      await registrarEventoPortal(motivo);
+      await queryClient.cancelQueries();
+      queryClient.clear();
+      await supabase.auth.signOut();
+      sessionStorage.removeItem("portal:acesso-registrado");
+      if (motivo === "sessao_expirada") sessionStorage.setItem(PORTAL_SESSAO_EXPIRADA, "1");
+      navigate({ to: "/acesso-cliente", replace: true });
+    },
+    [navigate, queryClient],
+  );
+
+  // Expira a sessão após inatividade.
+  useEffect(() => {
+    let ultimaAtividade = Date.now();
+    const marcar = () => {
+      ultimaAtividade = Date.now();
+    };
+    const eventos = ["pointerdown", "keydown", "scroll", "visibilitychange"] as const;
+    eventos.forEach((e) => window.addEventListener(e, marcar, { passive: true }));
+
+    const timer = window.setInterval(() => {
+      if (Date.now() - ultimaAtividade > PORTAL_INATIVIDADE_MIN * 60_000) void encerrar("sessao_expirada");
+    }, 30_000);
+
+    return () => {
+      eventos.forEach((e) => window.removeEventListener(e, marcar));
+      window.clearInterval(timer);
+    };
+  }, [encerrar]);
 
   const tema = data?.tema ?? null;
   const cor = tema?.cor_primaria ?? null;
@@ -88,8 +123,16 @@ function PortalLayout() {
               </div>
             </div>
 
+            <Link
+              to="/portal/senha"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+            >
+              <KeyRound className="size-4" />
+              <span className="hidden sm:inline">Senha</span>
+            </Link>
+
             <button
-              onClick={sair}
+              onClick={() => void encerrar("logout")}
               disabled={saindo}
               className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
             >
@@ -109,6 +152,10 @@ function PortalLayout() {
           <Outlet />
         )}
       </main>
+
+      <footer className="relative z-10 pb-6 text-center text-[11px] text-muted-foreground">
+        Por segurança, sua sessão é encerrada após {PORTAL_INATIVIDADE_MIN} minutos sem uso.
+      </footer>
     </div>
   );
 }
