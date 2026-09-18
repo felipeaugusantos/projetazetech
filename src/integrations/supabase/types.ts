@@ -2110,6 +2110,11 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           id: string
+          marca_dagua_ativa: boolean
+          marca_dagua_aviso: string | null
+          marca_dagua_cor: string | null
+          marca_dagua_opacidade: number
+          marca_dagua_texto: string | null
           nome: string
           plano: string
           slug: string
@@ -2120,6 +2125,11 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           id?: string
+          marca_dagua_ativa?: boolean
+          marca_dagua_aviso?: string | null
+          marca_dagua_cor?: string | null
+          marca_dagua_opacidade?: number
+          marca_dagua_texto?: string | null
           nome: string
           plano?: string
           slug: string
@@ -2130,6 +2140,11 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           id?: string
+          marca_dagua_ativa?: boolean
+          marca_dagua_aviso?: string | null
+          marca_dagua_cor?: string | null
+          marca_dagua_opacidade?: number
+          marca_dagua_texto?: string | null
           nome?: string
           plano?: string
           slug?: string
