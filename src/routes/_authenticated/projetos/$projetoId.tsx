@@ -74,6 +74,7 @@ type Aba =
   | "entregas"
   | "documentos"
   | "orcamento"
+  | "custos"
   | "riscos"
   | "historico";
 
@@ -85,6 +86,7 @@ const ABAS: { id: Aba; label: string }[] = [
   { id: "entregas", label: "Entregas" },
   { id: "documentos", label: "Documentos" },
   { id: "orcamento", label: "Orçamento" },
+  { id: "custos", label: "Custos reais" },
   { id: "riscos", label: "Riscos" },
   { id: "historico", label: "Histórico" },
 ];
