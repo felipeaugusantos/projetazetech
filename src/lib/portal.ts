@@ -164,15 +164,14 @@ export function usePortalDecidirMarco(projetoId: string) {
 
 /** Gera um link temporário de download para um documento liberado ao cliente. */
 export async function baixarDocumento(documentoId: string) {
-  const { data: doc, error: erroDoc } = await supabase
-    .from("documentos")
-    .select("arquivo_path, url, nome")
-    .eq("id", documentoId)
-    .maybeSingle();
-  if (erroDoc) throw erroDoc;
-  if (doc?.url) return doc.url;
-  if (!doc?.arquivo_path) throw new Error("Documento sem arquivo anexado");
-  const { data, error } = await supabase.storage.from("documentos").createSignedUrl(doc.arquivo_path, 120);
+  const { data, error } = await supabase.rpc("portal_documento_arquivo", { p_documento_id: documentoId });
   if (error) throw error;
-  return data.signedUrl;
+  const doc = data as unknown as { nome: string; arquivo_path: string | null; url: string | null } | null;
+  if (!doc) throw new Error("Documento não disponível");
+  if (doc.url) return doc.url;
+  if (!doc.arquivo_path) throw new Error("Documento sem arquivo anexado");
+  const assinada = await supabase.storage.from("documentos").createSignedUrl(doc.arquivo_path, 120);
+  if (assinada.error) throw assinada.error;
+  return assinada.data.signedUrl;
 }
+
