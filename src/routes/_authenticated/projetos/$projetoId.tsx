@@ -179,7 +179,7 @@ function DetalheProjeto() {
       </div>
 
       <div className="frost-soft mb-5 flex flex-wrap gap-1 rounded-xl p-1">
-        {ABAS.map((a) => (
+        {ABAS.filter((a) => a.id !== "orcamento" || can("financeiro.ver")).map((a) => (
           <button
             key={a.id}
             onClick={() => setAba(a.id)}
@@ -333,6 +333,7 @@ function DetalheProjeto() {
       ) : null}
 
       {aba === "equipe" ? <EquipeProjeto projetoId={projetoId} tarefas={tarefas} /> : null}
+      {aba === "orcamento" && can("financeiro.ver") ? <OrcamentoProjeto projetoId={projetoId} /> : null}
       {aba === "riscos" ? <RiscosProjeto projetoId={projetoId} /> : null}
       {aba === "historico" ? <HistoricoProjeto projetoId={projetoId} /> : null}
 
