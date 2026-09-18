@@ -69,7 +69,7 @@ export function ResumoExecutivoRelatorio({ projetoId }: { projetoId: string }) {
       linhas.push("", "Entregas e marcos:");
       for (const m of marcos) {
         linhas.push(
-          `- ${m.titulo}: previsto ${fmtData(m.data, "dd/MM/yyyy")}${m.data_real ? `, entregue ${fmtData(m.data_real, "dd/MM/yyyy")}` : ""} (${m.status})`,
+          `- ${m.nome}: previsto ${fmtData(m.data, "dd/MM/yyyy")}${m.data_real ? `, entregue ${fmtData(m.data_real, "dd/MM/yyyy")}` : ""} (${m.status})`,
         );
       }
     }
