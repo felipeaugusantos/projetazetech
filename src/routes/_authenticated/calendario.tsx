@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/calendario")({
   head: () => ({
     meta: [
-      { title: "Calendário · Enzova Projects" },
+      { title: "Calendário · Projeta" },
       { name: "description", content: "Prazos de tarefas e projetos distribuídos no mês." },
       { property: "og:title", content: "Calendário" },
       { property: "og:description", content: "Prazos de tarefas e projetos distribuídos no mês." },

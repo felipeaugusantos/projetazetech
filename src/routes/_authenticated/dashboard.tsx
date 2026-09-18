@@ -28,7 +28,7 @@ import { Indicador, Painel, Pill, Progresso, TituloPagina, Vazio, inputClasses }
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard executivo · Enzova Projects" },
+      { title: "Dashboard executivo · Projeta" },
       { name: "description", content: "Projetos, tarefas, horas, custos e faturamento da sua empresa em um painel." },
       { property: "og:title", content: "Dashboard executivo" },
       { property: "og:description", content: "Indicadores consolidados dos projetos da empresa." },

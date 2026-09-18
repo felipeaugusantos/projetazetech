@@ -22,7 +22,7 @@ import {
 export const Route = createFileRoute("/_authenticated/clientes/")({
   head: () => ({
     meta: [
-      { title: "Clientes · Enzova Projects" },
+      { title: "Clientes · Projeta" },
       { name: "description", content: "Base de clientes com contatos, projetos ativos e histórico." },
       { property: "og:title", content: "Clientes" },
       { property: "og:description", content: "Base de clientes da empresa e seus projetos." },

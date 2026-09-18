@@ -33,7 +33,7 @@ import {
 export const Route = createFileRoute("/_authenticated/projetos/")({
   head: () => ({
     meta: [
-      { title: "Projetos · Enzova Projects" },
+      { title: "Projetos · Projeta" },
       { name: "description", content: "Carteira de projetos com saúde, prazo, progresso e orçamento." },
       { property: "og:title", content: "Projetos" },
       { property: "og:description", content: "Carteira de projetos da empresa com indicadores de saúde." },

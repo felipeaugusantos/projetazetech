@@ -8,7 +8,7 @@ import { Avatar, Indicador, Painel, Progresso, TituloPagina, Vazio } from "@/com
 export const Route = createFileRoute("/_authenticated/horas")({
   head: () => ({
     meta: [
-      { title: "Horas · Enzova Projects" },
+      { title: "Horas · Projeta" },
       { name: "description", content: "Horas estimadas e realizadas por projeto e por pessoa." },
       { property: "og:title", content: "Horas" },
       { property: "og:description", content: "Horas estimadas e realizadas por projeto e por pessoa." },

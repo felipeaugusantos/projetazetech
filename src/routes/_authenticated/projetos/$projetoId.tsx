@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/projetos/$projetoId")({
   head: () => ({
     meta: [
-      { title: "Detalhe do projeto · Enzova Projects" },
+      { title: "Detalhe do projeto · Projeta" },
       { name: "description", content: "Fases, tarefas, equipe, riscos e histórico do projeto." },
       { property: "og:title", content: "Detalhe do projeto" },
       { property: "og:description", content: "Fases, tarefas, equipe e riscos do projeto." },

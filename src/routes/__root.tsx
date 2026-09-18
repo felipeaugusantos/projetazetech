@@ -79,13 +79,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Enzova Projects · Gestão de Projetos para prestadores de serviço" },
+      { title: "Projeta · Gestão de Projetos para prestadores de serviço" },
       {
         name: "description",
         content:
-          "Enzova Projects controla o fluxo completo de clientes, projetos, fases, tarefas e equipes em uma plataforma multiempresa.",
+          "Projeta controla o fluxo completo de clientes, projetos, fases, tarefas e equipes em uma plataforma multiempresa.",
       },
-      { property: "og:title", content: "Enzova Projects" },
+      { property: "og:title", content: "Projeta" },
       { property: "og:description", content: "Gestão de projetos, equipes e prazos para empresas de serviço." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

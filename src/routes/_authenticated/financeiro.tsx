@@ -8,7 +8,7 @@ import { Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from "@/compo
 export const Route = createFileRoute("/_authenticated/financeiro")({
   head: () => ({
     meta: [
-      { title: "Financeiro · Enzova Projects" },
+      { title: "Financeiro · Projeta" },
       { name: "description", content: "Orçamento, custo previsto e margem estimada por projeto." },
       { property: "og:title", content: "Financeiro" },
       { property: "og:description", content: "Orçamento, custo previsto e margem estimada por projeto." },
