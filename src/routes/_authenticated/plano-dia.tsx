@@ -76,17 +76,37 @@ function PlanoDoDia() {
         const meus = itens.filter((i) => i.profile_id === p.id);
         const horas = meus.reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
         const feitos = meus.filter((i) => i.concluido).length;
+        const horasFeitas = meus
+          .filter((i) => i.concluido)
+          .reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
+        const visiveis =
+          situacao === "todas" ? meus : meus.filter((i) => (situacao === "concluidas" ? i.concluido : !i.concluido));
         return {
           id: p.id,
           nome: p.nome,
           cargo: p.cargo,
           itens: meus,
+          visiveis,
           horas,
+          horasFeitas,
           feitos,
           pct: meus.length ? Math.round((feitos / meus.length) * 100) : 0,
         };
       });
-  }, [equipe, itens]);
+  }, [equipe, itens, situacao]);
+
+  const dadosGrafico = useMemo(
+    () =>
+      pessoas
+        .filter((p) => p.itens.length > 0)
+        .map((p) => ({
+          nome: p.nome.split(" ")[0] ?? p.nome,
+          pessoa: p.nome,
+          "Horas previstas": Math.round(p.horas * 10) / 10,
+          "Horas concluídas": Math.round(p.horasFeitas * 10) / 10,
+        })),
+    [pessoas],
+  );
 
   const totalItens = itens.length;
   const totalHoras = itens.reduce((s, i) => s + Number(i.horas_previstas ?? 0), 0);
