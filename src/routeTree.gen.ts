@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenticated/meu-trabalho'
+import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
+import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +48,17 @@ const AuthenticatedMeuTrabalhoRoute =
     path: '/meu-trabalho',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTarefasRoute = AuthenticatedTarefasRouteImport.update({
+  id: '/tarefas',
+  path: '/tarefas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProjetosIndexRoute =
+  AuthenticatedProjetosIndexRouteImport.update({
+    id: '/projetos/',
+    path: '/projetos/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,6 +66,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/tarefas': typeof AuthenticatedTarefasRoute
+  '/projetos/': typeof AuthenticatedProjetosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -60,6 +75,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/tarefas': typeof AuthenticatedTarefasRoute
+  '/projetos': typeof AuthenticatedProjetosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,12 +86,28 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
+  '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
+  '/_authenticated/projetos/': typeof AuthenticatedProjetosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/reset-password' | '/dashboard' | '/meu-trabalho'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/dashboard'
+    | '/meu-trabalho'
+    | '/tarefas'
+    | '/projetos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/reset-password' | '/dashboard' | '/meu-trabalho'
+  to:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/dashboard'
+    | '/meu-trabalho'
+    | '/tarefas'
+    | '/projetos'
   id:
     | '__root__'
     | '/'
@@ -83,6 +116,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/dashboard'
     | '/_authenticated/meu-trabalho'
+    | '/_authenticated/tarefas'
+    | '/_authenticated/projetos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,17 +171,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMeuTrabalhoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/tarefas': {
+      id: '/_authenticated/tarefas'
+      path: '/tarefas'
+      fullPath: '/tarefas'
+      preLoaderRoute: typeof AuthenticatedTarefasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/projetos/': {
+      id: '/_authenticated/projetos/'
+      path: '/projetos'
+      fullPath: '/projetos/'
+      preLoaderRoute: typeof AuthenticatedProjetosIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMeuTrabalhoRoute: typeof AuthenticatedMeuTrabalhoRoute
+  AuthenticatedTarefasRoute: typeof AuthenticatedTarefasRoute
+  AuthenticatedProjetosIndexRoute: typeof AuthenticatedProjetosIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMeuTrabalhoRoute: AuthenticatedMeuTrabalhoRoute,
+  AuthenticatedTarefasRoute: AuthenticatedTarefasRoute,
+  AuthenticatedProjetosIndexRoute: AuthenticatedProjetosIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
