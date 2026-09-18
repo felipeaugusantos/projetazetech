@@ -170,6 +170,35 @@ export function useFases(projetoId: string) {
   });
 }
 
+export type DocumentoStatus = {
+  id: string;
+  projeto_id: string;
+  nome: string;
+  categoria: string;
+  aprovacao_status: "pendente" | "aprovado" | "rejeitado";
+  solicita_portal: boolean;
+  visivel_cliente: boolean;
+  created_at: string;
+};
+
+/** Documentos de todos os projetos com a situação de aprovação, para painéis consolidados. */
+export function useDocumentosStatus() {
+  const { perfil } = useAuth();
+  return useQuery({
+    queryKey: ["documentos", "status", perfil?.tenant_id],
+    enabled: !!perfil,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("documentos")
+        .select("id, projeto_id, nome, categoria, aprovacao_status, solicita_portal, visivel_cliente, created_at")
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as DocumentoStatus[];
+    },
+  });
+}
+
 /** Registra uma entrada de auditoria/histórico. Falhas não bloqueiam a ação do usuário. */
 export async function registrarAuditoria(entrada: {
   tenant_id: string;

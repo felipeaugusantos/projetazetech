@@ -93,6 +93,8 @@ export type PortalDocumento = {
   tamanho: number | null;
   created_at: string;
   fase: string | null;
+  aprovacao_status?: "pendente" | "aprovado" | "rejeitado" | null;
+  aprovado_em?: string | null;
 };
 
 export type PortalComentario = {
