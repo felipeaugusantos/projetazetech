@@ -60,6 +60,7 @@ function PlanoDoDia() {
   const { perfil, can } = useAuth();
   const [dia, setDia] = useState(() => isoDia(new Date()));
   const [modal, setModal] = useState<{ profileId: string; item?: ItemPlanoDia } | null>(null);
+  const [situacao, setSituacao] = useState<"todas" | "pendentes" | "concluidas">("todas");
 
   const { data: equipe = [] } = useEquipe();
   const { data: itens = [], isLoading } = usePlanoDia({ data: dia });
