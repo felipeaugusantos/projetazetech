@@ -41,6 +41,9 @@ function MeuTrabalho() {
   const minhas = useMemo(() => tarefas.filter((t) => t.responsavel_id === perfil?.id), [tarefas, perfil]);
   const hoje = new Date().toISOString().slice(0, 10);
 
+  const { data: planoHoje = [] } = usePlanoDia({ data: hoje, apenasMeus: true });
+  const concluirPlano = useConcluirItemPlano();
+
   const abertas = minhas.filter((t) => !["concluida", "cancelada"].includes(t.status));
   const deHoje = abertas.filter((t) => t.prazo === hoje);
   const atrasadas = abertas.filter((t) => estaAtrasada(t.prazo, t.status));
