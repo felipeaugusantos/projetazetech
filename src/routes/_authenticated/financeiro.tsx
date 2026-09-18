@@ -594,11 +594,12 @@ function Despesas() {
   const mudarStatus = useMutation({
     mutationFn: async ({ despesa, status }: { despesa: Despesa; status: DespesaStatus }) => {
       if (!perfil) throw new Error("Perfil não carregado");
-      const patch: Record<string, unknown> = { status };
-      if (status === "aprovada" || status === "rejeitada") {
-        patch['aprovador_id'] = perfil.id;
-        patch['aprovado_em'] = new Date().toISOString();
-      }
+      const decidido = status === "aprovada" || status === "rejeitada";
+      const patch = {
+        status,
+        aprovador_id: decidido ? perfil.id : null,
+        aprovado_em: decidido ? new Date().toISOString() : null,
+      };
       const { error } = await supabase.from("despesas").update(patch).eq("id", despesa.id);
       if (error) throw error;
       await registrarAuditoria({
