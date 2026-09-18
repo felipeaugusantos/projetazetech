@@ -36,9 +36,9 @@ export function Avatar({
   className,
   tone = "brand",
 }: {
-  nome?: string | null;
-  className?: string;
-  tone?: "brand" | "muted";
+  nome?: string | null | undefined;
+  className?: string | undefined;
+  tone?: "brand" | "muted" | undefined;
 }) {
   return (
     <span

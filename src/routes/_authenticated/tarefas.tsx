@@ -348,8 +348,8 @@ export function NovaTarefaModal({
 }: {
   onFechar: () => void;
   projetos: { id: string; nome: string }[];
-  projetoPadrao?: string;
-  faseId?: string | null;
+  projetoPadrao?: string | undefined;
+  faseId?: string | null | undefined;
 }) {
   const { perfil } = useAuth();
   const { data: equipe = [] } = useEquipe();

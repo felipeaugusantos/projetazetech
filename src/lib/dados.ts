@@ -149,12 +149,12 @@ export async function registrarAuditoria(entrada: {
   tenant_id: string;
   profile_id: string;
   entidade: string;
-  entidade_id?: string | null;
+  entidade_id?: string | null | undefined;
   acao: string;
-  campo?: string | null;
-  valor_anterior?: string | null;
-  valor_novo?: string | null;
-  projeto_id?: string | null;
+  campo?: string | null | undefined;
+  valor_anterior?: string | null | undefined;
+  valor_novo?: string | null | undefined;
+  projeto_id?: string | null | undefined;
 }) {
   try {
     await supabase.from("auditoria").insert(entrada);
