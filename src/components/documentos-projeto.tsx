@@ -61,6 +61,19 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
   const [visivel, setVisivel] = useState(true);
 
   const podeEditar = can("projeto.editar");
+
+  async function auditar(entrada: {
+    entidade: string;
+    entidade_id: string;
+    acao: string;
+    campo: string | null;
+    valor_anterior: string | null;
+    valor_novo: string | null;
+    projeto_id: string;
+  }) {
+    if (!perfil) return;
+    await registrarAuditoria({ ...entrada, tenant_id: perfil.tenant_id, profile_id: perfil.id });
+  }
   const visiveis = documentos.filter((d) => d.visivel_cliente).length;
 
   function invalidar() {
@@ -74,7 +87,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .update({ visivel_cliente: !doc.visivel_cliente })
         .eq("id", doc.id);
       if (error) throw error;
-      await registrarAuditoria({
+      await auditar({
         entidade: "documento",
         entidade_id: doc.id,
         acao: "atualizou",
@@ -98,7 +111,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", doc.id);
       if (error) throw error;
-      await registrarAuditoria({
+      await auditar({
         entidade: "documento",
         entidade_id: doc.id,
         acao: "removeu",
@@ -143,7 +156,7 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .single();
       if (error) throw error;
 
-      await registrarAuditoria({
+      await auditar({
         entidade: "documento",
         entidade_id: data.id,
         acao: "criou",
