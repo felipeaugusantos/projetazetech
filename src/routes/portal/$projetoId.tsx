@@ -145,6 +145,7 @@ function PortalProjeto() {
                 empresa: resumo?.empresa?.nome,
                 cliente: resumo?.cliente?.nome_fantasia ?? resumo?.cliente?.nome,
                 tema: resumo?.tema,
+                marcaDagua: marcaDaguaDaEmpresa(resumo?.empresa),
               })
             }
           >
