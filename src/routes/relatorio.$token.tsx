@@ -177,6 +177,7 @@ function Conteudo({ dados }: { dados: RelatorioCompartilhado }) {
                 empresa: empresa?.nome,
                 cliente: cliente?.nome_fantasia ?? cliente?.nome,
                 tema,
+                marcaDagua: marcaDaguaDaEmpresa(empresa),
               })
             }
           >
