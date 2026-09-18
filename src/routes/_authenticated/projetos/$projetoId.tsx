@@ -212,7 +212,7 @@ function DetalheProjeto() {
       </div>
 
       <div className="frost-soft mb-5 flex flex-wrap gap-1 rounded-xl p-1">
-        {ABAS.filter((a) => a.id !== "orcamento" || can("financeiro.ver")).map((a) => (
+        {ABAS.filter((a) => (a.id !== "orcamento" && a.id !== "custos") || can("financeiro.ver")).map((a) => (
           <button
             key={a.id}
             onClick={() => setAba(a.id)}
