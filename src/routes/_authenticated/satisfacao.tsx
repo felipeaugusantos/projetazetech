@@ -133,7 +133,25 @@ function Satisfacao() {
     return [...mapa.entries()];
   }, [lista]);
 
-  const filtradas = cliente === "todos" ? lista : lista.filter((r) => r.clientes?.id === cliente);
+  const projetos = useMemo(() => {
+    const mapa = new Map<string, string>();
+    for (const r of lista) {
+      if (!r.projetos) continue;
+      if (cliente !== "todos" && r.clientes?.id !== cliente) continue;
+      mapa.set(r.projetos.id, `${r.projetos.codigo} · ${r.projetos.nome}`);
+    }
+    return [...mapa.entries()];
+  }, [lista, cliente]);
+
+  const dias = PERIODOS.find((p) => p.id === periodo)?.dias ?? null;
+  const limite = dias ? Date.now() - dias * 86_400_000 : null;
+
+  const filtradas = lista.filter((r) => {
+    if (cliente !== "todos" && r.clientes?.id !== cliente) return false;
+    if (projeto !== "todos" && r.projetos?.id !== projeto) return false;
+    if (limite && new Date(r.created_at).getTime() < limite) return false;
+    return true;
+  });
 
   const geral = media(filtradas.map((r) => r.nota_geral));
   const prazo = media(filtradas.map((r) => r.nota_prazo));
