@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AcessoClienteRouteImport } from './routes/acesso-cliente'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AcessoClienteRoute = AcessoClienteRouteImport.update({
+  id: '/acesso-cliente',
+  path: '/acesso-cliente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -132,6 +138,7 @@ const AuthenticatedProjetosProjetoIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acesso-cliente': typeof AcessoClienteRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acesso-cliente': typeof AcessoClienteRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/acesso-cliente': typeof AcessoClienteRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acesso-cliente'
     | '/auth'
     | '/reset-password'
     | '/calendario'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acesso-cliente'
     | '/auth'
     | '/reset-password'
     | '/calendario'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/acesso-cliente'
     | '/auth'
     | '/reset-password'
     | '/_authenticated/calendario'
@@ -259,6 +271,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AcessoClienteRoute: typeof AcessoClienteRoute
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acesso-cliente': {
+      id: '/acesso-cliente'
+      path: '/acesso-cliente'
+      fullPath: '/acesso-cliente'
+      preLoaderRoute: typeof AcessoClienteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -443,6 +463,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AcessoClienteRoute: AcessoClienteRoute,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
