@@ -1,4 +1,4 @@
-import { differenceInCalendarDays, format, isBefore, parseISO } from "date-fns";
+import { addDays, differenceInCalendarDays, format, isBefore, parseISO, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export type ProjetoStatus =
@@ -212,4 +212,59 @@ export function calcularSaude(projeto: ProjetoResumo, tarefas: TarefaResumo[]): 
     totalTarefas: total,
     horasRealizadas,
   };
+}
+
+/* ================= Fase 2: horas, marcos, alocação e riscos ================= */
+
+export type ApontamentoStatus = "rascunho" | "enviado" | "aprovado" | "rejeitado";
+export type MarcoStatus = "previsto" | "atingido" | "atrasado" | "cancelado";
+export type RiscoNivel = "baixo" | "medio" | "alto" | "critico";
+
+export const APONTAMENTO_STATUS: Record<ApontamentoStatus, { label: string; pill: string; dot: string }> = {
+  rascunho: { label: "Rascunho", pill: "bg-secondary text-muted-foreground", dot: "bg-muted-foreground" },
+  enviado: { label: "Em aprovação", pill: "bg-warning-soft text-warning", dot: "bg-warning" },
+  aprovado: { label: "Aprovado", pill: "bg-success-soft text-success", dot: "bg-success" },
+  rejeitado: { label: "Rejeitado", pill: "bg-danger-soft text-danger", dot: "bg-danger" },
+};
+
+export const MARCO_STATUS: Record<MarcoStatus, { label: string; pill: string; dot: string }> = {
+  previsto: { label: "Previsto", pill: "bg-brand-soft text-brand-ink", dot: "bg-brand" },
+  atingido: { label: "Atingido", pill: "bg-success-soft text-success", dot: "bg-success" },
+  atrasado: { label: "Atrasado", pill: "bg-danger-soft text-danger", dot: "bg-danger" },
+  cancelado: { label: "Cancelado", pill: "bg-secondary text-muted-foreground", dot: "bg-muted-foreground" },
+};
+
+export const RISCO_NIVEIS: Record<RiscoNivel, { label: string; peso: number; pill: string }> = {
+  baixo: { label: "Baixo", peso: 1, pill: "bg-success-soft text-success" },
+  medio: { label: "Médio", peso: 2, pill: "bg-warning-soft text-warning" },
+  alto: { label: "Alto", peso: 3, pill: "bg-danger-soft text-danger" },
+  critico: { label: "Crítico", peso: 4, pill: "bg-danger-soft text-danger" },
+};
+
+/** Severidade do risco = probabilidade × impacto (1 a 16). */
+export function severidadeRisco(probabilidade: RiscoNivel, impacto: RiscoNivel) {
+  const valor = RISCO_NIVEIS[probabilidade].peso * RISCO_NIVEIS[impacto].peso;
+  const nivel: RiscoNivel = valor >= 12 ? "critico" : valor >= 6 ? "alto" : valor >= 3 ? "medio" : "baixo";
+  return { valor, nivel };
+}
+
+export function isoDate(data: Date) {
+  return format(data, "yyyy-MM-dd");
+}
+
+/** Segunda-feira da semana da data informada. */
+export function inicioSemana(data: Date | string) {
+  const base = typeof data === "string" ? parseISO(data) : data;
+  return startOfWeek(base, { weekStartsOn: 1 });
+}
+
+export function diasDaSemana(referencia: Date) {
+  const inicio = inicioSemana(referencia);
+  return Array.from({ length: 7 }, (_, i) => addDays(inicio, i));
+}
+
+export function rotuloSemana(referencia: Date | string) {
+  const inicio = inicioSemana(referencia);
+  const fim = addDays(inicio, 6);
+  return `${format(inicio, "dd MMM", { locale: ptBR })} — ${format(fim, "dd MMM", { locale: ptBR })}`;
 }
