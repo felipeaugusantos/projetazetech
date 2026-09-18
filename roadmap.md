@@ -53,3 +53,4 @@
 
 - [x] Conversa por entrega no portal, com histórico e anexos (cliente e equipe)
 - [ ] Notificações por e-mail ao cliente (aguardando domínio de envio do cliente)
+- [x] Painel interno de Relatórios por projeto (progresso x prazo, pendências, entregas, tabela e exportação CSV)
