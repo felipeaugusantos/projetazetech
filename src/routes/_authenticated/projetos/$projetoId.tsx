@@ -47,13 +47,14 @@ export const Route = createFileRoute("/_authenticated/projetos/$projetoId")({
   component: DetalheProjeto,
 });
 
-type Aba = "visao" | "fases" | "tarefas" | "equipe" | "riscos" | "historico";
+type Aba = "visao" | "fases" | "tarefas" | "equipe" | "orcamento" | "riscos" | "historico";
 
 const ABAS: { id: Aba; label: string }[] = [
   { id: "visao", label: "Visão geral" },
   { id: "fases", label: "Fases" },
   { id: "tarefas", label: "Tarefas" },
   { id: "equipe", label: "Equipe" },
+  { id: "orcamento", label: "Orçamento" },
   { id: "riscos", label: "Riscos" },
   { id: "historico", label: "Histórico" },
 ];
