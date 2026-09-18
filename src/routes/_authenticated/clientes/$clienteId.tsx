@@ -145,6 +145,10 @@ function DetalheCliente() {
 
         <PortalAcessos clienteId={clienteId} />
 
+        <PortalTema clienteId={clienteId} clienteNome={cliente?.nome ?? ""} />
+
+
+
 
 
         <Painel>
