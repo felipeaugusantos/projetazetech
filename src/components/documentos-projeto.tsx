@@ -86,24 +86,24 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
     mutationFn: async (doc: Documento) => {
       const { error } = await supabase
         .from("documentos")
-        .update({ visivel_cliente: !doc.visivel_cliente })
+        .update({ solicita_portal: !doc.solicita_portal })
         .eq("id", doc.id);
       if (error) throw error;
       await auditar({
         entidade: "documento",
         entidade_id: doc.id,
         acao: "atualizou",
-        campo: "visivel_cliente",
-        valor_anterior: String(doc.visivel_cliente),
-        valor_novo: String(!doc.visivel_cliente),
+        campo: "solicita_portal",
+        valor_anterior: String(doc.solicita_portal),
+        valor_novo: String(!doc.solicita_portal),
         projeto_id: projetoId,
       });
     },
     onSuccess: () => {
       invalidar();
-      toast.success("Visibilidade atualizada.");
+      toast.success("Pedido de liberação atualizado. O portal só exibe depois da aprovação.");
     },
-    onError: () => toast.error("Não foi possível alterar a visibilidade."),
+    onError: () => toast.error("Não foi possível alterar a liberação."),
   });
 
   const remover = useMutation({
