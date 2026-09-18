@@ -57,6 +57,8 @@ function AcessoCliente() {
       await supabase.auth.signOut();
       throw new Error("Este e-mail ainda não foi autorizado. Fale com a equipe responsável pelo seu projeto.");
     }
+    await registrarEventoPortal("login");
+    sessionStorage.setItem("portal:acesso-registrado", "1");
     navigate({ to: "/portal", replace: true });
   }
 
