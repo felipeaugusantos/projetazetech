@@ -33,9 +33,12 @@ const NAV = [
   { to: "/clientes", label: "Clientes", icon: Building2 },
   { to: "/projetos", label: "Projetos", icon: FolderKanban },
   { to: "/tarefas", label: "Tarefas", icon: ListChecks },
+  { to: "/cronograma", label: "Cronograma", icon: GanttChartSquare },
   { to: "/calendario", label: "Calendário", icon: CalendarDays },
   { to: "/equipe", label: "Equipe", icon: Users },
+  { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
+  { to: "/riscos", label: "Riscos", icon: ShieldAlert },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
