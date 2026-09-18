@@ -134,6 +134,24 @@ export function useEquipe() {
   });
 }
 
+/** Fases de todos os projetos da empresa, para painéis consolidados. */
+export function useFasesTodas() {
+  const { perfil } = useAuth();
+  return useQuery({
+    queryKey: ["fases", "todas", perfil?.tenant_id],
+    enabled: !!perfil,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("projeto_fases")
+        .select("id, projeto_id, nome, ordem, data_inicio, prazo, status, progresso")
+        .is("deleted_at", null)
+        .order("ordem", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
 export function useFases(projetoId: string) {
   const { perfil } = useAuth();
   return useQuery({
