@@ -7,6 +7,8 @@ import { useProjetos, useTarefas } from "@/lib/dados";
 import { PROJETO_STATUS, SAUDE, calcularSaude, fmtData, fmtMoeda } from "@/lib/enzova";
 import { Avatar, Indicador, Painel, Pill, Progresso, TituloPagina, Vazio } from "@/components/kit";
 import { PortalAcessos } from "@/components/portal-acessos";
+import { PortalTema } from "@/components/portal-tema";
+
 
 
 export const Route = createFileRoute("/_authenticated/clientes/$clienteId")({
