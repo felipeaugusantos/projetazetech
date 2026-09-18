@@ -122,7 +122,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
               <div className="leading-tight">
                 <div className="font-display text-[15px] font-bold">Projeta</div>
-                <div className="-mt-0.5 text-[11px] text-muted-foreground">Projects</div>
+                <div className="-mt-0.5 text-[11px] text-muted-foreground">Gestão de projetos</div>
               </div>
               <button className="ml-auto lg:hidden" onClick={() => setMenuAberto(false)} aria-label="Fechar menu">
                 <X className="size-4 text-muted-foreground" />
