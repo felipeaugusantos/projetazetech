@@ -29,6 +29,7 @@ import { Route as AuthenticatedSatisfacaoRouteImport } from './routes/_authentic
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as PortalProjetoIdRouteImport } from './routes/portal/$projetoId'
+import { Route as PortalSenhaRouteImport } from './routes/portal/senha'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
 import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
@@ -135,6 +136,11 @@ const PortalProjetoIdRoute = PortalProjetoIdRouteImport.update({
   path: '/$projetoId',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalSenhaRoute = PortalSenhaRouteImport.update({
+  id: '/senha',
+  path: '/senha',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AuthenticatedClientesIndexRoute =
   AuthenticatedClientesIndexRouteImport.update({
     id: '/clientes/',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/senha': typeof PortalSenhaRoute
   '/portal/': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/senha': typeof PortalSenhaRoute
   '/portal': typeof PortalIndexRoute
   '/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/_authenticated/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/senha': typeof PortalSenhaRoute
   '/portal/': typeof PortalIndexRoute
   '/_authenticated/clientes/$clienteId': typeof AuthenticatedClientesClienteIdRoute
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
+    | '/portal/senha'
     | '/portal/'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
+    | '/portal/senha'
     | '/portal'
     | '/clientes/$clienteId'
     | '/projetos/$projetoId'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/_authenticated/satisfacao'
     | '/_authenticated/tarefas'
     | '/portal/$projetoId'
+    | '/portal/senha'
     | '/portal/'
     | '/_authenticated/clientes/$clienteId'
     | '/_authenticated/projetos/$projetoId'
@@ -465,6 +477,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalProjetoIdRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/portal/senha': {
+      id: '/portal/senha'
+      path: '/senha'
+      fullPath: '/portal/senha'
+      preLoaderRoute: typeof PortalSenhaRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/_authenticated/clientes/': {
       id: '/_authenticated/clientes/'
       path: '/clientes'
@@ -539,11 +558,13 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface PortalRouteChildren {
   PortalProjetoIdRoute: typeof PortalProjetoIdRoute
+  PortalSenhaRoute: typeof PortalSenhaRoute
   PortalIndexRoute: typeof PortalIndexRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
   PortalProjetoIdRoute: PortalProjetoIdRoute,
+  PortalSenhaRoute: PortalSenhaRoute,
   PortalIndexRoute: PortalIndexRoute,
 }
 

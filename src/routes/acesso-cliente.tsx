@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BotaoPrimario, Campo, inputClasses } from "@/components/kit";
-import { vincularPortal } from "@/lib/portal";
+import { PORTAL_SESSAO_EXPIRADA, registrarEventoPortal, vincularPortal } from "@/lib/portal";
 
 export const Route = createFileRoute("/acesso-cliente")({
   ssr: false,
@@ -37,6 +37,13 @@ function AcessoCliente() {
   const [carregando, setCarregando] = useState(false);
 
   useEffect(() => {
+    if (sessionStorage.getItem(PORTAL_SESSAO_EXPIRADA)) {
+      sessionStorage.removeItem(PORTAL_SESSAO_EXPIRADA);
+      toast.info("Sua sessão foi encerrada por inatividade. Entre novamente para continuar.");
+    }
+  }, []);
+
+  useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       const ok = await vincularPortal().catch(() => false);
@@ -50,6 +57,8 @@ function AcessoCliente() {
       await supabase.auth.signOut();
       throw new Error("Este e-mail ainda não foi autorizado. Fale com a equipe responsável pelo seu projeto.");
     }
+    await registrarEventoPortal("login");
+    sessionStorage.setItem("portal:acesso-registrado", "1");
     navigate({ to: "/portal", replace: true });
   }
 

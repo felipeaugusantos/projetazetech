@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BotaoPrimario, Campo, inputClasses } from "@/components/kit";
+import { registrarEventoPortal } from "@/lib/portal";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
@@ -35,7 +36,14 @@ function ResetPassword() {
       const { error } = await supabase.auth.updateUser({ password: senha });
       if (error) throw error;
       toast.success("Senha atualizada com sucesso.");
-      navigate({ to: "/dashboard", replace: true });
+      // Clientes do portal voltam para o portal; equipe interna vai para o painel.
+      const { data: ehPortal } = await supabase.rpc("is_portal_user");
+      if (ehPortal === true) {
+        await registrarEventoPortal("senha_alterada");
+        navigate({ to: "/portal", replace: true });
+      } else {
+        navigate({ to: "/dashboard", replace: true });
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Não foi possível atualizar a senha.");
     } finally {

@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Smile, Star } from "lucide-react";
+import { Download, Smile, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { fmtData } from "@/lib/enzova";
-import { Indicador, Painel, Pill, TituloPagina, Vazio, inputClasses } from "@/components/kit";
+import { BotaoSecundario, Indicador, Painel, Pill, TituloPagina, Vazio, inputClasses } from "@/components/kit";
 
 export const Route = createFileRoute("/_authenticated/satisfacao")({
   head: () => ({
@@ -54,9 +54,63 @@ function Estrelas({ valor }: { valor: number }) {
   );
 }
 
+const PERIODOS = [
+  { id: "todos", label: "Todo o período", dias: null },
+  { id: "30", label: "Últimos 30 dias", dias: 30 },
+  { id: "90", label: "Últimos 90 dias", dias: 90 },
+  { id: "365", label: "Últimos 12 meses", dias: 365 },
+] as const;
+
+function celulaCsv(valor: string | number | null) {
+  const texto = valor === null ? "" : String(valor);
+  return `"${texto.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+}
+
+function exportarCsv(linhas: Resposta[]) {
+  const cabecalho = [
+    "Data",
+    "Cliente",
+    "Projeto",
+    "Codigo",
+    "Contato",
+    "Satisfacao geral",
+    "Prazo",
+    "Qualidade",
+    "Comunicacao",
+    "Recomendaria",
+    "Comentario",
+  ];
+  const corpo = linhas.map((r) =>
+    [
+      fmtData(r.created_at, "dd/MM/yyyy"),
+      r.clientes?.nome ?? "",
+      r.projetos?.nome ?? "",
+      r.projetos?.codigo ?? "",
+      r.portal_acessos?.nome ?? "",
+      r.nota_geral,
+      r.nota_prazo,
+      r.nota_qualidade,
+      r.nota_comunicacao,
+      r.recomendaria,
+      r.comentario,
+    ]
+      .map(celulaCsv)
+      .join(";"),
+  );
+  const csv = `\ufeff${[cabecalho.join(";"), ...corpo].join("\r\n")}`;
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `satisfacao-clientes-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function Satisfacao() {
   const { can } = useAuth();
   const [cliente, setCliente] = useState("todos");
+  const [projeto, setProjeto] = useState("todos");
+  const [periodo, setPeriodo] = useState<string>("todos");
 
   const { data: respostas } = useQuery({
     queryKey: ["pesquisas-satisfacao"],
@@ -79,7 +133,25 @@ function Satisfacao() {
     return [...mapa.entries()];
   }, [lista]);
 
-  const filtradas = cliente === "todos" ? lista : lista.filter((r) => r.clientes?.id === cliente);
+  const projetos = useMemo(() => {
+    const mapa = new Map<string, string>();
+    for (const r of lista) {
+      if (!r.projetos) continue;
+      if (cliente !== "todos" && r.clientes?.id !== cliente) continue;
+      mapa.set(r.projetos.id, `${r.projetos.codigo} · ${r.projetos.nome}`);
+    }
+    return [...mapa.entries()];
+  }, [lista, cliente]);
+
+  const dias = PERIODOS.find((p) => p.id === periodo)?.dias ?? null;
+  const limite = dias ? Date.now() - dias * 86_400_000 : null;
+
+  const filtradas = lista.filter((r) => {
+    if (cliente !== "todos" && r.clientes?.id !== cliente) return false;
+    if (projeto !== "todos" && r.projetos?.id !== projeto) return false;
+    if (limite && new Date(r.created_at).getTime() < limite) return false;
+    return true;
+  });
 
   const geral = media(filtradas.map((r) => r.nota_geral));
   const prazo = media(filtradas.map((r) => r.nota_prazo));
@@ -109,11 +181,21 @@ function Satisfacao() {
         titulo="Satisfação do cliente"
         descricao="Avaliações enviadas pelos clientes no portal após a conclusão dos projetos."
         acoes={
-          clientes.length > 1 ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <select className={`${inputClasses} w-auto`} value={periodo} onChange={(e) => setPeriodo(e.target.value)}>
+              {PERIODOS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
             <select
               className={`${inputClasses} w-auto`}
               value={cliente}
-              onChange={(e) => setCliente(e.target.value)}
+              onChange={(e) => {
+                setCliente(e.target.value);
+                setProjeto("todos");
+              }}
             >
               <option value="todos">Todos os clientes</option>
               {clientes.map(([id, nome]) => (
@@ -122,7 +204,22 @@ function Satisfacao() {
                 </option>
               ))}
             </select>
-          ) : null
+            <select className={`${inputClasses} w-auto`} value={projeto} onChange={(e) => setProjeto(e.target.value)}>
+              <option value="todos">Todos os projetos</option>
+              {projetos.map(([id, nome]) => (
+                <option key={id} value={id}>
+                  {nome}
+                </option>
+              ))}
+            </select>
+            <BotaoSecundario
+              onClick={() => exportarCsv(filtradas)}
+              disabled={filtradas.length === 0}
+              className="px-3 py-2"
+            >
+              <Download className="size-4" /> Exportar CSV
+            </BotaoSecundario>
+          </div>
         }
       />
 
