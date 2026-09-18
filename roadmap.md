@@ -40,7 +40,11 @@
 - [x] Aprovação de entregas pelo cliente e conversa com a equipe (notifica o gerente + auditoria)
 - [x] Documentos por projeto com controle de visibilidade ao cliente (aba Documentos)
 - [x] Gestão de acessos na ficha do cliente (autorizar, suspender, reativar)
+- [x] Pesquisa de satisfação de projetos concluídos (notas, NPS, comentário) + página interna `/satisfacao`
+- [x] Relatório PDF do projeto pelo portal (progresso, fases, prazos, entregas, documentos; sem custos)
+- [x] Personalização do portal por cliente (logotipo, nome e cores) com dados isolados
 
 ## Fases seguintes (não iniciar sem instrução)
 - Fase 4 (restante): change requests, reuniões, automações, IA, integrações, API pública
+
 
