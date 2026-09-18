@@ -149,6 +149,21 @@ function AprovacaoDocumentos() {
     (d) => (filtro === "todos" || d.aprovacao_status === filtro) && (!projetoId || d.projeto_id === projetoId),
   );
 
+  const porProjeto = useMemo(() => {
+    const mapa = new Map<string, { nome: string; projeto: string; Aprovados: number; Pendentes: number; Recusados: number }>();
+    for (const d of documentos) {
+      const rotulo = nomeProjeto(d.projeto_id);
+      const atual =
+        mapa.get(d.projeto_id) ??
+        { nome: rotulo.split(" · ")[0] ?? rotulo, projeto: rotulo, Aprovados: 0, Pendentes: 0, Recusados: 0 };
+      if (d.aprovacao_status === "aprovado") atual.Aprovados += 1;
+      else if (d.aprovacao_status === "rejeitado") atual.Recusados += 1;
+      else atual.Pendentes += 1;
+      mapa.set(d.projeto_id, atual);
+    }
+    return Array.from(mapa.values()).sort((a, b) => b.Pendentes - a.Pendentes);
+  }, [documentos, nomeProjeto]);
+
   const pendentes = documentos.filter((d) => d.aprovacao_status === "pendente").length;
   const aprovados = documentos.filter((d) => d.aprovacao_status === "aprovado").length;
   const recusados = documentos.filter((d) => d.aprovacao_status === "rejeitado").length;
