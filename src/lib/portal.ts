@@ -376,3 +376,40 @@ export function usePortalPainel() {
     },
   });
 }
+
+/* ------------------------ Satisfação (portal) ------------------------ */
+
+export type PortalSatisfacaoItem = {
+  id: string;
+  projeto: string;
+  projeto_id: string;
+  codigo: string;
+  nota_geral: number;
+  nota_prazo: number | null;
+  nota_qualidade: number | null;
+  nota_comunicacao: number | null;
+  recomendaria: number | null;
+  comentario: string | null;
+  created_at: string;
+};
+
+export type PortalSatisfacao = {
+  respostas: number;
+  media_geral: number | null;
+  media_prazo: number | null;
+  media_qualidade: number | null;
+  media_comunicacao: number | null;
+  media_recomendaria: number | null;
+  itens: PortalSatisfacaoItem[];
+};
+
+export function usePortalSatisfacao() {
+  return useQuery({
+    queryKey: ["portal", "satisfacao"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("portal_satisfacao");
+      if (error) throw error;
+      return data as unknown as PortalSatisfacao;
+    },
+  });
+}
