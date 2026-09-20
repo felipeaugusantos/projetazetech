@@ -23,6 +23,7 @@ export const Route = createFileRoute("/portal/painel")({
 
 function PortalPainelPage() {
   const { data, isLoading } = usePortalPainel();
+  const { data: satisfacao } = usePortalSatisfacao();
   const [baixando, setBaixando] = useState<string | null>(null);
 
   const prazos = data?.prazos ?? [];
