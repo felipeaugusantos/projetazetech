@@ -36,6 +36,7 @@ import { Route as AuthenticatedSatisfacaoRouteImport } from './routes/_authentic
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as PortalIndexRouteImport } from './routes/portal/index'
 import { Route as PortalProjetoIdRouteImport } from './routes/portal/$projetoId'
+import { Route as PortalPainelRouteImport } from './routes/portal/painel'
 import { Route as PortalSenhaRouteImport } from './routes/portal/senha'
 import { Route as RelatorioTokenRouteImport } from './routes/relatorio.$token'
 import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authenticated/clientes/index'
@@ -181,6 +182,11 @@ const PortalProjetoIdRoute = PortalProjetoIdRouteImport.update({
   path: '/$projetoId',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalPainelRoute = PortalPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => PortalRoute,
+} as any)
 const PortalSenhaRoute = PortalSenhaRouteImport.update({
   id: '/senha',
   path: '/senha',
@@ -242,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/painel': typeof PortalPainelRoute
   '/portal/senha': typeof PortalSenhaRoute
   '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal/': typeof PortalIndexRoute
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/painel': typeof PortalPainelRoute
   '/portal/senha': typeof PortalSenhaRoute
   '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal': typeof PortalIndexRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/_authenticated/satisfacao': typeof AuthenticatedSatisfacaoRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/portal/$projetoId': typeof PortalProjetoIdRoute
+  '/portal/painel': typeof PortalPainelRoute
   '/portal/senha': typeof PortalSenhaRoute
   '/relatorio/$token': typeof RelatorioTokenRoute
   '/portal/': typeof PortalIndexRoute
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
+    | '/portal/painel'
     | '/portal/senha'
     | '/relatorio/$token'
     | '/portal/'
@@ -380,6 +390,7 @@ export interface FileRouteTypes {
     | '/satisfacao'
     | '/tarefas'
     | '/portal/$projetoId'
+    | '/portal/painel'
     | '/portal/senha'
     | '/relatorio/$token'
     | '/portal'
@@ -415,6 +426,7 @@ export interface FileRouteTypes {
     | '/_authenticated/satisfacao'
     | '/_authenticated/tarefas'
     | '/portal/$projetoId'
+    | '/portal/painel'
     | '/portal/senha'
     | '/relatorio/$token'
     | '/portal/'
@@ -625,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalProjetoIdRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/portal/painel': {
+      id: '/portal/painel'
+      path: '/painel'
+      fullPath: '/portal/painel'
+      preLoaderRoute: typeof PortalPainelRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/portal/senha': {
       id: '/portal/senha'
       path: '/senha'
@@ -727,12 +746,14 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface PortalRouteChildren {
   PortalProjetoIdRoute: typeof PortalProjetoIdRoute
+  PortalPainelRoute: typeof PortalPainelRoute
   PortalSenhaRoute: typeof PortalSenhaRoute
   PortalIndexRoute: typeof PortalIndexRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
   PortalProjetoIdRoute: PortalProjetoIdRoute,
+  PortalPainelRoute: PortalPainelRoute,
   PortalSenhaRoute: PortalSenhaRoute,
   PortalIndexRoute: PortalIndexRoute,
 }
