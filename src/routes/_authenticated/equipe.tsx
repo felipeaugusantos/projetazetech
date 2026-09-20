@@ -59,7 +59,7 @@ function usePapeisDisponiveis() {
 }
 
 function Equipe() {
-  const { can } = useAuth();
+  const { can, carregando } = useAuth();
   const { data: equipe = [], isLoading } = useEquipe();
   const { data: tarefas = [] } = useTarefas();
   const [editando, setEditando] = useState<Pessoa | null>(null);
