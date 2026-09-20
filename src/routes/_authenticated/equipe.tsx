@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Power, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useEquipe, useTarefas, registrarAuditoria } from "@/lib/dados";
@@ -59,7 +59,8 @@ function usePapeisDisponiveis() {
 }
 
 function Equipe() {
-  const { can, carregando } = useAuth();
+  const { can, carregando, perfil } = useAuth();
+  const queryClient = useQueryClient();
   const { data: equipe = [], isLoading } = useEquipe();
   const { data: tarefas = [] } = useTarefas();
   const [editando, setEditando] = useState<Pessoa | null>(null);
@@ -100,6 +101,58 @@ function Equipe() {
   const capacidadeTotal = equipe.reduce((acc, m) => acc + Number(m.capacidade_semanal ?? 40), 0);
   const alocado = abertas.reduce((acc, t) => acc + Number(t.horas_estimadas ?? 0), 0);
   const semCusto = equipe.filter((m) => !m.custo_hora).length;
+
+  async function atualizarPessoa(
+    pessoa: Pessoa,
+    dados: { ativo?: boolean; deleted_at?: string | null },
+    acao: string,
+    mensagem: string,
+  ): Promise<void> {
+    if (!perfil) return;
+    const { error } = await supabase.from("profiles").update(dados).eq("id", pessoa.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    await registrarAuditoria({
+      tenant_id: perfil.tenant_id,
+      profile_id: perfil.id,
+      entidade: "pessoa",
+      entidade_id: pessoa.id,
+      acao,
+      valor_novo: pessoa.nome,
+    });
+    void queryClient.invalidateQueries({ queryKey: ["equipe"] });
+    toast.success(mensagem);
+  }
+
+  function alternarAtivo(pessoa: Pessoa) {
+    if (pessoa.id === perfil?.id) {
+      toast.error("Você não pode inativar o seu próprio cadastro.");
+      return;
+    }
+    void atualizarPessoa(
+      pessoa,
+      { ativo: !pessoa.ativo },
+      pessoa.ativo ? "inativou" : "reativou",
+      pessoa.ativo ? `${pessoa.nome} foi inativado.` : `${pessoa.nome} foi reativado.`,
+    );
+  }
+
+  function excluir(pessoa: Pessoa) {
+    if (pessoa.id === perfil?.id) {
+      toast.error("Você não pode excluir o seu próprio cadastro.");
+      return;
+    }
+    if (!window.confirm(`Excluir ${pessoa.nome} da equipe? O histórico de horas e tarefas é preservado.`)) return;
+    void atualizarPessoa(
+      pessoa,
+      { ativo: false, deleted_at: new Date().toISOString() },
+      "excluiu",
+      `${pessoa.nome} foi removido da equipe.`,
+    );
+  }
+
 
   return (
     <>
@@ -166,13 +219,29 @@ function Equipe() {
                   <div className="ml-auto flex items-center gap-1.5">
                     {!m.ativo ? <Pill className="bg-secondary text-muted-foreground">Inativo</Pill> : null}
                     {podeGerenciar ? (
-                      <button
-                        title="Editar cadastro"
-                        onClick={() => setEditando(m as Pessoa)}
-                        className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
-                      >
-                        <Pencil className="size-4" />
-                      </button>
+                      <>
+                        <button
+                          title="Editar cadastro"
+                          onClick={() => setEditando(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                        >
+                          <Pencil className="size-4" />
+                        </button>
+                        <button
+                          title={m.ativo ? "Inativar funcionário" : "Reativar funcionário"}
+                          onClick={() => alternarAtivo(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                        >
+                          <Power className="size-4" />
+                        </button>
+                        <button
+                          title="Excluir funcionário"
+                          onClick={() => excluir(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-danger"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </>
                     ) : null}
                   </div>
                 </div>
