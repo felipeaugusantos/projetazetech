@@ -109,11 +109,11 @@ function Equipe() {
         descricao="Cadastre cargo, perfil de acesso e custo por hora — é o custo por hora que alimenta o gráfico de Custos por equipe."
         acoes={
           <BotaoPrimario
-            onClick={() =>
-              podeGerenciar
-                ? setNovo(true)
-                : toast.error("Seu perfil de acesso não permite cadastrar funcionários.")
-            }
+            onClick={() => {
+              if (podeGerenciar) return setNovo(true);
+              if (carregando) return toast.info("Carregando seu perfil de acesso… tente novamente em instantes.");
+              toast.error("Seu perfil de acesso não permite cadastrar funcionários.");
+            }}
           >
             <Plus className="size-4" /> Cadastrar funcionário
           </BotaoPrimario>
