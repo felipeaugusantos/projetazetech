@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CalendarClock, Clock, Download, FileCheck2, Users } from "lucide-react";
+import { CalendarClock, Clock, Download, FileCheck2, Star, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, Indicador, Painel, Pill, TituloPagina, Vazio } from "@/components/kit";
 import { MARCO_STATUS, diasRestantes, fmtData, fmtHoras } from "@/lib/enzova";
-import { baixarDocumento, usePortalPainel } from "@/lib/portal";
+import { baixarDocumento, usePortalPainel, usePortalSatisfacao } from "@/lib/portal";
 
 export const Route = createFileRoute("/portal/painel")({
   head: () => ({
