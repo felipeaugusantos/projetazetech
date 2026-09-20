@@ -205,13 +205,29 @@ function Equipe() {
                   <div className="ml-auto flex items-center gap-1.5">
                     {!m.ativo ? <Pill className="bg-secondary text-muted-foreground">Inativo</Pill> : null}
                     {podeGerenciar ? (
-                      <button
-                        title="Editar cadastro"
-                        onClick={() => setEditando(m as Pessoa)}
-                        className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
-                      >
-                        <Pencil className="size-4" />
-                      </button>
+                      <>
+                        <button
+                          title="Editar cadastro"
+                          onClick={() => setEditando(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                        >
+                          <Pencil className="size-4" />
+                        </button>
+                        <button
+                          title={m.ativo ? "Inativar funcionário" : "Reativar funcionário"}
+                          onClick={() => alternarAtivo(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-brand"
+                        >
+                          <Power className="size-4" />
+                        </button>
+                        <button
+                          title="Excluir funcionário"
+                          onClick={() => excluir(m as Pessoa)}
+                          className="rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-danger"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </>
                     ) : null}
                   </div>
                 </div>
