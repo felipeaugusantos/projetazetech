@@ -127,7 +127,10 @@ function Equipe() {
   }
 
   function alternarAtivo(pessoa: Pessoa) {
-    if (pessoa.id === perfil?.id) return toast.error("Você não pode inativar o seu próprio cadastro.");
+    if (pessoa.id === perfil?.id) {
+      toast.error("Você não pode inativar o seu próprio cadastro.");
+      return;
+    }
     void atualizarPessoa(
       pessoa,
       { ativo: !pessoa.ativo },
