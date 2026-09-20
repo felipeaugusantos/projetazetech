@@ -127,6 +127,13 @@
       "when": 1789873825538,
       "tag": "0017_portal_painel_rpc",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1789874141956,
+      "tag": "0018_portal_satisfacao_rpc",
+      "breakpoints": true
     }
   ]
 }

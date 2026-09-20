@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CalendarClock, Clock, Download, FileCheck2, Users } from "lucide-react";
+import { CalendarClock, Clock, Download, FileCheck2, Star, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, Indicador, Painel, Pill, TituloPagina, Vazio } from "@/components/kit";
 import { MARCO_STATUS, diasRestantes, fmtData, fmtHoras } from "@/lib/enzova";
-import { baixarDocumento, usePortalPainel } from "@/lib/portal";
+import { baixarDocumento, usePortalPainel, usePortalSatisfacao } from "@/lib/portal";
 
 export const Route = createFileRoute("/portal/painel")({
   head: () => ({
@@ -23,6 +23,7 @@ export const Route = createFileRoute("/portal/painel")({
 
 function PortalPainelPage() {
   const { data, isLoading } = usePortalPainel();
+  const { data: satisfacao } = usePortalSatisfacao();
   const [baixando, setBaixando] = useState<string | null>(null);
 
   const prazos = data?.prazos ?? [];
@@ -73,7 +74,64 @@ function PortalPainelPage() {
         <Indicador titulo="Entregas em atraso" valor={atrasados} tom={atrasados ? "negativo" : "positivo"} />
         <Indicador titulo="Documentos aprovados" valor={documentos.length} />
         <Indicador titulo="Horas dedicadas" valor={fmtHoras(totalHoras)} detalhe={`${pessoas.length} pessoas`} />
+        <Indicador
+          titulo="Sua satisfação média"
+          valor={satisfacao?.media_geral != null ? `${satisfacao.media_geral.toFixed(1)}/5` : "—"}
+          detalhe={
+            satisfacao?.respostas
+              ? `${satisfacao.respostas} ${satisfacao.respostas === 1 ? "avaliação" : "avaliações"} enviada${satisfacao.respostas === 1 ? "" : "s"}`
+              : "Nenhuma avaliação enviada ainda"
+          }
+          tom={
+            satisfacao?.media_geral == null
+              ? "neutro"
+              : satisfacao.media_geral >= 4
+                ? "positivo"
+                : satisfacao.media_geral >= 3
+                  ? "atencao"
+                  : "negativo"
+          }
+        />
       </div>
+
+      {satisfacao?.itens?.length ? (
+        <Painel className="mt-6">
+          <div className="mb-3 flex items-center gap-2 font-display text-[15px] font-bold">
+            <Star className="size-4 text-brand" /> Suas avaliações
+          </div>
+          <ul className="divide-y divide-border/70">
+            {satisfacao.itens.map((a) => (
+              <li key={a.id} className="py-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <Link
+                    to="/portal/$projetoId"
+                    params={{ projetoId: a.projeto_id }}
+                    className="text-[13px] font-semibold hover:text-brand"
+                  >
+                    {a.codigo} · {a.projeto}
+                  </Link>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-0.5">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <Star
+                          key={n}
+                          className={
+                            n <= a.nota_geral ? "size-3.5 fill-brand text-brand" : "size-3.5 text-muted-foreground/35"
+                          }
+                        />
+                      ))}
+                    </span>
+                    <Pill className="bg-secondary text-muted-foreground">{fmtData(a.created_at, "dd MMM yyyy")}</Pill>
+                  </div>
+                </div>
+                {a.comentario ? (
+                  <p className="mt-1.5 text-[12.5px] text-muted-foreground">“{a.comentario}”</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </Painel>
+      ) : null}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Painel>

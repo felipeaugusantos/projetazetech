@@ -2457,6 +2457,7 @@ export type Database = {
         Returns: string
       }
       portal_resumo: { Args: never; Returns: Json }
+      portal_satisfacao: { Args: never; Returns: Json }
       portal_vincular: { Args: never; Returns: boolean }
       relatorio_link_abrir: {
         Args: { p_senha?: string; p_token: string; p_user_agent?: string }
