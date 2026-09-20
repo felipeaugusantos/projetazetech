@@ -140,7 +140,10 @@ function Equipe() {
   }
 
   function excluir(pessoa: Pessoa) {
-    if (pessoa.id === perfil?.id) return toast.error("Você não pode excluir o seu próprio cadastro.");
+    if (pessoa.id === perfil?.id) {
+      toast.error("Você não pode excluir o seu próprio cadastro.");
+      return;
+    }
     if (!window.confirm(`Excluir ${pessoa.nome} da equipe? O histórico de horas e tarefas é preservado.`)) return;
     void atualizarPessoa(
       pessoa,
