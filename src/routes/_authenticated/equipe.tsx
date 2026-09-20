@@ -102,10 +102,18 @@ function Equipe() {
   const alocado = abertas.reduce((acc, t) => acc + Number(t.horas_estimadas ?? 0), 0);
   const semCusto = equipe.filter((m) => !m.custo_hora).length;
 
-  async function atualizarPessoa(pessoa: Pessoa, dados: Record<string, unknown>, acao: string, mensagem: string) {
+  async function atualizarPessoa(
+    pessoa: Pessoa,
+    dados: { ativo?: boolean; deleted_at?: string | null },
+    acao: string,
+    mensagem: string,
+  ): Promise<void> {
     if (!perfil) return;
     const { error } = await supabase.from("profiles").update(dados).eq("id", pessoa.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     await registrarAuditoria({
       tenant_id: perfil.tenant_id,
       profile_id: perfil.id,
