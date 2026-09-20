@@ -331,3 +331,48 @@ export async function baixarAnexoPortal(anexoId: string) {
   if (assinada.error) throw assinada.error;
   return assinada.data.signedUrl;
 }
+
+/* ------------------------ Painel do cliente ------------------------ */
+
+export type PortalPrazo = {
+  id: string;
+  tipo: "entrega" | "projeto";
+  nome: string;
+  projeto: string;
+  projeto_id: string;
+  codigo: string;
+  data: string | null;
+  status: MarcoStatus | "previsto" | "atingido";
+};
+
+export type PortalDocumentoAprovado = {
+  id: string;
+  nome: string;
+  categoria: string;
+  projeto: string;
+  projeto_id: string;
+  codigo: string;
+  aprovado_em: string | null;
+  created_at: string;
+};
+
+export type PortalHorasPessoa = { profile_id: string; nome: string; cargo: string | null; horas: number };
+export type PortalHorasProjeto = { projeto_id: string; codigo: string; projeto: string; horas: number };
+
+export type PortalPainel = {
+  prazos: PortalPrazo[];
+  documentos: PortalDocumentoAprovado[];
+  horas_por_pessoa: PortalHorasPessoa[];
+  horas_por_projeto: PortalHorasProjeto[];
+};
+
+export function usePortalPainel() {
+  return useQuery({
+    queryKey: ["portal", "painel"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("portal_painel");
+      if (error) throw error;
+      return data as unknown as PortalPainel;
+    },
+  });
+}

@@ -2438,6 +2438,7 @@ export type Database = {
         Returns: string
       }
       portal_marco_comentarios: { Args: { p_marco_id: string }; Returns: Json }
+      portal_painel: { Args: never; Returns: Json }
       portal_projeto: { Args: { p_projeto_id: string }; Returns: Json }
       portal_registrar_evento: {
         Args: { p_evento: string; p_user_agent?: string }

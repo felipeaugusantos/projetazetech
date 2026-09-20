@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { KeyRound, LogOut, Loader2 } from "lucide-react";
+import { KeyRound, LayoutDashboard, LogOut, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   PORTAL_INATIVIDADE_MIN,
@@ -122,6 +122,15 @@ function PortalLayout() {
                 {data?.cliente?.nome_fantasia ?? data?.cliente?.nome ?? ""}
               </div>
             </div>
+
+            <Link
+              to="/portal/painel"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-brand" }}
+            >
+              <LayoutDashboard className="size-4" />
+              <span className="hidden sm:inline">Painel</span>
+            </Link>
 
             <Link
               to="/portal/senha"
