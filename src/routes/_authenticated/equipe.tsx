@@ -102,6 +102,44 @@ function Equipe() {
   const alocado = abertas.reduce((acc, t) => acc + Number(t.horas_estimadas ?? 0), 0);
   const semCusto = equipe.filter((m) => !m.custo_hora).length;
 
+  async function atualizarPessoa(pessoa: Pessoa, dados: Record<string, unknown>, acao: string, mensagem: string) {
+    if (!perfil) return;
+    const { error } = await supabase.from("profiles").update(dados).eq("id", pessoa.id);
+    if (error) return toast.error(error.message);
+    await registrarAuditoria({
+      tenant_id: perfil.tenant_id,
+      profile_id: perfil.id,
+      entidade: "pessoa",
+      entidade_id: pessoa.id,
+      acao,
+      valor_novo: pessoa.nome,
+    });
+    void queryClient.invalidateQueries({ queryKey: ["equipe"] });
+    toast.success(mensagem);
+  }
+
+  function alternarAtivo(pessoa: Pessoa) {
+    if (pessoa.id === perfil?.id) return toast.error("Você não pode inativar o seu próprio cadastro.");
+    void atualizarPessoa(
+      pessoa,
+      { ativo: !pessoa.ativo },
+      pessoa.ativo ? "inativou" : "reativou",
+      pessoa.ativo ? `${pessoa.nome} foi inativado.` : `${pessoa.nome} foi reativado.`,
+    );
+  }
+
+  function excluir(pessoa: Pessoa) {
+    if (pessoa.id === perfil?.id) return toast.error("Você não pode excluir o seu próprio cadastro.");
+    if (!window.confirm(`Excluir ${pessoa.nome} da equipe? O histórico de horas e tarefas é preservado.`)) return;
+    void atualizarPessoa(
+      pessoa,
+      { ativo: false, deleted_at: new Date().toISOString() },
+      "excluiu",
+      `${pessoa.nome} foi removido da equipe.`,
+    );
+  }
+
+
   return (
     <>
       <TituloPagina
