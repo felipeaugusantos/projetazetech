@@ -36,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/clientes/")({
 });
 
 function Clientes() {
-  const { can } = useAuth();
+  const { can, carregando } = useAuth();
   const { data: clientes = [], isLoading } = useClientes();
   const { data: projetos = [] } = useProjetos();
   const [busca, setBusca] = useState("");
@@ -68,11 +68,15 @@ function Clientes() {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
             />
-            {can("cliente.criar") ? (
-              <BotaoPrimario onClick={() => setNovo(true)}>
-                <Plus className="size-4" /> Novo cliente
-              </BotaoPrimario>
-            ) : null}
+            <BotaoPrimario
+              onClick={() => {
+                if (can("cliente.criar")) return setNovo(true);
+                if (carregando) return toast.info("Carregando seu perfil de acesso… tente novamente em instantes.");
+                toast.error("Seu perfil de acesso não permite cadastrar clientes.");
+              }}
+            >
+              <Plus className="size-4" /> Cadastrar cliente
+            </BotaoPrimario>
           </>
         }
       />
