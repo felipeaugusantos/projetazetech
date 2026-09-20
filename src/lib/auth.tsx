@@ -94,6 +94,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setTenant(null);
         setPermissoes([]);
         setPapeis([]);
+        return;
+      }
+      if (event === "SIGNED_IN" || event === "USER_UPDATED" || event === "TOKEN_REFRESHED") {
+        // Recarrega perfil, papéis e permissões logo após entrar (evita permissões vazias).
+        setCarregando(true);
+        setTimeout(() => void carregarContexto(), 0);
       }
     });
 
