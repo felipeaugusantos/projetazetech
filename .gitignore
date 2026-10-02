@@ -30,3 +30,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files (Lovable gerencia o .env; não versionar segredos)
+.env
+.env.*
+!.env.example
