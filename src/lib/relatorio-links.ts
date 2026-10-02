@@ -24,6 +24,7 @@ export type StatusLink =
   | "expirado"
   | "revogado"
   | "limite"
+  | "bloqueado"
   | "nao_encontrado";
 
 export type RelatorioCompartilhado = PortalProjetoDetalhe & {

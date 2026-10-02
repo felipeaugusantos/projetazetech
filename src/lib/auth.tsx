@@ -26,6 +26,10 @@ type AuthState = {
   recarregar: () => Promise<void>;
 };
 
+/** Mensagem levantada por bootstrap_perfil quando não há convite para o e-mail. */
+export const SEM_CONVITE = "cadastro nao autorizado";
+export const SEM_CONVITE_FLAG = "projeta:sem-convite";
+
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -49,7 +53,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Garante que a conta autenticada tenha um perfil dentro de uma empresa.
     const nomeMeta = userData.user.user_metadata?.['nome'] as string | undefined;
-    await supabase.rpc("bootstrap_perfil", nomeMeta ? { _nome: nomeMeta } : {});
+    const { error: bootstrapError } = await supabase.rpc("bootstrap_perfil", nomeMeta ? { _nome: nomeMeta } : {});
+    if (bootstrapError?.message.includes(SEM_CONVITE)) {
+      // Conta sem convite: encerra a sessão e avisa na tela de login.
+      try {
+        sessionStorage.setItem(SEM_CONVITE_FLAG, "1");
+      } catch {
+        /* armazenamento indisponível */
+      }
+      await supabase.auth.signOut();
+      setCarregando(false);
+      return;
+    }
 
     const { data: perfilData } = await supabase
       .from("profiles")
