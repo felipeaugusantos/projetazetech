@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Info, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { SEM_CONVITE, SEM_CONVITE_FLAG } from "@/lib/auth";
 import { BotaoPrimario, Campo, inputClasses } from "@/components/kit";
 
 export const Route = createFileRoute("/auth")({
@@ -27,6 +28,29 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [semConvite, setSemConvite] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(SEM_CONVITE_FLAG)) {
+        sessionStorage.removeItem(SEM_CONVITE_FLAG);
+        setSemConvite(true);
+      }
+    } catch {
+      /* armazenamento indisponível */
+    }
+  }, []);
+
+  /** Confirma que a conta tem convite; sem ele, encerra a sessão e mostra o aviso. */
+  async function conviteValido() {
+    const { error } = await supabase.rpc("bootstrap_perfil");
+    if (error?.message.includes(SEM_CONVITE)) {
+      await supabase.auth.signOut();
+      setSemConvite(true);
+      return false;
+    }
+    return true;
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -37,10 +61,12 @@ function AuthPage() {
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
+    setSemConvite(false);
     try {
       if (modo === "entrar") {
         const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
         if (error) throw error;
+        if (!(await conviteValido())) return;
         toast.success("Bem-vindo de volta!");
         navigate({ to: "/dashboard", replace: true });
       } else if (modo === "criar") {
@@ -51,6 +77,7 @@ function AuthPage() {
         });
         if (error) throw error;
         if (data.session) {
+          if (!(await conviteValido())) return;
           toast.success("Conta criada!");
           navigate({ to: "/dashboard", replace: true });
         } else {
@@ -99,6 +126,20 @@ function AuthPage() {
               ? "Informe seu e-mail e enviaremos um link para definir uma nova senha."
               : "Acesse a gestão de clientes, projetos e tarefas da sua empresa."}
           </p>
+
+          {semConvite || modo === "criar" ? (
+            <div
+              role={semConvite ? "alert" : "note"}
+              className="mt-4 flex gap-2 rounded-xl border border-amber-300/60 bg-amber-50 px-3 py-2.5 text-[12.5px] text-amber-900"
+            >
+              <Info className="mt-0.5 size-4 shrink-0" />
+              <p>
+                {semConvite
+                  ? "Seu e-mail ainda não tem convite para este workspace, então o acesso não foi liberado. Peça ao administrador da sua empresa para cadastrar seu e-mail na equipe e entre novamente."
+                  : "O acesso ao workspace é somente por convite. Use o mesmo e-mail que o administrador da sua empresa cadastrou na equipe."}
+              </p>
+            </div>
+          ) : null}
 
           <form onSubmit={enviar} className="mt-5 space-y-3">
             {modo === "criar" ? (
