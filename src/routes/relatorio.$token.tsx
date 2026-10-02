@@ -47,6 +47,10 @@ const MENSAGENS: Record<string, { titulo: string; descricao: string }> = {
     titulo: "Limite de aberturas atingido",
     descricao: "Este link já foi aberto o número de vezes permitido.",
   },
+  bloqueado: {
+    titulo: "Muitas tentativas",
+    descricao: "Por segurança, o acesso foi bloqueado por 15 minutos. Tente novamente mais tarde.",
+  },
   nao_encontrado: {
     titulo: "Link inválido",
     descricao: "Confira se o endereço foi copiado por completo.",
