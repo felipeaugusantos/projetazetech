@@ -6,7 +6,7 @@ import { Check, Clock, Download, FileText, History, X } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useProjetos, registrarAuditoria } from "@/lib/dados";
+import { useProjetos } from "@/lib/dados";
 import { fmtData } from "@/lib/enzova";
 import {
   BotaoPrimario,
@@ -185,17 +185,6 @@ function AprovacaoDocumentos() {
         .eq("id", doc.id);
       if (error) throw error;
 
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "documento",
-        entidade_id: doc.id,
-        acao: decisao === "aprovado" ? "aprovou" : "recusou",
-        campo: "aprovacao_status",
-        valor_anterior: doc.aprovacao_status,
-        valor_novo: observacao ? `${decisao} — ${observacao}` : decisao,
-        projeto_id: doc.projeto_id,
-      });
 
       void queryClient.invalidateQueries({ queryKey: ["documentos"] });
       void queryClient.invalidateQueries({ queryKey: ["auditoria", "documentos"] });
@@ -375,6 +364,7 @@ function AprovacaoDocumentos() {
                         {hist.map((h) => (
                           <li key={h.id}>
                             {fmtData(h.created_at, "dd MMM yyyy HH:mm")} · {h.profiles?.nome ?? "Sistema"} {h.acao}
+                            {h.campo ? ` (${h.campo})` : ""}
                             {h.valor_novo ? ` — ${h.valor_novo}` : ""}
                           </li>
                         ))}

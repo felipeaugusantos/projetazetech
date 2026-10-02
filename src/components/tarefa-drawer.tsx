@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { CheckSquare, Link2, Plus, Square, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useEquipe, registrarAuditoria, type Tarefa } from "@/lib/dados";
+import { useEquipe, type Tarefa } from "@/lib/dados";
 import {
   KANBAN_COLUNAS,
   PRIORIDADES,
@@ -104,20 +104,6 @@ export function TarefaDrawer({
         })
         .eq("id", tarefa.id);
       if (error) throw error;
-      if (perfil) {
-        const campo = Object.keys(patch)[0] ?? "";
-        await registrarAuditoria({
-          tenant_id: perfil.tenant_id,
-          profile_id: perfil.id,
-          entidade: "tarefa",
-          entidade_id: tarefa.id,
-          acao: "alterado",
-          campo,
-          valor_anterior: String((tarefa as Record<string, unknown>)[campo] ?? ""),
-          valor_novo: String((patch as Record<string, unknown>)[campo] ?? ""),
-          projeto_id: tarefa.projeto_id,
-        });
-      }
     },
     onSuccess: () => {
       toast.success("Tarefa atualizada.");

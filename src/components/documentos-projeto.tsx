@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Download, Eye, EyeOff, FileText, Loader2, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useFases, registrarAuditoria } from "@/lib/dados";
+import { useFases } from "@/lib/dados";
 import { fmtData } from "@/lib/enzova";
 import { BotaoPrimario, Campo, Indicador, Painel, Pill, Vazio, inputClasses } from "@/components/kit";
 
@@ -64,18 +64,6 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
 
   const podeEditar = can("projeto.editar");
 
-  async function auditar(entrada: {
-    entidade: string;
-    entidade_id: string;
-    acao: string;
-    campo: string | null;
-    valor_anterior: string | null;
-    valor_novo: string | null;
-    projeto_id: string;
-  }) {
-    if (!perfil) return;
-    await registrarAuditoria({ ...entrada, tenant_id: perfil.tenant_id, profile_id: perfil.id });
-  }
   const visiveis = documentos.filter((d) => d.visivel_cliente).length;
 
   function invalidar() {
@@ -89,15 +77,6 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .update({ solicita_portal: !doc.solicita_portal })
         .eq("id", doc.id);
       if (error) throw error;
-      await auditar({
-        entidade: "documento",
-        entidade_id: doc.id,
-        acao: "atualizou",
-        campo: "solicita_portal",
-        valor_anterior: String(doc.solicita_portal),
-        valor_novo: String(!doc.solicita_portal),
-        projeto_id: projetoId,
-      });
     },
     onSuccess: () => {
       invalidar();
@@ -113,15 +92,6 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", doc.id);
       if (error) throw error;
-      await auditar({
-        entidade: "documento",
-        entidade_id: doc.id,
-        acao: "removeu",
-        campo: null,
-        valor_anterior: doc.nome,
-        valor_novo: null,
-        projeto_id: projetoId,
-      });
     },
     onSuccess: () => {
       invalidar();
@@ -160,15 +130,6 @@ export function DocumentosProjeto({ projetoId }: { projetoId: string }) {
         .single();
       if (error) throw error;
 
-      await auditar({
-        entidade: "documento",
-        entidade_id: data.id,
-        acao: "criou",
-        campo: null,
-        valor_anterior: null,
-        valor_novo: nome.trim() || arquivo.name,
-        projeto_id: projetoId,
-      });
 
       setNome("");
       setDescricao("");

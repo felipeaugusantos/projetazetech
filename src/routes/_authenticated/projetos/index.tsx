@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useClientes, useEquipe, useProjetos, useTarefas, registrarAuditoria } from "@/lib/dados";
+import { useClientes, useEquipe, useProjetos, useTarefas } from "@/lib/dados";
 import {
   PRIORIDADES,
   PROJETO_STATUS,
@@ -241,14 +241,6 @@ function NovoProjetoModal({
         );
       }
 
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "projeto",
-        entidade_id: data.id,
-        acao: "criado",
-        projeto_id: data.id,
-      });
 
       toast.success("Projeto criado com sucesso.");
       void queryClient.invalidateQueries({ queryKey: ["projetos"] });

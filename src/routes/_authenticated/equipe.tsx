@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Pencil, Plus, Power, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useEquipe, useTarefas, registrarAuditoria } from "@/lib/dados";
+import { useEquipe, useTarefas } from "@/lib/dados";
 import { estaAtrasada, fmtHoras, fmtMoeda } from "@/lib/enzova";
 import {
   Avatar,
@@ -114,14 +114,6 @@ function Equipe() {
       toast.error(error.message);
       return;
     }
-    await registrarAuditoria({
-      tenant_id: perfil.tenant_id,
-      profile_id: perfil.id,
-      entidade: "pessoa",
-      entidade_id: pessoa.id,
-      acao,
-      valor_novo: pessoa.nome,
-    });
     void queryClient.invalidateQueries({ queryKey: ["equipe"] });
     toast.success(mensagem);
   }
@@ -357,14 +349,6 @@ function PessoaModal({
         }
       }
 
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "pessoa",
-        entidade_id: profileId,
-        acao: pessoa ? "atualizou" : "criou",
-        valor_novo: dados.nome,
-      });
 
       void queryClient.invalidateQueries({ queryKey: ["equipe"] });
       void queryClient.invalidateQueries({ queryKey: ["usuario-roles"] });

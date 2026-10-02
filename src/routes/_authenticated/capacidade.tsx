@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Gauge, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { registrarAuditoria, useAlocacoes, useApontamentos, useEquipe, useProjetos } from "@/lib/dados";
+import { useAlocacoes, useApontamentos, useEquipe, useProjetos } from "@/lib/dados";
 import { fmtHoras, fmtMoeda, inicioSemana, isoDate, rotuloSemana } from "@/lib/enzova";
 import {
   Avatar,
@@ -301,14 +301,6 @@ function PlanejarAlocacao({
           { onConflict: "profile_id,projeto_id,semana" },
         );
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "alocacao",
-        acao: "planejou alocação",
-        projeto_id: projetoId,
-        valor_novo: `${nome}: ${valor}h na semana de ${semana}`,
-      });
     },
     onSuccess: () => {
       toast.success("Alocação atualizada");
