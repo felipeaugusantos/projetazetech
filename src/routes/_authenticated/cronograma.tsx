@@ -7,7 +7,7 @@ import { CalendarRange, Check, Flag, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { registrarAuditoria, useEquipe, useMarcos, useProjetos, useTarefas } from "@/lib/dados";
+import { useEquipe, useMarcos, useProjetos, useTarefas } from "@/lib/dados";
 import { FASE_STATUS, MARCO_STATUS, fmtData, isoDate, type FaseStatus, type MarcoStatus } from "@/lib/enzova";
 import {
   Avatar,
@@ -309,14 +309,6 @@ function MarcosProjeto({
         .update({ status: "atingido", data_real: isoDate(new Date()) })
         .eq("id", marcoId);
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "marco",
-        entidade_id: marcoId,
-        acao: "marcou entrega como atingida",
-        projeto_id: projetoId,
-      });
     },
     onSuccess: () => {
       toast.success("Marco atingido");
@@ -394,14 +386,6 @@ function NovoMarcoModal({ projetoId, fases, onFechar }: { projetoId: string; fas
         responsavel_id: responsavelId || null,
       });
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "marco",
-        acao: "criou marco",
-        projeto_id: projetoId,
-        valor_novo: nome.trim(),
-      });
     },
     onSuccess: () => {
       toast.success("Marco criado");

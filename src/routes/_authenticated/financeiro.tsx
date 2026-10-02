@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import {
-  registrarAuditoria,
   useApontamentos,
   useDespesas,
   useEquipe,
@@ -307,16 +306,6 @@ function Orcamento() {
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", id);
       if (error) throw error;
-      if (perfil) {
-        await registrarAuditoria({
-          tenant_id: perfil.tenant_id,
-          profile_id: perfil.id,
-          entidade: "orcamento_item",
-          entidade_id: id,
-          acao: "removeu item do orçamento",
-          projeto_id: projetoSelecionado,
-        });
-      }
     },
     onSuccess: () => {
       toast.success("Item removido do orçamento");
@@ -477,14 +466,6 @@ function NovoItemModal({ projetoId, onFechar }: { projetoId: string; onFechar: (
         valor_unitario: valor,
       });
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "orcamento_item",
-        acao: `adicionou item de ${tipo} ao orçamento`,
-        projeto_id: projetoId,
-        valor_novo: `${descricao.trim()} · ${fmtMoeda(qtd * valor)}`,
-      });
     },
     onSuccess: () => {
       toast.success("Item adicionado ao orçamento");
@@ -602,17 +583,6 @@ function Despesas() {
       };
       const { error } = await supabase.from("despesas").update(patch).eq("id", despesa.id);
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "despesa",
-        entidade_id: despesa.id,
-        acao: `despesa ${DESPESA_STATUS[status].label.toLowerCase()}`,
-        projeto_id: despesa.projeto_id,
-        campo: "status",
-        valor_anterior: DESPESA_STATUS[despesa.status].label,
-        valor_novo: DESPESA_STATUS[status].label,
-      });
     },
     onSuccess: () => {
       toast.success("Despesa atualizada");
@@ -794,14 +764,6 @@ function NovaDespesaModal({ onFechar }: { onFechar: () => void }) {
         status: enviarAprovacao ? "enviada" : "rascunho",
       });
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "despesa",
-        acao: enviarAprovacao ? "lançou despesa para aprovação" : "lançou despesa como rascunho",
-        projeto_id: projetoId,
-        valor_novo: `${descricao.trim()} · ${fmtMoeda(v)}`,
-      });
     },
     onSuccess: () => {
       toast.success("Despesa lançada");

@@ -5,7 +5,7 @@ import { Plus, ShieldAlert, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { registrarAuditoria, useEquipe, useProjetos, useRiscos } from "@/lib/dados";
+import { useEquipe, useProjetos, useRiscos } from "@/lib/dados";
 import { RISCO_NIVEIS, fmtData, severidadeRisco, type RiscoNivel } from "@/lib/enzova";
 import {
   Avatar,
@@ -69,13 +69,6 @@ function Riscos() {
       if (!perfil) throw new Error("Perfil não carregado");
       const { error } = await supabase.from("riscos").update({ status: "mitigado" }).eq("id", id);
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "risco",
-        entidade_id: id,
-        acao: "marcou risco como mitigado",
-      });
     },
     onSuccess: () => {
       toast.success("Risco atualizado");
@@ -249,14 +242,6 @@ function NovoRisco({ projetos, onFechar }: { projetos: { id: string; nome: strin
         status: "aberto",
       });
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "risco",
-        acao: "registrou risco",
-        projeto_id: projetoId,
-        valor_novo: descricao.trim(),
-      });
     },
     onSuccess: () => {
       toast.success("Risco registrado");

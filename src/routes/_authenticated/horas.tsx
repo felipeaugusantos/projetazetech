@@ -7,7 +7,7 @@ import { Check, ChevronLeft, ChevronRight, Plus, Send, Timer, X } from "lucide-r
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { registrarAuditoria, useApontamentos, useEquipe, useProjetos, useTarefas } from "@/lib/dados";
+import { useApontamentos, useEquipe, useProjetos, useTarefas } from "@/lib/dados";
 import {
   APONTAMENTO_STATUS,
   diasDaSemana,
@@ -131,16 +131,6 @@ function MeuTimesheet() {
           rascunhos.map((a) => a.id),
         );
       if (error) throw error;
-      if (perfil) {
-        await registrarAuditoria({
-          tenant_id: perfil.tenant_id,
-          profile_id: perfil.id,
-          entidade: "apontamento",
-          acao: "enviou semana para aprovação",
-          campo: "status",
-          valor_novo: `${rascunhos.length} apontamento(s) — ${rotuloSemana(semana)}`,
-        });
-      }
     },
     onSuccess: () => {
       toast.success("Semana enviada para aprovação");
@@ -357,14 +347,6 @@ function NovoApontamento({
         status: "rascunho",
       });
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "apontamento",
-        acao: "apontou horas",
-        projeto_id: projetoId,
-        valor_novo: `${valor}h em ${data}`,
-      });
     },
     onSuccess: () => {
       toast.success("Horas apontadas");
@@ -489,13 +471,6 @@ function Aprovacoes() {
         })
         .in("id", ids);
       if (error) throw error;
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "apontamento",
-        acao: aprovar ? "aprovou horas" : "rejeitou horas",
-        valor_novo: `${ids.length} apontamento(s)`,
-      });
     },
     onSuccess: () => {
       toast.success("Timesheet atualizado");

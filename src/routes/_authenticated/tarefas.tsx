@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Columns3, List, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { useEquipe, useProjetos, useTarefas, registrarAuditoria, type Tarefa } from "@/lib/dados";
+import { useEquipe, useProjetos, useTarefas, type Tarefa } from "@/lib/dados";
 import {
   KANBAN_COLUNAS,
   PRIORIDADES,
@@ -71,19 +71,6 @@ export function QuadroTarefas({
     if (error) {
       toast.error("Não foi possível mover a tarefa.");
       return;
-    }
-    if (perfil) {
-      await registrarAuditoria({
-        tenant_id: perfil.tenant_id,
-        profile_id: perfil.id,
-        entidade: "tarefa",
-        entidade_id: tarefaId,
-        acao: "alterado",
-        campo: "status",
-        valor_anterior: tarefa.status,
-        valor_novo: status,
-        projeto_id: tarefa.projeto_id,
-      });
     }
     toast.success(`Tarefa movida para ${TAREFA_STATUS[status].label}.`);
     void queryClient.invalidateQueries({ queryKey: ["tarefas"] });
