@@ -6,6 +6,7 @@ import { Check, Clock, Download, FileText, History, X } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useNomesHistorico } from "@/lib/historico-nomes";
 import { useProjetos } from "@/lib/dados";
 import { fmtData } from "@/lib/enzova";
 import {
@@ -123,6 +124,7 @@ function AprovacaoDocumentos() {
   const { data: documentos = [], isLoading } = useFilaDocumentos();
   const { data: projetos = [] } = useProjetos();
   const { data: historico = [] } = useHistoricoDocumentos();
+  const nome = useNomesHistorico(historico);
   const [filtro, setFiltro] = useState<"pendente" | "aprovado" | "rejeitado" | "todos">("pendente");
   const [projetoId, setProjetoId] = useState("");
   const [observacoes, setObservacoes] = useState<Record<string, string>>({});
@@ -365,7 +367,7 @@ function AprovacaoDocumentos() {
                           <li key={h.id}>
                             {fmtData(h.created_at, "dd MMM yyyy HH:mm")} · {h.profiles?.nome ?? "Sistema"} {h.acao}
                             {h.campo ? ` (${h.campo})` : ""}
-                            {h.valor_novo ? ` — ${h.valor_novo}` : ""}
+                            {h.valor_novo ? ` — ${nome(h.campo, h.valor_novo)}` : ""}
                           </li>
                         ))}
                       </ul>
