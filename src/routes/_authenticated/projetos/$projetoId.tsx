@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Columns3, List, MessageSquare, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useNomesHistorico } from "@/lib/historico-nomes";
 import {
   useApontamentos,
   useDespesas,
@@ -595,6 +596,8 @@ function HistoricoProjeto({ projetoId }: { projetoId: string }) {
     },
   });
 
+  const nome = useNomesHistorico(itens);
+
   return (
     <Painel>
       <h2 className="font-display text-[15px] font-bold">Histórico de alterações</h2>
@@ -607,7 +610,7 @@ function HistoricoProjeto({ projetoId }: { projetoId: string }) {
               {i.campo ? ` (${i.campo})` : ""}
             </div>
             <div className="text-[11px] text-muted-foreground">
-              {i.valor_anterior || i.valor_novo ? `${i.valor_anterior ?? "—"} → ${i.valor_novo ?? "—"} · ` : ""}
+              {i.valor_anterior || i.valor_novo ? `${nome(i.campo, i.valor_anterior) ?? "—"} → ${nome(i.campo, i.valor_novo) ?? "—"} · ` : ""}
               {fmtData(i.created_at, "dd MMM yyyy HH:mm")}
             </div>
           </li>
