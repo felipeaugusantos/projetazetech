@@ -43,6 +43,7 @@ import { Route as AuthenticatedClientesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedClientesClienteIdRouteImport } from './routes/_authenticated/clientes/$clienteId'
 import { Route as AuthenticatedProjetosIndexRouteImport } from './routes/_authenticated/projetos/index'
 import { Route as AuthenticatedProjetosProjetoIdRouteImport } from './routes/_authenticated/projetos/$projetoId'
+import { Route as ApiPublicHooksEnviarEmailsRouteImport } from './routes/api/public/hooks/enviar-emails'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -221,6 +222,12 @@ const AuthenticatedProjetosProjetoIdRoute =
     path: '/projetos/$projetoId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicHooksEnviarEmailsRoute =
+  ApiPublicHooksEnviarEmailsRouteImport.update({
+    id: '/api/public/hooks/enviar-emails',
+    path: '/api/public/hooks/enviar-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByFullPath {
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/clientes/': typeof AuthenticatedClientesIndexRoute
   '/projetos/': typeof AuthenticatedProjetosIndexRoute
+  '/api/public/hooks/enviar-emails': typeof ApiPublicHooksEnviarEmailsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -290,6 +298,7 @@ export interface FileRoutesByTo {
   '/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/clientes': typeof AuthenticatedClientesIndexRoute
   '/projetos': typeof AuthenticatedProjetosIndexRoute
+  '/api/public/hooks/enviar-emails': typeof ApiPublicHooksEnviarEmailsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -327,6 +336,7 @@ export interface FileRoutesById {
   '/_authenticated/projetos/$projetoId': typeof AuthenticatedProjetosProjetoIdRoute
   '/_authenticated/clientes/': typeof AuthenticatedClientesIndexRoute
   '/_authenticated/projetos/': typeof AuthenticatedProjetosIndexRoute
+  '/api/public/hooks/enviar-emails': typeof ApiPublicHooksEnviarEmailsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/projetos/$projetoId'
     | '/clientes/'
     | '/projetos/'
+    | '/api/public/hooks/enviar-emails'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/projetos/$projetoId'
     | '/clientes'
     | '/projetos'
+    | '/api/public/hooks/enviar-emails'
   id:
     | '__root__'
     | '/'
@@ -434,6 +446,7 @@ export interface FileRouteTypes {
     | '/_authenticated/projetos/$projetoId'
     | '/_authenticated/clientes/'
     | '/_authenticated/projetos/'
+    | '/api/public/hooks/enviar-emails'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -444,6 +457,7 @@ export interface RootRouteChildren {
   PortalRoute: typeof PortalRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   RelatorioTokenRoute: typeof RelatorioTokenRoute
+  ApiPublicHooksEnviarEmailsRoute: typeof ApiPublicHooksEnviarEmailsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -686,6 +700,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjetosProjetoIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/hooks/enviar-emails': {
+      id: '/api/public/hooks/enviar-emails'
+      path: '/api/public/hooks/enviar-emails'
+      fullPath: '/api/public/hooks/enviar-emails'
+      preLoaderRoute: typeof ApiPublicHooksEnviarEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -769,6 +790,7 @@ const rootRouteChildren: RootRouteChildren = {
   PortalRoute: PortalRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   RelatorioTokenRoute: RelatorioTokenRoute,
+  ApiPublicHooksEnviarEmailsRoute: ApiPublicHooksEnviarEmailsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

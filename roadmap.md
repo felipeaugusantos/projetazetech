@@ -52,7 +52,7 @@
 
 
 - [x] Conversa por entrega no portal, com histórico e anexos (cliente e equipe)
-- [ ] Notificações por e-mail ao cliente (aguardando domínio de envio do cliente)
+- [x] Notificações por e-mail ao cliente: fila no banco + envio por Resend (migração 0030, `src/lib/email`). Falta configurar `RESEND_API_KEY`/`EMAIL_FROM` com o domínio de envio do cliente e agendar com `email_agendar_envio`
 - [x] Painel interno de Relatórios por projeto (progresso x prazo, pendências, entregas, tabela e exportação CSV)
 - [x] Resumo executivo por IA preenchido automaticamente no PDF (portal e link compartilhado)
 - [x] Custos reais por projeto (lançamento manual, custo real x orçamento por categoria, só interno)
