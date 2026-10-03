@@ -413,3 +413,33 @@ export function usePortalSatisfacao() {
     },
   });
 }
+
+type RpcGenerico = (
+  fn: string,
+  args?: Record<string, unknown>,
+) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+
+// A função ainda não consta nos tipos gerados do Supabase.
+const rpcPortal: RpcGenerico = (fn, args) => (supabase as unknown as { rpc: RpcGenerico }).rpc(fn, args);
+
+/** Preferência do contato: receber (ou não) avisos do portal por e-mail. */
+export function usePortalEmailPreferencia() {
+  const queryClient = useQueryClient();
+  const consulta = useQuery({
+    queryKey: ["portal", "email-preferencia"],
+    queryFn: async () => {
+      const { data, error } = await rpcPortal("portal_email_preferencia", {});
+      if (error) throw new Error(error.message);
+      return data === true;
+    },
+  });
+  const alterar = useMutation({
+    mutationFn: async (ativo: boolean) => {
+      const { data, error } = await rpcPortal("portal_email_preferencia", { p_ativo: ativo });
+      if (error) throw new Error(error.message);
+      return data === true;
+    },
+    onSuccess: (ativo) => queryClient.setQueryData(["portal", "email-preferencia"], ativo),
+  });
+  return { ativo: consulta.data, carregando: consulta.isLoading, alterar };
+}
