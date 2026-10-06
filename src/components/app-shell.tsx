@@ -29,6 +29,7 @@ import {
 
   X,
   BarChart3,
+  Hourglass,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -48,6 +49,7 @@ const NAV = [
   { to: "/documentos", label: "Aprovação de documentos", icon: FileCheck },
   { to: "/capacidade", label: "Capacidade", icon: SlidersHorizontal },
   { to: "/horas", label: "Horas", icon: Timer },
+  { to: "/horas-projetos", label: "Horas por projeto", icon: Hourglass },
   { to: "/riscos", label: "Riscos", icon: ShieldAlert },
   { to: "/kpis", label: "KPIs internos", icon: Activity },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },

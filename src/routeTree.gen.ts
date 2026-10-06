@@ -27,6 +27,7 @@ import { Route as AuthenticatedDocumentosRouteImport } from './routes/_authentic
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedHorasRouteImport } from './routes/_authenticated/horas'
+import { Route as AuthenticatedHorasProjetosRouteImport } from './routes/_authenticated/horas-projetos'
 import { Route as AuthenticatedKpisRouteImport } from './routes/_authenticated/kpis'
 import { Route as AuthenticatedMeuTrabalhoRouteImport } from './routes/_authenticated/meu-trabalho'
 import { Route as AuthenticatedPlanoDiaRouteImport } from './routes/_authenticated/plano-dia'
@@ -137,6 +138,12 @@ const AuthenticatedHorasRoute = AuthenticatedHorasRouteImport.update({
   path: '/horas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHorasProjetosRoute =
+  AuthenticatedHorasProjetosRouteImport.update({
+    id: '/horas-projetos',
+    path: '/horas-projetos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedKpisRoute = AuthenticatedKpisRouteImport.update({
   id: '/kpis',
   path: '/kpis',
@@ -247,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/horas': typeof AuthenticatedHorasRoute
+  '/horas-projetos': typeof AuthenticatedHorasProjetosRoute
   '/kpis': typeof AuthenticatedKpisRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/plano-dia': typeof AuthenticatedPlanoDiaRoute
@@ -282,6 +290,7 @@ export interface FileRoutesByTo {
   '/equipe': typeof AuthenticatedEquipeRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/horas': typeof AuthenticatedHorasRoute
+  '/horas-projetos': typeof AuthenticatedHorasProjetosRoute
   '/kpis': typeof AuthenticatedKpisRoute
   '/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/plano-dia': typeof AuthenticatedPlanoDiaRoute
@@ -320,6 +329,7 @@ export interface FileRoutesById {
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/horas': typeof AuthenticatedHorasRoute
+  '/_authenticated/horas-projetos': typeof AuthenticatedHorasProjetosRoute
   '/_authenticated/kpis': typeof AuthenticatedKpisRoute
   '/_authenticated/meu-trabalho': typeof AuthenticatedMeuTrabalhoRoute
   '/_authenticated/plano-dia': typeof AuthenticatedPlanoDiaRoute
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
     | '/equipe'
     | '/financeiro'
     | '/horas'
+    | '/horas-projetos'
     | '/kpis'
     | '/meu-trabalho'
     | '/plano-dia'
@@ -393,6 +404,7 @@ export interface FileRouteTypes {
     | '/equipe'
     | '/financeiro'
     | '/horas'
+    | '/horas-projetos'
     | '/kpis'
     | '/meu-trabalho'
     | '/plano-dia'
@@ -430,6 +442,7 @@ export interface FileRouteTypes {
     | '/_authenticated/equipe'
     | '/_authenticated/financeiro'
     | '/_authenticated/horas'
+    | '/_authenticated/horas-projetos'
     | '/_authenticated/kpis'
     | '/_authenticated/meu-trabalho'
     | '/_authenticated/plano-dia'
@@ -588,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHorasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/horas-projetos': {
+      id: '/_authenticated/horas-projetos'
+      path: '/horas-projetos'
+      fullPath: '/horas-projetos'
+      preLoaderRoute: typeof AuthenticatedHorasProjetosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/kpis': {
       id: '/_authenticated/kpis'
       path: '/kpis'
@@ -723,6 +743,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedHorasRoute: typeof AuthenticatedHorasRoute
+  AuthenticatedHorasProjetosRoute: typeof AuthenticatedHorasProjetosRoute
   AuthenticatedKpisRoute: typeof AuthenticatedKpisRoute
   AuthenticatedMeuTrabalhoRoute: typeof AuthenticatedMeuTrabalhoRoute
   AuthenticatedPlanoDiaRoute: typeof AuthenticatedPlanoDiaRoute
@@ -749,6 +770,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedHorasRoute: AuthenticatedHorasRoute,
+  AuthenticatedHorasProjetosRoute: AuthenticatedHorasProjetosRoute,
   AuthenticatedKpisRoute: AuthenticatedKpisRoute,
   AuthenticatedMeuTrabalhoRoute: AuthenticatedMeuTrabalhoRoute,
   AuthenticatedPlanoDiaRoute: AuthenticatedPlanoDiaRoute,
