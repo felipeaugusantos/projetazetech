@@ -134,6 +134,13 @@
       "when": 1789874141956,
       "tag": "0018_portal_satisfacao_rpc",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1793802254254,
+      "tag": "0019_restrict_permissoes_read",
+      "breakpoints": true
     }
   ]
 }
