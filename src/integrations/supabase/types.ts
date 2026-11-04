@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -867,6 +867,75 @@ export type Database = {
           },
         ]
       }
+      email_fila: {
+        Row: {
+          chave: string
+          created_at: string
+          dados: Json
+          destinatario_email: string
+          destinatario_nome: string | null
+          enviado_em: string | null
+          enviar_apos: string
+          id: string
+          portal_acesso_id: string | null
+          status: string
+          tenant_id: string
+          tentativas: number
+          tipo: string
+          ultimo_erro: string | null
+          updated_at: string
+        }
+        Insert: {
+          chave: string
+          created_at?: string
+          dados?: Json
+          destinatario_email: string
+          destinatario_nome?: string | null
+          enviado_em?: string | null
+          enviar_apos?: string
+          id?: string
+          portal_acesso_id?: string | null
+          status?: string
+          tenant_id: string
+          tentativas?: number
+          tipo: string
+          ultimo_erro?: string | null
+          updated_at?: string
+        }
+        Update: {
+          chave?: string
+          created_at?: string
+          dados?: Json
+          destinatario_email?: string
+          destinatario_nome?: string | null
+          enviado_em?: string | null
+          enviar_apos?: string
+          id?: string
+          portal_acesso_id?: string | null
+          status?: string
+          tenant_id?: string
+          tentativas?: number
+          tipo?: string
+          ultimo_erro?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_fila_portal_acesso_id_fkey"
+            columns: ["portal_acesso_id"]
+            isOneToOne: false
+            referencedRelation: "portal_acessos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_fila_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favoritos: {
         Row: {
           created_at: string
@@ -994,6 +1063,7 @@ export type Database = {
           lida: boolean
           link: string | null
           mensagem: string | null
+          referencia_id: string | null
           tenant_id: string
           tipo: string
           titulo: string
@@ -1005,6 +1075,7 @@ export type Database = {
           lida?: boolean
           link?: string | null
           mensagem?: string | null
+          referencia_id?: string | null
           tenant_id: string
           tipo?: string
           titulo: string
@@ -1016,6 +1087,7 @@ export type Database = {
           lida?: boolean
           link?: string | null
           mensagem?: string | null
+          referencia_id?: string | null
           tenant_id?: string
           tipo?: string
           titulo?: string
@@ -1334,6 +1406,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           email: string
+          email_notificacoes: boolean
           id: string
           nome: string
           tenant_id: string
@@ -1348,6 +1421,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           email: string
+          email_notificacoes?: boolean
           id?: string
           nome: string
           tenant_id: string
@@ -1362,6 +1436,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           email?: string
+          email_notificacoes?: boolean
           id?: string
           nome?: string
           tenant_id?: string
@@ -2394,9 +2469,94 @@ export type Database = {
       bootstrap_perfil: { Args: { _nome?: string }; Returns: string }
       current_profile_id: { Args: never; Returns: string }
       current_tenant_id: { Args: never; Returns: string }
+      email_agendar_envio: {
+        Args: { p_cron?: string; p_segredo: string; p_url: string }
+        Returns: number
+      }
+      email_enfileirar: {
+        Args: {
+          p_acesso: string
+          p_atraso?: string
+          p_chave: string
+          p_dados: Json
+          p_tipo: string
+          p_unico?: boolean
+        }
+        Returns: undefined
+      }
+      email_enfileirar_cliente: {
+        Args: {
+          p_atraso?: string
+          p_chave: string
+          p_cliente: string
+          p_dados: Json
+          p_tipo: string
+          p_unico?: boolean
+        }
+        Returns: undefined
+      }
+      email_fila_concluir: {
+        Args: {
+          p_definitivo?: boolean
+          p_erro?: string
+          p_id: string
+          p_ok: boolean
+        }
+        Returns: undefined
+      }
+      email_fila_reservar: {
+        Args: { p_limite?: number }
+        Returns: {
+          chave: string
+          created_at: string
+          dados: Json
+          destinatario_email: string
+          destinatario_nome: string | null
+          enviado_em: string | null
+          enviar_apos: string
+          id: string
+          portal_acesso_id: string | null
+          status: string
+          tenant_id: string
+          tentativas: number
+          tipo: string
+          ultimo_erro: string | null
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "email_fila"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_permission: { Args: { _permissao: string }; Returns: boolean }
       has_role: { Args: { _slug: string }; Returns: boolean }
       is_portal_user: { Args: never; Returns: boolean }
+      notificar_perfil: {
+        Args: {
+          p_destinatario: string
+          p_link: string
+          p_mensagem: string
+          p_tenant: string
+          p_tipo: string
+          p_titulo: string
+        }
+        Returns: undefined
+      }
+      notificar_permissao: {
+        Args: {
+          p_link: string
+          p_mensagem: string
+          p_permissao: string
+          p_tenant: string
+          p_tipo: string
+          p_titulo: string
+        }
+        Returns: undefined
+      }
+      notificar_resumo_atrasos_gerentes: { Args: never; Returns: number }
+      notificar_tarefas_atrasadas: { Args: never; Returns: number }
       portal_acesso_atual: {
         Args: never
         Returns: {
@@ -2407,6 +2567,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           email: string
+          email_notificacoes: boolean
           id: string
           nome: string
           tenant_id: string
@@ -2432,6 +2593,10 @@ export type Database = {
       portal_documento_arquivo: {
         Args: { p_documento_id: string }
         Returns: Json
+      }
+      portal_email_preferencia: {
+        Args: { p_ativo?: boolean }
+        Returns: boolean
       }
       portal_marco_comentar: {
         Args: { p_anexos?: Json; p_conteudo: string; p_marco_id: string }
@@ -2459,11 +2624,20 @@ export type Database = {
       portal_resumo: { Args: never; Returns: Json }
       portal_satisfacao: { Args: never; Returns: Json }
       portal_vincular: { Args: never; Returns: boolean }
+      projeto_do_tenant_atual: { Args: { _path: string }; Returns: boolean }
       relatorio_link_abrir: {
         Args: { p_senha?: string; p_token: string; p_user_agent?: string }
         Returns: Json
       }
+      relatorio_link_abrir_base: {
+        Args: { p_senha?: string; p_token: string; p_user_agent?: string }
+        Returns: Json
+      }
       relatorio_link_hash: { Args: { p_senha: string }; Returns: string }
+      relatorio_link_senha_confere: {
+        Args: { p_hash: string; p_senha: string }
+        Returns: boolean
+      }
     }
     Enums: {
       apontamento_status: "rascunho" | "enviado" | "aprovado" | "rejeitado"
